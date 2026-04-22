@@ -53,7 +53,7 @@ Typst also includes non-crate workspace members: `docs`, `tests/`, `tests/fuzz/`
 - **typst:** `crates/typst-cli/src/main.rs` is the binary. `crates/typst/` is a pure library (facade re-exporting subcrates).
 
 **Implication for Periphore:**
-- Main daemon binary: `crates/periphored/` (or `crates/periphore/`) with thin `src/main.rs`
+- Main daemon binary: `crates/periphore/` with thin `src/main.rs` (all logic in `src/lib.rs`)
 - CLI tool: `crates/periphore-cli/` with `src/main.rs`
 - Neither binary at the workspace root
 

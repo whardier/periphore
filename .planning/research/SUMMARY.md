@@ -63,7 +63,7 @@
 
 ## Architecture Recommendation
 
-**Cargo workspace** with `periphore-protocol` (shared types), `periphore-core` (pure-logic state machine, zero platform deps), `periphore-net`, `periphore-ipc`, `periphore-capture`, `periphore-inject`, `periphore-config`, `periphore-identity`, `periphore-cli` (CLI binary, command: `periphore`).
+**Cargo workspace** with `periphore-protocol` (shared types), `periphore-core` (pure-logic state machine, zero platform deps), `periphore-net`, `periphore-ipc`, `periphore-capture`, `periphore-inject`, `periphore-config`, `periphore-identity`, `periphore-cli` (CLI crate; command: `periphore`), `periphore` (daemon binary crate; thin `main.rs` calling into lib).
 
 **Channel-based concurrency** (`tokio::mpsc`, bounded). Each component is an isolated Tokio task communicating via typed channels. The state machine in `periphore-core` is purely functional (input → output actions) — testable without any platform code or network.
 
