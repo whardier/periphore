@@ -73,7 +73,7 @@ periphore/
     periphore-capture/         (platform input capture — cfg-gated)
     periphore-inject/          (platform input injection — cfg-gated)
     periphore/                 (binary — orchestrates everything)
-    periphore-ctl/             (CLI control client binary)
+    periphore-cli/             (CLI control client binary, command: periphore)
 ```
 
 ### Dependency Graph
@@ -85,7 +85,7 @@ periphore-protocol   (shared types, no internal deps)
   ├── periphore-ipc
   ├── periphore-capture
   ├── periphore-inject
-  └── periphore-ctl
+  └── periphore-cli
 
 periphore-config     (no internal deps)
 periphore-identity   (no internal deps)

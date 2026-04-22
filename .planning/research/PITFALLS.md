@@ -123,6 +123,6 @@ SUBSYSTEM=="input", GROUP="input", MODE="0660"
 | TLS nobody uses | Self-signed cert distribution is painful; users disable it | SSH tunneling first-class. Identicon+word-phrase is easier than cert management |
 | Clipboard "dies" | Clipboard sharing layered on top, not part of protocol design | Design clipboard as a named channel in the protocol from day one, even if not implemented |
 | Modifier keys get stuck | No key-state sync on edge crossing | Explicit modifier flush on `FocusTransfer` |
-| Multi-monitor silent failures | No validation at config load time | Topology conflict detection at negotiation time; debug output via `periphore-ctl` |
+| Multi-monitor silent failures | No validation at config load time | Topology conflict detection at negotiation time; debug output via `periphore` |
 | Wayland incompatibility | Deep assumption of X11 input model | Captive window first; no global grab assumption in v1 |
 | "Which machine is the server?" | Inherent to client-server model | P2P eliminates the concept |

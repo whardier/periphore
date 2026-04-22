@@ -86,11 +86,11 @@
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| Both daemon + ctl stubs | periphore daemon active + periphore-ctl thin stub for Phase 5 | ✓ (implied by "all 9 stubs") |
-| Daemon binary only | periphore-ctl added when Phase 5 begins | |
+| Both daemon + ctl stubs | periphore daemon active + periphore-cli thin stub for Phase 5 | ✓ (implied by "all 9 stubs") |
+| Daemon binary only | periphore-cli added when Phase 5 begins | |
 
 **User's choice:** Both scaffolded (daemon active, ctl stub)
-**Notes:** Both binary crates live in `crates/`, not at workspace root. periphore-ctl gets its real implementation in Phase 5.
+**Notes:** Both binary crates live in `crates/`, not at workspace root. periphore-cli gets its real implementation in Phase 5.
 
 ---
 
@@ -117,6 +117,6 @@ Findings saved to `.planning/research/WORKSPACE-PATTERNS.md`.
 ## Deferred Ideas
 
 - Full IPC command richness beyond Phase 1 set → Phase 4 enhancements
-- periphore-ctl real implementation → Phase 5
+- periphore-cli real implementation → Phase 5
 - Identity/fingerprint type details → Phase 2
 - Platform-specific capture/inject implementation → Phases 9–10

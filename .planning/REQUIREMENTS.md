@@ -106,7 +106,7 @@
 | TOP-01 | Phase 8: Monitor Topology | Pending |
 | TOP-02 | Phase 8: Monitor Topology | Pending |
 | TOP-03 | Phase 8: Monitor Topology | Pending |
-| TOP-04 | Phase 5: CLI Tool (periphore-ctl) | Pending |
+| TOP-04 | Phase 5: CLI Tool (periphore-cli) | Pending |
 | TOP-05 | Phase 8: Monitor Topology | Pending |
 | TOP-06 | Phase 8: Monitor Topology | Pending |
 | TOP-07 | Phase 8: Monitor Topology | Pending |

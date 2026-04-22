@@ -63,11 +63,11 @@
 
 ## Architecture Recommendation
 
-**Cargo workspace** with `periphore-protocol` (shared types), `periphore-core` (pure-logic state machine, zero platform deps), `periphore-net`, `periphore-ipc`, `periphore-capture`, `periphore-inject`, `periphore-config`, `periphore-identity`, `periphore-ctl` (CLI binary).
+**Cargo workspace** with `periphore-protocol` (shared types), `periphore-core` (pure-logic state machine, zero platform deps), `periphore-net`, `periphore-ipc`, `periphore-capture`, `periphore-inject`, `periphore-config`, `periphore-identity`, `periphore-cli` (CLI binary, command: `periphore`).
 
 **Channel-based concurrency** (`tokio::mpsc`, bounded). Each component is an isolated Tokio task communicating via typed channels. The state machine in `periphore-core` is purely functional (input → output actions) — testable without any platform code or network.
 
-**Build order:** protocol → config + identity → core + ipc + ctl → net → capture + inject.
+**Build order:** protocol → config + identity → core + ipc + cli → net → capture + inject.
 
 ---
 
@@ -76,7 +76,7 @@
 | Phase | Scope |
 |-------|-------|
 | 1 | `periphore-protocol`, `periphore-config`, `periphore-identity` |
-| 2 | `periphore-core` (state machine), `periphore-ipc`, `periphore-ctl` |
+| 2 | `periphore-core` (state machine), `periphore-ipc`, `periphore-cli` |
 | 3 | `periphore-net` (TCP, peer handshake, topology negotiation) |
 | 4 | `periphore-capture` + `periphore-inject` (captive window mode) |
 | 5+ | Seamless capture, clipboard, reconnection polish, GUI (separate binary) |

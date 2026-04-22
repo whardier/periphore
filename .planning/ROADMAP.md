@@ -14,7 +14,7 @@
 - [ ] **Phase 2: Identity & Cryptography** - Ed25519 keypairs, fingerprint derivation, identicon and word-phrase verification
 - [ ] **Phase 3: Configuration & Trust Persistence** - Layered config loading, fingerprint caching, hard config conflict enforcement
 - [ ] **Phase 4: IPC Layer** - Unix domain socket service boundary, modular transport/capture decoupling
-- [ ] **Phase 5: CLI Tool (periphore-ctl)** - CLI binary for daemon interaction, debug topology output
+- [ ] **Phase 5: CLI Tool (periphore-cli)** - CLI binary for daemon interaction, debug topology output
 - [ ] **Phase 6: TCP Peering** - TCP peer connections, SSH tunnelability, manual host definition, daemon lifecycle
 - [ ] **Phase 7: Peer Discovery** - mDNS auto-discovery of peers on the local network
 - [ ] **Phase 8: Monitor Topology** - Monitor enumeration, topology config/negotiation, multi-monitor edge resolution
@@ -74,15 +74,15 @@
 3. The IPC layer can simulate peer input events locally without any TCP connection, proving the modular boundary works
 **Plans:** TBD
 
-### Phase 5: CLI Tool (periphore-ctl)
+### Phase 5: CLI Tool (periphore-cli)
 
 **Goal:** Users can interact with the running daemon through a CLI tool that communicates over IPC, including inspecting topology state.
 **Depends on:** Phase 4
 **Requirements:** TOP-04
 **Success criteria:**
-1. `periphore-ctl status` connects to the daemon via IPC and reports whether it is running and its identity fingerprint
-2. `periphore-ctl topology` (or equivalent debug command) outputs the resolved monitor topology when debug logging is enabled
-3. `periphore-ctl` fails gracefully with a clear error when the daemon is not running
+1. `periphore status` connects to the daemon via IPC and reports whether it is running and its identity fingerprint
+2. `periphore topology` (or equivalent debug command) outputs the resolved monitor topology when debug logging is enabled
+3. `periphore` fails gracefully with a clear error when the daemon is not running
 **Plans:** TBD
 
 ### Phase 6: TCP Peering
@@ -176,7 +176,7 @@
 | 2. Identity & Cryptography | 0/? | Not started | - |
 | 3. Configuration & Trust Persistence | 0/? | Not started | - |
 | 4. IPC Layer | 0/? | Not started | - |
-| 5. CLI Tool (periphore-ctl) | 0/? | Not started | - |
+| 5. CLI Tool (periphore-cli) | 0/? | Not started | - |
 | 6. TCP Peering | 0/? | Not started | - |
 | 7. Peer Discovery | 0/? | Not started | - |
 | 8. Monitor Topology | 0/? | Not started | - |

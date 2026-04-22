@@ -40,7 +40,7 @@
 
 ### Key Decisions
 
-- Cargo workspace architecture with 9 crates: periphore-protocol, periphore-core, periphore-net, periphore-ipc, periphore-capture, periphore-inject, periphore-config, periphore-identity, periphore-ctl
+- Cargo workspace architecture with 9 crates: periphore-protocol, periphore-core, periphore-net, periphore-ipc, periphore-capture, periphore-inject, periphore-config, periphore-identity, periphore-cli
 - Build order follows dependency chain: protocol -> config+identity -> core+ipc+ctl -> net -> capture+inject
 - TCP-only transport for SSH tunnelability
 - Captive window before seamless accessibility-based input

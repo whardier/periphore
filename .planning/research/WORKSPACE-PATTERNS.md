@@ -54,7 +54,7 @@ Typst also includes non-crate workspace members: `docs`, `tests/`, `tests/fuzz/`
 
 **Implication for Periphore:**
 - Main daemon binary: `crates/periphored/` (or `crates/periphore/`) with thin `src/main.rs`
-- CLI tool: `crates/periphore-ctl/` with `src/main.rs`
+- CLI tool: `crates/periphore-cli/` with `src/main.rs`
 - Neither binary at the workspace root
 
 ---
@@ -96,7 +96,7 @@ Feature activation on internal deps is done at the consumer level:
 periphore-config = { workspace = true, features = ["clap"] }
 ```
 
-This gates `clap`-derived CLI args only in crates that need it (e.g., `periphore-ctl`), keeping `periphore-core` free of CLI dependencies.
+This gates `clap`-derived CLI args only in crates that need it (e.g., `periphore-cli`), keeping `periphore-core` free of CLI dependencies.
 
 ---
 
@@ -120,7 +120,7 @@ This gates `clap`-derived CLI args only in crates that need it (e.g., `periphore
 
 1. **Declare every crate in `[workspace.dependencies]` with both `path` and `version`** — enables feature activation per consumer without bare path refs inside crates.
 
-2. **Binary crates belong in `crates/`, not workspace root** — `crates/periphore/` (daemon) and `crates/periphore-ctl/` (CLI), each with a thin `src/main.rs`.
+2. **Binary crates belong in `crates/`, not workspace root** — `crates/periphore/` (daemon) and `crates/periphore-cli/` (CLI), each with a thin `src/main.rs`.
 
 3. **Set up `[workspace.lints]` and `[lints] workspace = true` on every crate from day one** — much harder to retrofit into 9 crates later.
 
