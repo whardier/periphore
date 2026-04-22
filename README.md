@@ -1,2 +1,2 @@
 # periphore
-Periphore: Multi-nodal I/O hardware capture, transport, and control.
+Periphore: Multi-nodal I/O capture, transport, and control.
