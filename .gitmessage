@@ -1,0 +1,25 @@
+# <type>(<scope>): <description>
+#
+# Types:  feat  fix  refactor  test  docs  chore  perf  ci  build
+#
+# Scopes: peering  transport  ipc  security  topology  input
+#         config   cli        daemon  discovery  planning
+#
+# ─────────────────────────────────────────────────────────────────
+# Body (what changed and why — not how; wrap at 72 chars):
+
+
+
+# ─────────────────────────────────────────────────────────────────
+# Footers:
+#
+#   BREAKING CHANGE: <description>      ← breaking changes
+#   Phase: <N> | Plan: <name>           ← .planning/ commits only
+#   Co-Authored-By: Name <email>        ← human co-authors
+#   Model: <model-id>                   ← AI-authored commits (best-effort)
+#
+# Examples:
+#   feat(security): implement Ed25519 keypair generation
+#   fix(topology): correct monitor offset calculation for non-zero origins
+#   docs(planning): update ROADMAP.md after phase 1 completion
+#   refactor(transport): extract framing logic into dedicated module
