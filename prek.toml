@@ -1,0 +1,31 @@
+default_stages = ["pre-commit"]
+
+[[repos]]
+repo = "https://github.com/pre-commit/pre-commit-hooks"
+rev = "v6.0.0"
+hooks = [
+  { id = "check-added-large-files" },
+  { id = "check-merge-conflict" },
+  { id = "check-shebang-scripts-are-executable" },
+  # { id = "check-builtin-literals" },
+  # { id = "check-ast" },
+  # { id = "check-json" },
+  # { id = "check-toml" },
+  # { id = "check-yaml" },
+  # { id = "debug-statements" },
+  { id = "detect-private-key" },
+  { id = "end-of-file-fixer" },
+  { id = "trailing-whitespace" },
+]
+
+[[repos]]
+repo = "https://github.com/commitizen-tools/commitizen"
+rev = "v4.13.10"
+hooks = [
+  { id = "commitizen", stages = [
+    "commit-msg",
+  ] },
+  { id = "commitizen-branch", stages = [
+    "pre-push",
+  ] },
+]
