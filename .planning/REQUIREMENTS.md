@@ -1,7 +1,7 @@
-# Requirements — Periphore
+# Requirements -- Periphore
 
-**Project:** Periphore — Peer-to-peer input sharing daemon
-**Milestone:** v1 — Core peering, topology, and captive-window input
+**Project:** Periphore -- Peer-to-peer input sharing daemon
+**Milestone:** v1 -- Core peering, topology, and captive-window input
 **Generated:** 2026-04-22
 
 ---
@@ -26,7 +26,7 @@
 
 - [ ] **SEC-01**: Each node generates a persistent Ed25519 keypair; fingerprint derived from public key
 - [ ] **SEC-02**: Fingerprint displayed as identicon (visual, shown on both machines simultaneously)
-- [ ] **SEC-03**: Fingerprint available as typed word phrase (one side reads, other types — not displayed simultaneously)
+- [ ] **SEC-03**: Fingerprint available as typed word phrase (one side reads, other types -- not displayed simultaneously)
 - [ ] **SEC-04**: Identicon display can be disabled for headless/automated setups
 - [ ] **SEC-05**: Accepted fingerprints cached between sessions (no auto-write to main config)
 - [ ] **SEC-06**: Hard configuration can include peer fingerprint; conflicts prevent peering
@@ -47,7 +47,7 @@
 - [ ] **INP-01**: Source machine captures input; sink machine injects it
 - [ ] **INP-02**: Bi-directional control (either machine as source or sink) is optional per session
 - [ ] **INP-03**: Input treated as relative coordinates (not absolute) for cross-machine movement
-- [ ] **INP-04**: Captive window mode — fullscreen/kiosk captures input without requiring accessibility permissions
+- [ ] **INP-04**: Captive window mode -- fullscreen/kiosk captures input without requiring accessibility permissions
 - [ ] **INP-05**: Hotkey escapes captive mode and returns input to local machine
 
 ### Configuration (CFG)
@@ -60,9 +60,9 @@
 
 ## v2 Requirements (Deferred)
 
-- Seamless edge crossing via OS accessibility APIs (CGEvent tap / evdev) — deferred after captive window is stable
-- Text clipboard sharing — deferred past v1 service layer
-- Reconnection with full state recovery — reliability polish after core is stable
+- Seamless edge crossing via OS accessibility APIs (CGEvent tap / evdev) -- deferred after captive window is stable
+- Text clipboard sharing -- deferred past v1 service layer
+- Reconnection with full state recovery -- reliability polish after core is stable
 - Dynamic monitor add/remove detection and automatic re-layout
 - Wayland-specific input handling
 
@@ -85,37 +85,37 @@
 
 ## Traceability
 
-*Filled by roadmapper — maps each REQ-ID to the phase that delivers it.*
+*Mapped by roadmapper on 2026-04-22.*
 
-| REQ-ID | Phase | Notes |
-|--------|-------|-------|
-| NET-01 | — | |
-| NET-02 | — | |
-| NET-03 | — | |
-| NET-04 | — | |
-| NET-05 | — | |
-| NET-06 | — | |
-| IPC-01 | — | |
-| IPC-02 | — | |
-| SEC-01 | — | |
-| SEC-02 | — | |
-| SEC-03 | — | |
-| SEC-04 | — | |
-| SEC-05 | — | |
-| SEC-06 | — | |
-| TOP-01 | — | |
-| TOP-02 | — | |
-| TOP-03 | — | |
-| TOP-04 | — | |
-| TOP-05 | — | |
-| TOP-06 | — | |
-| TOP-07 | — | |
-| TOP-08 | — | |
-| INP-01 | — | |
-| INP-02 | — | |
-| INP-03 | — | |
-| INP-04 | — | |
-| INP-05 | — | |
-| CFG-01 | — | |
-| CFG-02 | — | |
-| CFG-03 | — | |
+| REQ-ID | Phase | Status |
+|--------|-------|--------|
+| NET-01 | Phase 6: TCP Peering | Pending |
+| NET-02 | Phase 7: Peer Discovery | Pending |
+| NET-03 | Phase 6: TCP Peering | Pending |
+| NET-04 | Phase 6: TCP Peering | Pending |
+| NET-05 | Phase 6: TCP Peering | Pending |
+| NET-06 | Phase 6: TCP Peering | Pending |
+| IPC-01 | Phase 4: IPC Layer | Pending |
+| IPC-02 | Phase 4: IPC Layer | Pending |
+| SEC-01 | Phase 2: Identity & Cryptography | Pending |
+| SEC-02 | Phase 2: Identity & Cryptography | Pending |
+| SEC-03 | Phase 2: Identity & Cryptography | Pending |
+| SEC-04 | Phase 2: Identity & Cryptography | Pending |
+| SEC-05 | Phase 3: Configuration & Trust Persistence | Pending |
+| SEC-06 | Phase 3: Configuration & Trust Persistence | Pending |
+| TOP-01 | Phase 8: Monitor Topology | Pending |
+| TOP-02 | Phase 8: Monitor Topology | Pending |
+| TOP-03 | Phase 8: Monitor Topology | Pending |
+| TOP-04 | Phase 5: CLI Tool (periphore-ctl) | Pending |
+| TOP-05 | Phase 8: Monitor Topology | Pending |
+| TOP-06 | Phase 8: Monitor Topology | Pending |
+| TOP-07 | Phase 8: Monitor Topology | Pending |
+| TOP-08 | Phase 8: Monitor Topology | Pending |
+| INP-01 | Phase 9: Input Capture & Injection | Pending |
+| INP-02 | Phase 9: Input Capture & Injection | Pending |
+| INP-03 | Phase 9: Input Capture & Injection | Pending |
+| INP-04 | Phase 10: Captive Window Mode | Pending |
+| INP-05 | Phase 10: Captive Window Mode | Pending |
+| CFG-01 | Phase 1: Workspace & Protocol Foundation | Pending |
+| CFG-02 | Phase 3: Configuration & Trust Persistence | Pending |
+| CFG-03 | Phase 3: Configuration & Trust Persistence | Pending |
