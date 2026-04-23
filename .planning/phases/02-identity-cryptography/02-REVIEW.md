@@ -2,176 +2,169 @@
 phase: 02-identity-cryptography
 reviewed: 2026-04-22T00:00:00Z
 depth: standard
-files_reviewed: 13
+files_reviewed: 2
 files_reviewed_list:
-  - Cargo.toml
-  - crates/periphore-config/src/lib.rs
-  - crates/periphore-config/src/schema.rs
-  - crates/periphore-config/tests/config.rs
-  - crates/periphore-identity/Cargo.toml
-  - crates/periphore-identity/src/bip39.rs
-  - crates/periphore-identity/src/lib.rs
-  - crates/periphore-identity/tests/identity.rs
-  - crates/periphore-ipc/tests/socket.rs
-  - crates/periphore-protocol/src/ipc.rs
-  - crates/periphore-protocol/tests/roundtrip.rs
-  - crates/periphored/Cargo.toml
   - crates/periphored/src/main.rs
+  - crates/periphored/Cargo.toml
 findings:
   critical: 1
-  warning: 3
+  warning: 1
   info: 3
-  total: 7
+  total: 5
 status: issues_found
 ---
 
-# Phase 02: Code Review Report
+# Phase 02 (Gap-closure 02-04): Code Review Report
 
 **Reviewed:** 2026-04-22T00:00:00Z
 **Depth:** standard
-**Files Reviewed:** 13
+**Files Reviewed:** 2
 **Status:** issues_found
 
 ## Summary
 
-Phase 2 implements Ed25519 keypair lifecycle (`IdentityStore`), SHA-256 fingerprinting, Drunken Bishop identicon, BIP39 word phrase, and IPC wiring for identity queries. The cryptographic foundations are solid: `OsRng` is used correctly, the atomic key-file creation with `mode(0o600)` eliminates the world-readable race window, and the Drunken Bishop algorithm is correctly implemented (LSB-first byte walk, clamped grid, correct `E`/`S` override priority). The BIP39 bit-extraction logic has been verified correct for all six windows and the compile-time length guard on the wordlist is a good defensive measure.
+This review covers the two files changed by gap-closure plan 02-04: `crates/periphored/src/main.rs` and `crates/periphored/Cargo.toml`. It is comprehensive — all issues from the prior 13-file review that touch these two files are re-evaluated, and new issues introduced by plan-04 changes are assessed.
 
-One critical bug was found in the daemon main loop that would cause a 100% CPU spin under a specific shutdown condition. Three warnings were found: exposed private key material on a public struct field, a latent panic in an internal function, and missing `fsync` after key file creation. Three informational items cover an ignored IPC request field, a fragile environment variable mapping pattern, and a minor test coverage gap.
+The plan-04 changes are correct and well-structured. `resolve_identicon` is a clean pure function, its extraction into a free function is the right architectural choice for testability, and the two unit tests correctly exercise both branches of the gate. The `tempfile` dev-dependency is placed correctly and is appropriately scoped.
+
+One critical issue from the prior review remains unfixed: the CPU busy-loop on clean IPC task exit is still present. One new warning-level issue was found: the `send_ok` wildcard arm will silently swallow any future `IpcCommand` variant added without a dedicated dispatch arm, removing all compiler exhaustiveness protection. Three informational items are noted: the ignored `fingerprint` field in `GetIdenticon`/`GetWordPhrase` (carried from prior review, now more relevant since identicon gating is live), the non-uniform `tempfile` version pinning, and the non-`#[cfg(unix)]`-guarded `select!` branches for signal handling.
 
 ## Critical Issues
 
-### CR-01: CPU busy-loop when IPC task exits cleanly
+### CR-01: CPU busy-loop when IPC server task exits cleanly
 
-**File:** `crates/periphored/src/main.rs:170-184`
+**File:** `crates/periphored/src/main.rs:183-199`
 
-**Issue:** When the IPC server task completes successfully (e.g., the socket listener exits without error), the `Some(Ok(Ok(())))` arm logs a message and continues the loop — it does not `break`. After that point `tasks` is empty. In Tokio, `JoinSet::join_next().await` on an empty `JoinSet` is immediately ready and returns `None`. In the `select!` loop the `join_next()` branch wins every poll, spinning the `None => {}` arm at 100% CPU indefinitely. The daemon remains alive but unresponsive to shutdown, and burns a full core until killed externally.
+**Issue:** This issue was identified in the prior review and has not been fixed. When the IPC server task completes with `Ok(Ok(()))` (e.g., the Unix socket listener exits without error), the arm at line 185 logs a message and continues the `loop` — it does not `break`. After that point `tasks` is empty. `JoinSet::join_next().await` on an empty `JoinSet` returns `None` immediately without yielding. In Tokio's `select!` the `join_next()` branch therefore wins every poll, the `None => {}` arm at line 196 executes in a tight spin, and the daemon burns 100% of a CPU core indefinitely. The daemon stays alive (signals are still polled), but wastes a full core and provides no forward progress. It will not self-terminate and must be killed externally.
 
 **Fix:**
+
 ```rust
-// In the task completion arm, break on success too:
-Some(Ok(Ok(()))) => {
-    tracing::info!("IPC server task completed");
-    break; // <-- add this; no tasks remain, nothing left to do
-}
-// And guard join_next with tasks.is_empty() to avoid the spin entirely:
+// Fix 1 (guard): disable the join_next branch when no tasks remain
 result = tasks.join_next(), if !tasks.is_empty() => {
-    // ... existing match arms
+    match result {
+        Some(Ok(Ok(()))) => {
+            tracing::info!("IPC server task completed");
+            break; // Fix 2: clean IPC exit should shut the daemon down, not loop
+        }
+        Some(Ok(Err(e))) => {
+            tracing::error!("IPC server task error: {e}");
+            break;
+        }
+        Some(Err(e)) => {
+            tracing::error!("Task panicked: {e}");
+            break;
+        }
+        None => {
+            // JoinSet empty — unreachable with the `if !tasks.is_empty()` guard,
+            // but Rust requires exhaustiveness.
+        }
+    }
 }
 ```
 
-The cleanest fix is the `if !tasks.is_empty()` precondition on the `join_next` branch (a `select!` precondition disables that branch when false), combined with adding `break` to the success arm so a clean IPC exit causes a graceful shutdown rather than a zombie loop.
+Both fixes are needed in tandem: the `if !tasks.is_empty()` precondition prevents the `None` spin, and the `break` in the `Some(Ok(Ok(())))` arm ensures a clean IPC exit triggers graceful daemon shutdown rather than leaving a zombie loop.
 
 ## Warnings
 
-### WR-01: Public `keypair` field exposes raw private key material
+### WR-01: `send_ok` wildcard arm silently swallows future `IpcCommand` variants
 
-**File:** `crates/periphore-identity/src/lib.rs:40`
+**File:** `crates/periphored/src/main.rs:241-243`
 
-**Issue:** `IdentityStore::keypair` is declared `pub`. Any code with access to an `IdentityStore` can call `identity.keypair.to_bytes()` and extract the 32-byte raw seed — the secret material that must never leave the key file. This is a minimal-authority violation. `SigningKey`'s `Debug` impl is safe (ed25519-dalek 2.x prints `REDACTED`), but direct field access bypasses that protection entirely. As the codebase grows and `IdentityStore` is passed between more modules, this becomes an accidental-disclosure risk.
+**Issue:** The `send_ok` function ends with a wildcard `_ => {}` arm. The comment above it (lines 237-240) documents that the explicitly handled commands never reach `send_ok`. This is correct today — all currently handled commands have dedicated arms in the `select!` loop. However, the wildcard permanently removes Rust's exhaustiveness guarantee. When a new `IpcCommand` variant is added in a future phase (e.g., `SetSwitchMode`, `GetConfig`), the compiler will not emit a non-exhaustive match warning or error for `send_ok`. The new command will silently return no response to the client, causing the CLI to hang waiting for a reply that never arrives. This is a latent protocol-level bug waiting to be triggered by normal development.
 
 **Fix:**
-```rust
-// Make keypair private; expose only the operations the rest of the codebase needs:
-pub struct IdentityStore {
-    keypair: SigningKey,          // private — never exposed as raw bytes
-    pub fingerprint: [u8; 32],
-}
 
-impl IdentityStore {
-    /// Sign `msg` with this node's private key.
-    pub fn sign(&self, msg: &[u8]) -> ed25519_dalek::Signature {
-        use ed25519_dalek::Signer;
-        self.keypair.sign(msg)
+Remove the wildcard and list the currently-unreachable commands explicitly with a comment, or add a compile-time note via `#[allow(unreachable_patterns)]` only on the wildcard with a `// KEEP LAST` annotation and a link to the tracking issue. The cleanest approach is to remove the wildcard entirely and only handle what `send_ok` is supposed to handle, letting the compiler enforce completeness:
+
+```rust
+fn send_ok(cmd: IpcCommand) {
+    match cmd {
+        IpcCommand::ListPeers { responder } => {
+            let _ = responder.send(IpcResponse::Peers { peers: vec![] });
+        }
+        IpcCommand::GetTopology { responder } => {
+            let _ = responder.send(IpcResponse::Ok);
+        }
+        IpcCommand::AcceptFingerprint { responder, .. } => {
+            let _ = responder.send(IpcResponse::Ok);
+        }
+        IpcCommand::RejectFingerprint { responder, .. } => {
+            let _ = responder.send(IpcResponse::Ok);
+        }
+        IpcCommand::GetState { responder } => {
+            let _ = responder.send(IpcResponse::Ok);
+        }
+        IpcCommand::GetPendingVerifications { responder } => {
+            let _ = responder.send(IpcResponse::Ok);
+        }
+        // Commands with dedicated select! arms — these never reach send_ok.
+        // List them explicitly so the compiler enforces completeness when
+        // new IpcCommand variants are added.
+        IpcCommand::GetStatus { .. }
+        | IpcCommand::InjectInputEvent { .. }
+        | IpcCommand::SimulateEdgeCross { .. }
+        | IpcCommand::GetIdenticon { .. }
+        | IpcCommand::GetWordPhrase { .. }
+        | IpcCommand::ReloadConfig { .. } => {
+            // Unreachable by construction — each has a dedicated select! arm.
+            // If this branch is hit, a routing bug exists in the main loop.
+            tracing::error!("send_ok called for a command that should have a dedicated arm — this is a bug");
+        }
     }
-
-    /// Return a copy of the public (verifying) key.
-    pub fn verifying_key(&self) -> ed25519_dalek::VerifyingKey {
-        self.keypair.verifying_key()
-    }
 }
 ```
-
-Callers in `periphored/src/main.rs` currently only call `fingerprint_hex()`, `identicon()`, and `word_phrase()` — none require direct `keypair` access. Phase 6 handshake code will need `sign()` and `verifying_key()`, which can be added as targeted methods.
-
-### WR-02: `build_border()` panics on labels longer than 13 characters
-
-**File:** `crates/periphore-identity/src/lib.rs:212-215`
-
-**Issue:** `build_border` computes `let dash_count = 13 - label.len()`. Both call sites use hardcoded labels of length 11 and 9, so this cannot panic today. However, `build_border` is a non-`pub` but unrestricted internal function. If a future caller passes a label longer than 13 characters (e.g., a peer name in a future "peer identicon" feature), Rust will panic with a usize underflow in debug builds and wrap/produce garbage in release builds (since `usize` arithmetic is not checked in release). The function provides no indication of this constraint.
-
-**Fix:**
-```rust
-fn build_border(label: &str) -> String {
-    // Panics are acceptable here since both call sites use compile-time constants,
-    // but assert documents the invariant clearly:
-    assert!(label.len() <= 13, "build_border: label too long ({} > 13 chars)", label.len());
-    let dash_count = 13 - label.len();
-    format!("+--[{}]{:->width$}+", label, "", width = dash_count)
-}
-```
-
-Alternatively, use `saturating_sub` and return a fixed-width truncated border, but an assert is simpler and appropriate since this is an internal function with fixed callers.
-
-### WR-03: Key file written without `sync_all` — new identity lost on power failure
-
-**File:** `crates/periphore-identity/src/lib.rs:84-89`
-
-**Issue:** After writing the 32-byte seed with `file.write_all(&seed)`, neither `file.flush()` (which is a no-op for `File` since it writes directly to the OS) nor `file.sync_all()` is called before the file handle is dropped. If the system loses power or the process is killed immediately after `write_all` returns, the OS write buffer may not have reached disk. The result is a zero-byte or partially-written key file that `load_or_create` will detect as `CorruptKeyFile` — the identity is permanently lost. For a long-lived daemon identity this is a meaningful durability gap.
-
-**Fix:**
-```rust
-use std::os::unix::fs::OpenOptionsExt;
-let mut file = std::fs::OpenOptions::new()
-    .write(true)
-    .create_new(true)
-    .mode(0o600)
-    .open(path)?;
-file.write_all(&seed)?;
-file.sync_all()?;   // <-- ensure bytes reach disk before returning
-// drop(file) here
-```
-
-`sync_all()` also flushes the file metadata (size), which is important because `load_or_create` validates the byte count on subsequent loads.
 
 ## Info
 
-### IN-01: `GetIdenticon` and `GetWordPhrase` silently ignore the `fingerprint` IPC field
+### IN-01: `GetIdenticon` and `GetWordPhrase` ignore the `fingerprint` IPC field (carried from prior review)
 
-**File:** `crates/periphored/src/main.rs:139-150`
+**File:** `crates/periphored/src/main.rs:151-163`
 
-**Issue:** `IpcRequest::GetIdenticon { fingerprint: String }` and `IpcRequest::GetWordPhrase { fingerprint: String }` accept a `fingerprint` field from IPC clients, implying they can query any peer's identicon/phrase. In the current implementation both arms use `..` to discard the field and always return the daemon's own identity. A client that passes a peer's fingerprint expecting to get that peer's identicon will silently get its own daemon's data instead, with no error or indication that the field was ignored.
+**Issue:** `IpcCommand::GetIdenticon { fingerprint, .. }` and `IpcCommand::GetWordPhrase { fingerprint, .. }` both use `..` to discard the `fingerprint` field. Both arms always return the daemon's own identity regardless of what fingerprint the client requested. This issue was present in the prior review; it is re-raised here because the identicon gating change in plan-04 makes the `GetIdenticon` path production-complete for the self-identity case, which increases the likelihood that a CLI client will attempt to use the fingerprint field for peer lookup.
 
-**Fix:** Either validate and use the field if the intent is multi-peer lookup, or remove the `fingerprint` field from both `IpcRequest` variants until the feature is implemented (Phase 4+). If keeping the field, return `IpcResponse::Error { message: "peer fingerprint lookup not yet implemented".into() }` when the passed fingerprint does not match the daemon's own.
+A client passing a peer fingerprint to `GetIdenticon` will silently receive the daemon's own identicon — no error, no indication the field was ignored. This is a correctness gap at the protocol boundary.
 
-### IN-02: Env var underscore split constraint is documented but unenforced
+**Fix:** Either (a) remove the `fingerprint` field from `IpcCommand::GetIdenticon` and `IpcCommand::GetWordPhrase` until peer lookup is implemented, or (b) return `IpcResponse::Error { message: "peer fingerprint lookup not yet implemented".into() }` when the passed fingerprint does not match the daemon's own `identity.fingerprint_hex()`. Option (a) is cleaner for Phase 2; option (b) gives better client-facing error messages.
 
-**File:** `crates/periphore-config/src/lib.rs:56-63`
+### IN-02: `tempfile` dev-dependency not workspace-pinned
 
-**Issue:** The comment accurately documents that `Env::prefixed("PERIPHORE_").split("_")` will silently misroute env vars for any config field whose name contains an underscore. `socket_path` is called out as an exception. The comment relies on future developers reading it before adding underscore-bearing fields. There is no compile-time or runtime guard preventing a future `[daemon]\nreconnect_interval = 5` field from being added and silently broken. This is low urgency now but will become a maintenance trap.
+**File:** `crates/periphored/Cargo.toml:29`
 
-**Fix:** In a future phase, consider switching to a custom Figment env provider that uses a different separator (e.g., `__` double-underscore for nesting), which would allow single underscores in field names. For now, add a test that attempts to set `PERIPHORE_DAEMON_SOCKET_PATH` and asserts the field is NOT populated (confirming the known-broken behavior is at least documented in test form).
+**Issue:** `tempfile = "3"` is declared directly in `[dev-dependencies]` without going through the workspace. Other crates in this workspace (`periphore-identity`, `periphore-ipc`) also use `tempfile` in their test suites. If each crate pins a different patch version via their own `Cargo.toml`, Cargo may resolve multiple versions of `tempfile` and inflate compile times, or subtle test-helper behavioral differences may emerge across patch versions.
 
-### IN-03: Missing key file permission test in identity test suite
+**Fix:** Add `tempfile` to the workspace `[dev-dependencies]` table in the root `Cargo.toml` with a pinned version, then reference it as `tempfile = { workspace = true }` in all crate `Cargo.toml` files that use it. This is consistent with how all other dependencies in this crate are managed.
 
-**File:** `crates/periphore-identity/tests/identity.rs:20-33`
+### IN-03: Signal-handling `select!` branches are not `#[cfg(unix)]`-guarded
 
-**Issue:** `test_first_run_creates_key_file` verifies that the key file is created and is 32 bytes, but does not verify the file permissions are `0600`. The socket test suite (`socket_permissions_0600`) has a parallel check for the IPC socket. A missing permission assertion means a regression in the `OpenOptionsExt::mode` call (or its removal in a refactor) would go undetected by the test suite.
+**File:** `crates/periphored/src/main.rs:118-127`
 
-**Fix:**
+**Issue:** The `sigterm` and `sighup` variables are declared under `#[cfg(unix)]` (lines 89-94), but the `select!` branches that reference them (`sigterm.recv()` at line 118 and `sighup.recv()` at line 124) have no corresponding `#[cfg(unix)]` guard. On a non-Unix target these branches would produce compile errors referencing undefined variables. Windows is explicitly out of scope per project constraints, so this cannot cause a real build failure today, but it is a correctness gap for any future cross-platform work and is also a style inconsistency with the declaration guards.
+
+**Fix:** Wrap the signal branches inside the `select!` with `#[cfg(unix)]`:
+
 ```rust
-#[test]
-#[cfg(unix)]
-fn test_first_run_key_file_permissions_0600() {
-    use std::os::unix::fs::PermissionsExt;
-    let dir = tempfile::tempdir().expect("temp dir");
-    let key_path = dir.path().join("key");
-    let _store = IdentityStore::load_or_create(&key_path)
-        .expect("load_or_create must succeed on first run");
-    let metadata = std::fs::metadata(&key_path).expect("key file metadata");
-    let mode = metadata.permissions().mode() & 0o777;
-    assert_eq!(mode, 0o600, "key file must be 0600, got: {mode:o}");
+loop {
+    tokio::select! {
+        #[cfg(unix)]
+        _ = sigterm.recv() => {
+            tracing::info!("SIGTERM received -- shutting down");
+            break;
+        }
+
+        #[cfg(unix)]
+        _ = sighup.recv() => {
+            tracing::info!("SIGHUP received -- config reload not yet implemented (Phase 4)");
+        }
+
+        cmd = ipc_cmd_rx.recv() => { /* ... */ }
+
+        result = tasks.join_next(), if !tasks.is_empty() => { /* ... */ }
+    }
 }
 ```
+
+`tokio::select!` supports per-branch `#[cfg(...)]` attributes since Tokio 1.x.
 
 ---
 
