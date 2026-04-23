@@ -732,6 +732,7 @@ dependencies = [
  "periphore-identity",
  "periphore-ipc",
  "periphore-protocol",
+ "tempfile",
  "tokio",
  "tracing",
  "tracing-subscriber",
