@@ -22,6 +22,18 @@ struct Args {
     verbose: bool,
 }
 
+/// Return the identicon string for display, or an empty string when disabled.
+///
+/// Extracted as a free function so that SEC-04 gating logic is unit-testable
+/// without running the full async daemon.
+fn resolve_identicon(show_identicon: bool, identity: &periphore_identity::IdentityStore) -> String {
+    if show_identicon {
+        identity.identicon()
+    } else {
+        String::new()
+    }
+}
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let args = Args::parse();
@@ -140,7 +152,7 @@ async fn main() -> anyhow::Result<()> {
                         tracing::debug!("IPC: GetIdenticon");
                         let _ = responder.send(IpcResponse::Identicon {
                             fingerprint_hex: identity.fingerprint_hex(),
-                            identicon:       identity.identicon(),
+                            identicon:       resolve_identicon(config.identity.show_identicon, &identity),
                         });
                     }
                     Some(IpcCommand::GetWordPhrase { responder, .. }) => {
@@ -228,5 +240,52 @@ fn send_ok(cmd: IpcCommand) {
         // The wildcard arm satisfies Rust's exhaustiveness requirement without
         // duplicating response logic that already exists in the select! arms.
         _ => {}
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::resolve_identicon;
+    use periphore_identity::IdentityStore;
+    use std::fs;
+
+    const TEST_SEED: [u8; 32] = [0u8; 32];
+
+    fn make_test_identity() -> (IdentityStore, tempfile::TempDir) {
+        let dir = tempfile::tempdir().expect("temp dir");
+        let key_path = dir.path().join("key");
+        fs::write(&key_path, TEST_SEED).expect("write test seed");
+        let store = IdentityStore::load_or_create(&key_path)
+            .expect("load from known seed");
+        (store, dir) // dir kept alive to prevent early cleanup
+    }
+
+    #[test]
+    fn test_show_identicon_suppressed_when_disabled() {
+        // SEC-04: when show_identicon is false the identicon field must be empty.
+        let (identity, _dir) = make_test_identity();
+        let result = resolve_identicon(false, &identity);
+        assert!(
+            result.is_empty(),
+            "identicon must be empty string when show_identicon=false, got: {result:?}"
+        );
+    }
+
+    #[test]
+    fn test_show_identicon_returned_when_enabled() {
+        // SEC-04: when show_identicon is true (default) the identicon is returned normally.
+        let (identity, _dir) = make_test_identity();
+        let result = resolve_identicon(true, &identity);
+        assert!(
+            !result.is_empty(),
+            "identicon must be non-empty when show_identicon=true"
+        );
+        // Must still be a valid 11-line Drunken Bishop string.
+        assert_eq!(
+            result.lines().count(),
+            11,
+            "identicon must have 11 lines when enabled, got {}",
+            result.lines().count()
+        );
     }
 }
