@@ -10,7 +10,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Workspace & Protocol Foundation** - Cargo workspace scaffold, protocol message types, config discipline
+- [x] **Phase 1: Workspace & Protocol Foundation** - Cargo workspace scaffold, protocol message types, config discipline
 - [ ] **Phase 2: Identity & Cryptography** - Ed25519 keypairs, fingerprint derivation, identicon and word-phrase verification
 - [ ] **Phase 3: Configuration & Trust Persistence** - Layered config loading, fingerprint caching, hard config conflict enforcement
 - [ ] **Phase 4: IPC Layer** - Unix domain socket service boundary, modular transport/capture decoupling
@@ -45,7 +45,7 @@ Plans:
 - [x] 01-03-PLAN.md -- periphore-config: full schema, Figment layering (defaults < TOML < env), no-Serialize enforcement
 - [x] 01-04-PLAN.md -- periphore-ipc: Unix domain socket server, IpcCommand dispatch, 0600 permissions, integration tests
 - [x] 01-05-PLAN.md -- periphored: daemon main.rs wiring config + IPC + signals + GetStatus dispatch
-- [ ] 01-06-PLAN.md -- periphore + periphore-cli: thin CLI entry stub + library stub, --help output verified
+- [x] 01-06-PLAN.md -- periphore + periphore-cli: thin CLI entry stub + library stub, --help output verified
 
 ### Phase 2: Identity & Cryptography
 
@@ -182,7 +182,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Workspace & Protocol Foundation | 5/6 | In Progress | - |
+| 1. Workspace & Protocol Foundation | 6/6 | Complete | 2026-04-23 |
 | 2. Identity & Cryptography | 0/? | Not started | - |
 | 3. Configuration & Trust Persistence | 0/? | Not started | - |
 | 4. IPC Layer | 0/? | Not started | - |
