@@ -27,15 +27,25 @@
 
 ### Phase 1: Workspace & Protocol Foundation
 
-**Goal:** The project has a buildable Cargo workspace with shared protocol types and config-discipline enforcement, so all subsequent crates have a foundation to build on.
+**Goal:** The project has a buildable Cargo workspace with all 11 crates, shared protocol types, layered config discipline, a working IPC socket backbone, and both binary targets producing --help output.
 **Depends on:** Nothing (first phase)
-**Requirements:** CFG-01
+**Requirements:** CFG-01, IPC-01, IPC-02
 **Success criteria:**
-1. `cargo build --workspace` succeeds with at least `periphore-protocol` and `periphore-config` crates present
-2. Protocol crate defines message envelope types (handshake, topology, input event, control) that compile and serialize/deserialize round-trip via `postcard`
-3. Config crate loads a TOML config file with layered precedence (defaults < file < env < CLI) and never writes to disk under any code path
-4. Running the workspace binary with `--help` produces usage output (proving the binary target exists)
-**Plans:** TBD
+1. `cargo build --workspace` succeeds with all 11 crates present
+2. Protocol crate defines the full PeerMessage enum (~15 variants) plus all supporting types -- round-trips via `postcard`
+3. Config crate loads full schema from TOML with layered precedence (defaults < file < env < CLI), never writes to disk
+4. Daemon binary starts, creates Unix domain socket at platform-appropriate path, responds to `GetStatus` IPC command
+5. Full IpcRequest enum compiles and is reachable over the socket (InjectInputEvent and SimulateEdgeCross exercisable)
+6. `periphore --help` and `periphored --help` both produce usage output
+**Plans:** 6 plans
+
+Plans:
+- [ ] 01-01-PLAN.md -- Cargo workspace scaffold: root Cargo.toml + all 11 crate stubs with workspace wiring
+- [ ] 01-02-PLAN.md -- periphore-protocol: PeerMessage enum, IpcRequest/IpcResponse, supporting types, round-trip tests
+- [ ] 01-03-PLAN.md -- periphore-config: full schema, Figment layering (defaults < TOML < env), no-Serialize enforcement
+- [ ] 01-04-PLAN.md -- periphore-ipc: Unix domain socket server, IpcCommand dispatch, 0600 permissions, integration tests
+- [ ] 01-05-PLAN.md -- periphored: daemon main.rs wiring config + IPC + signals + GetStatus dispatch
+- [ ] 01-06-PLAN.md -- periphore + periphore-cli: thin CLI entry stub + library stub, --help output verified
 
 ### Phase 2: Identity & Cryptography
 
@@ -172,7 +182,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Workspace & Protocol Foundation | 0/? | Not started | - |
+| 1. Workspace & Protocol Foundation | 0/6 | Planned | - |
 | 2. Identity & Cryptography | 0/? | Not started | - |
 | 3. Configuration & Trust Persistence | 0/? | Not started | - |
 | 4. IPC Layer | 0/? | Not started | - |
