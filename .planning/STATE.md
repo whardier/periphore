@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 02-identity-cryptography
-current_plan: 1
-status: ready_to_execute
-stopped_at: Phase 2 planned — 3 plans in 3 waves, ready to execute
-last_updated: "2026-04-22T00:00:00Z"
+current_phase: 2
+current_plan: 2
+status: executing
+stopped_at: Completed 02-01-PLAN.md — IdentityStore foundation with Ed25519 keypair lifecycle and SHA-256 fingerprint
+last_updated: "2026-04-23T04:35:41.402Z"
 progress:
   total_phases: 10
   completed_phases: 1
   total_plans: 9
-  completed_plans: 6
-  percent: 10
+  completed_plans: 7
+  percent: 78
 ---
 
 # Project State
@@ -20,9 +20,9 @@ progress:
 **Project:** Periphore
 **Milestone:** 1 -- v1 Core
 **Current phase:** 2
-**Current plan:** Not started
-**Status:** Ready to execute
-**Last updated:** 2026-04-22
+**Current plan:** 2 (02-02 next)
+**Status:** Executing
+**Last updated:** 2026-04-23
 
 ---
 
@@ -30,17 +30,17 @@ progress:
 
 **Core value:** A machine's input devices should be able to reach any peer on the network, flowing naturally across screen edges, with verified identity and no central authority.
 
-**Current focus:** Phase 01 complete. Next: Phase 02 -- Identity & Cryptography
+**Current focus:** Phase 02 -- Identity & Cryptography (plan 02-01 complete, plan 02-02 next)
 
 ---
 
 ## Current Position
 
-Phase: 01 (Workspace & Protocol Foundation) -- COMPLETE
-Plan: 6 of 6 -- ALL COMPLETE
-**Phase:** 1 of 10 -- Workspace & Protocol Foundation
-**Plan:** 6 plans executed (Waves 1-4)
-**Progress:** [██████████] 100%
+Phase: 02 (Identity & Cryptography) -- IN PROGRESS
+Plan: 1 of 3 complete
+**Phase:** 2 of 10 -- Identity & Cryptography
+**Plan:** 1 plan executed (Wave 1)
+**Progress:** [████████░░] 78%
 
 ---
 
@@ -48,12 +48,13 @@ Plan: 6 of 6 -- ALL COMPLETE
 
 | Metric | Value |
 |--------|-------|
-| Phases complete | 1/10 |
-| Plans complete | 6/6 |
-| Requirements delivered | 3/30 |
-| Session count | 3 |
+| Phases complete | 1/10 (phase 2 in progress) |
+| Plans complete | 7/9 (02-01 complete) |
+| Requirements delivered | 4/30 (SEC-01 added) |
+| Session count | 4 |
 
 ---
+| Phase 02-identity-cryptography P01 | 4 | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -77,10 +78,14 @@ Plan: 6 of 6 -- ALL COMPLETE
 - periphore-protocol added as direct dependency of periphored for IpcResponse type access
 - periphore main.rs uses eprintln! for stub messages to keep stdout clean for future structured output
 - periphore-cli uses anyhow (not thiserror) because its sole consumer is the periphore binary entry point
+- rand_core 0.6 used directly (not rand 0.8/0.9) to avoid version conflict with ed25519-dalek 2.2 rand_core feature gate
+- OpenOptionsExt::mode(0o600) with create_new(true) for atomic key file creation — eliminates world-readable race window
+- Debug derive added to IdentityStore — required for Result<IdentityStore, IdentityError> in test panic messages
+- identicon() and word_phrase() return empty stubs intentionally — plan 02-02 implements SEC-02/SEC-03
 
 ### Open TODOs
 
-(None for Phase 1 -- phase complete)
+(None)
 
 ### Blockers
 
@@ -94,5 +99,5 @@ Plan: 6 of 6 -- ALL COMPLETE
 
 - **Date:** 2026-04-23
 - **Work done:** Plan 01-06 executed -- periphore CLI binary finalized with clap --help and periphore-cli library stub with pub fn run() placeholder. Phase 1 complete: all 6 plans, all 11 crates compile, both binaries produce --help, all tests pass.
-- **Stopped at:** Completed 01-06-PLAN.md (Phase 1 complete)
+- **Stopped at:** Completed 02-01-PLAN.md — IdentityStore foundation with Ed25519 keypair lifecycle and SHA-256 fingerprint
 - **Next action:** Transition to Phase 2 (Identity & Cryptography)

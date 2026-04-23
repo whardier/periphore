@@ -26,7 +26,8 @@
 
 ### Security & Identity (SEC)
 
-- [ ] **SEC-01**: Each node generates a persistent Ed25519 keypair; fingerprint derived from public key
+- [x] **SEC-01
+**: Each node generates a persistent Ed25519 keypair; fingerprint derived from public key
 - [ ] **SEC-02**: Fingerprint displayed as identicon (visual, shown on both machines simultaneously)
 - [ ] **SEC-03**: Fingerprint available as typed word phrase (one side reads, other types -- not displayed simultaneously)
 - [ ] **SEC-04**: Identicon display can be disabled for headless/automated setups
