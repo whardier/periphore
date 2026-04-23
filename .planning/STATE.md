@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 01-workspace-protocol-foundation
-current_plan: 5
+current_plan: 6
 status: executing
-stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-04-23T02:26:13Z"
+stopped_at: Completed 01-05-PLAN.md
+last_updated: "2026-04-23T02:33:06Z"
 progress:
   total_phases: 10
   completed_phases: 0
   total_plans: 6
-  completed_plans: 4
-  percent: 67
+  completed_plans: 5
+  percent: 83
 ---
 
 # Project State
@@ -20,7 +20,7 @@ progress:
 **Project:** Periphore
 **Milestone:** 1 -- v1 Core
 **Current phase:** 01-workspace-protocol-foundation
-**Current plan:** 5
+**Current plan:** 6
 **Status:** Executing Phase 01
 **Last updated:** 2026-04-23
 
@@ -37,10 +37,10 @@ progress:
 ## Current Position
 
 Phase: 01 (Workspace & Protocol Foundation) — EXECUTING
-Plan: 5 of 6
+Plan: 6 of 6
 **Phase:** 1 of 10 -- Workspace & Protocol Foundation
 **Plan:** 6 plans ready (Waves 1-4)
-**Progress:** [██████░░░░] 67%
+**Progress:** [████████░░] 83%
 
 ---
 
@@ -49,7 +49,7 @@ Plan: 5 of 6
 | Metric | Value |
 |--------|-------|
 | Phases complete | 0/10 |
-| Plans complete | 4/6 |
+| Plans complete | 5/6 |
 | Requirements delivered | 0/30 |
 | Session count | 2 |
 
@@ -72,10 +72,13 @@ Plan: 5 of 6
 - ENV_MUTEX in config tests serializes access to PERIPHORE_* env vars for thread-safe parallel testing
 - IpcCommand uses oneshot responder pattern: each variant carries oneshot::Sender<IpcResponse> for bidirectional IPC over Unix socket
 - Each IPC integration test uses unique temp socket path with PID suffix for parallel-safe test isolation
+- tokio::select! macro does not support #[cfg(unix)] on arms; guards placed on signal variable declarations instead
+- periphored uses exhaustive send_ok() helper for IpcCommand dispatch with compiler-enforced variant coverage
+- periphore-protocol added as direct dependency of periphored for IpcResponse type access
 
 ### Open TODOs
 
-- Continue executing Phase 1 plans (Plan 05 next: daemon wiring)
+- Execute Plan 01-06 (CLI binary wiring) to complete Phase 1
 
 ### Blockers
 
@@ -88,6 +91,6 @@ Plan: 5 of 6
 ### Last Session
 
 - **Date:** 2026-04-23
-- **Work done:** Plan 01-04 executed — periphore-ipc crate fully implemented with Unix socket server, JSON-lines protocol, IpcCommand oneshot responder pattern, 0600 permissions, and 10 passing tests
-- **Stopped at:** Completed 01-04-PLAN.md
-- **Next action:** Execute Plan 01-05 (daemon wiring)
+- **Work done:** Plan 01-05 executed -- periphored daemon main.rs fully implemented with config load, IPC socket spawn, GetStatus dispatch, SIGTERM/SIGHUP handling, exhaustive IpcCommand dispatch, and clean shutdown with socket removal
+- **Stopped at:** Completed 01-05-PLAN.md
+- **Next action:** Execute Plan 01-06 (CLI binary wiring)
