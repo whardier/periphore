@@ -42,7 +42,7 @@
 Plans:
 - [x] 01-01-PLAN.md -- Cargo workspace scaffold: root Cargo.toml + all 11 crate stubs with workspace wiring
 - [x] 01-02-PLAN.md -- periphore-protocol: PeerMessage enum, IpcRequest/IpcResponse, supporting types, round-trip tests
-- [ ] 01-03-PLAN.md -- periphore-config: full schema, Figment layering (defaults < TOML < env), no-Serialize enforcement
+- [x] 01-03-PLAN.md -- periphore-config: full schema, Figment layering (defaults < TOML < env), no-Serialize enforcement
 - [ ] 01-04-PLAN.md -- periphore-ipc: Unix domain socket server, IpcCommand dispatch, 0600 permissions, integration tests
 - [ ] 01-05-PLAN.md -- periphored: daemon main.rs wiring config + IPC + signals + GetStatus dispatch
 - [ ] 01-06-PLAN.md -- periphore + periphore-cli: thin CLI entry stub + library stub, --help output verified
@@ -182,7 +182,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Workspace & Protocol Foundation | 2/6 | In Progress | - |
+| 1. Workspace & Protocol Foundation | 3/6 | In Progress | - |
 | 2. Identity & Cryptography | 0/? | Not started | - |
 | 3. Configuration & Trust Persistence | 0/? | Not started | - |
 | 4. IPC Layer | 0/? | Not started | - |

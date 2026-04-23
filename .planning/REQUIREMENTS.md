@@ -119,6 +119,6 @@
 | INP-03 | Phase 9: Input Capture & Injection | Pending |
 | INP-04 | Phase 10: Captive Window Mode | Pending |
 | INP-05 | Phase 10: Captive Window Mode | Pending |
-| CFG-01 | Phase 1: Workspace & Protocol Foundation | Pending |
+| CFG-01 | Phase 1: Workspace & Protocol Foundation | Complete |
 | CFG-02 | Phase 3: Configuration & Trust Persistence | Pending |
 | CFG-03 | Phase 3: Configuration & Trust Persistence | Pending |
