@@ -24,8 +24,14 @@ pub async fn serve(
     let _ = fs::remove_file(socket_path);
 
     // Ensure the parent directory exists (e.g., $TMPDIR/periphore/ may not exist on first run).
+    // T-1-03: Harden directory to 0700 (owner only) so local users cannot list the socket name.
     if let Some(parent) = socket_path.parent() {
         fs::create_dir_all(parent)?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            fs::set_permissions(parent, fs::Permissions::from_mode(0o700))?;
+        }
     }
 
     let listener = UnixListener::bind(socket_path)?;
@@ -69,7 +75,14 @@ async fn handle_connection(stream: UnixStream, tx: mpsc::Sender<IpcCommand>) {
     let mut reader = BufReader::new(reader_half);
     let mut line = String::new();
 
+    // T-1-02: Bound line size to prevent local DoS via unbounded memory growth.
+    const MAX_LINE_BYTES: usize = 64 * 1024; // 64 KiB is generous for any IPC request
+
     while reader.read_line(&mut line).await.unwrap_or(0) > 0 {
+        if line.len() > MAX_LINE_BYTES {
+            tracing::warn!("IPC line too long ({} bytes); dropping connection", line.len());
+            break;
+        }
         let trimmed = line.trim();
         if trimmed.is_empty() {
             line.clear();
@@ -129,13 +142,15 @@ async fn handle_connection(stream: UnixStream, tx: mpsc::Sender<IpcCommand>) {
                 tracing::warn!(
                     "Malformed IPC request (ignored): {e}. Input: {trimmed:?}"
                 );
-                let error_json = format!(
-                    r#"{{"type":"error","message":"malformed request: {}"}}"#,
-                    e.to_string().replace('"', "'")
-                );
-                let _ = writer_half
-                    .write_all(format!("{error_json}\n").as_bytes())
-                    .await;
+                // Use IpcResponse::Error so serde_json handles all escaping correctly
+                // (backslashes, control characters, etc.) rather than manual string replace.
+                let response = IpcResponse::Error {
+                    message: format!("malformed request: {e}"),
+                };
+                let mut json = serde_json::to_string(&response)
+                    .unwrap_or_else(|_| r#"{"type":"error","message":"serialization error"}"#.to_owned());
+                json.push('\n');
+                let _ = writer_half.write_all(json.as_bytes()).await;
             }
         }
         line.clear();
