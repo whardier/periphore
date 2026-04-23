@@ -46,6 +46,21 @@ impl From<figment::Error> for ConfigError {
 /// Defaults are provided by serde's `#[serde(default)]` annotations on Config fields
 /// combined with `Default` trait impls. This avoids requiring `Serialize` on Config,
 /// enforcing CFG-01 (no config auto-write) at the type system level.
+///
+/// # Environment variable mapping constraint
+///
+/// `Env::prefixed("PERIPHORE_").split("_")` splits on every underscore after stripping
+/// the prefix to produce a nested key path. This means:
+///
+/// - `PERIPHORE_LOGGING_LEVEL` maps to `logging.level` (2 levels — correct)
+/// - `PERIPHORE_DAEMON_SOCKET_PATH` would map to `daemon.socket.path` (3 levels — **wrong**)
+///
+/// **IMPORTANT:** Field names within config structs MUST NOT contain underscores, or the
+/// env var mapping will silently produce a key path with too many levels and fall back to
+/// the default value without any error. `DaemonConfig::socket_path` is exempt because it
+/// is not expected to be configurable via env vars (use the TOML file or CLI flag instead).
+/// Before Phase 5 wires up full env override support, verify that no underscore-bearing
+/// field name requires env var override.
 pub fn load(config_path: Option<&std::path::Path>) -> Result<Config, ConfigError> {
     // Start with an empty Figment. Defaults come from #[serde(default)] on Config
     // fields and their Default impls -- serde fills in missing keys automatically.
