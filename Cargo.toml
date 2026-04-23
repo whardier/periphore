@@ -1,0 +1,55 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+default-members = ["crates/periphored", "crates/periphore"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["Periphore Contributors"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/whardier/periphore"
+homepage = "https://github.com/whardier/periphore"
+publish = false
+
+[workspace.dependencies]
+# Internal library crates — path + version per D-03; never bare path refs
+periphore-protocol = { path = "crates/periphore-protocol", version = "0.1.0" }
+periphore-config   = { path = "crates/periphore-config",   version = "0.1.0" }
+periphore-identity = { path = "crates/periphore-identity", version = "0.1.0" }
+periphore-core     = { path = "crates/periphore-core",     version = "0.1.0" }
+periphore-ipc      = { path = "crates/periphore-ipc",      version = "0.1.0" }
+periphore-net      = { path = "crates/periphore-net",      version = "0.1.0" }
+periphore-capture  = { path = "crates/periphore-capture",  version = "0.1.0" }
+periphore-inject   = { path = "crates/periphore-inject",   version = "0.1.0" }
+periphore-cli      = { path = "crates/periphore-cli",      version = "0.1.0" }
+# Note: periphore and periphored are binary crates — they are NOT listed here
+# because no other crate depends on them as a library.
+
+# External dependencies — versions verified 2026-04-22 via cargo registry
+tokio             = { version = "1.52", features = ["net", "macros", "rt-multi-thread", "signal", "io-util", "sync", "time"] }
+tokio-util        = { version = "0.7",  features = ["codec"] }
+serde             = { version = "1.0",  features = ["derive"] }
+serde_json        = { version = "1.0" }
+postcard          = { version = "1.1",  features = ["alloc"] }
+bytes             = { version = "1.11" }
+figment           = { version = "0.10", features = ["toml", "env"] }
+clap              = { version = "4.6",  features = ["derive"] }
+tracing           = { version = "0.1" }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+directories       = { version = "6.0" }
+thiserror         = { version = "2.0" }
+ed25519-dalek     = { version = "2.2" }
+sha2              = { version = "0.10" }
+anyhow            = { version = "1.0" }
+
+[workspace.lints.rust]
+unsafe_code     = "warn"
+unreachable_pub = "warn"
+
+[workspace.lints.clippy]
+pedantic = "warn"
+# Selective overrides — suppress false positives from pedantic that hurt readability
+module_name_repetitions = "allow"
+missing_errors_doc      = "allow"
+missing_panics_doc      = "allow"
