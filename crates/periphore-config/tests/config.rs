@@ -89,3 +89,31 @@ fn peer_config_vec_defaults_to_empty() {
     let config = load(None).expect("default config");
     assert!(config.peers.is_empty(), "peers should default to empty vec");
 }
+
+#[test]
+fn identity_show_identicon_defaults_to_true() {
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
+    let config = load(None).expect("default config should load");
+    assert!(
+        config.identity.show_identicon,
+        "identity.show_identicon must default to true"
+    );
+}
+
+#[test]
+fn identity_show_identicon_can_be_disabled_via_toml() {
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
+    let mut tmp = tempfile::NamedTempFile::new().expect("temp file");
+    writeln!(tmp, "[identity]").unwrap();
+    writeln!(tmp, "show_identicon = false").unwrap();
+
+    let config = load(Some(tmp.path())).expect("should load with identity config");
+    assert!(
+        !config.identity.show_identicon,
+        "identity.show_identicon must be false when set in TOML"
+    );
+}

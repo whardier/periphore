@@ -155,6 +155,15 @@ fn ipc_response_all_variants_round_trip() {
         IpcResponse::Peers {
             peers: vec!["fp1".to_owned(), "fp2".to_owned()],
         },
+        IpcResponse::Identicon {
+            fingerprint_hex: "a3f92b1e".to_owned(),
+            identicon: "+--[ED25519 256]--+\n|      .S        |\n+--[PERIPHORE]----+\n".to_owned(),
+        },
+        IpcResponse::WordPhrase {
+            words:  vec!["abandon".to_owned(), "ability".to_owned(), "able".to_owned(),
+                         "about".to_owned(), "above".to_owned(), "absent".to_owned()],
+            phrase: "abandon ability able about above absent".to_owned(),
+        },
         IpcResponse::Ok,
         IpcResponse::Error {
             message: "something went wrong".to_owned(),

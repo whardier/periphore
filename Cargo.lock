@@ -302,6 +302,7 @@ checksum = "70e796c081cee67dc755e1a36a0a172b897fab85fc3f6bc48307991f64e4eca9"
 dependencies = [
  "curve25519-dalek",
  "ed25519",
+ "rand_core",
  "serde",
  "sha2",
  "subtle",
@@ -669,9 +670,14 @@ dependencies = [
 name = "periphore-identity"
 version = "0.1.0"
 dependencies = [
+ "directories",
  "ed25519-dalek",
+ "rand_core",
  "serde",
  "sha2",
+ "tempfile",
+ "thiserror",
+ "tracing",
 ]
 
 [[package]]
@@ -723,6 +729,7 @@ dependencies = [
  "anyhow",
  "clap",
  "periphore-config",
+ "periphore-identity",
  "periphore-ipc",
  "periphore-protocol",
  "tokio",

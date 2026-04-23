@@ -48,6 +48,20 @@ pub enum IpcResponse {
     Peers {
         peers: Vec<String>,
     },
+    /// Response to GetIdenticon (SEC-02, D-09).
+    /// fingerprint_hex: 64-char lowercase hex of SHA-256 public key fingerprint.
+    /// identicon: pre-rendered Drunken Bishop terminal string (11 lines, newline-terminated).
+    Identicon {
+        fingerprint_hex: String,
+        identicon:       String,
+    },
+    /// Response to GetWordPhrase (SEC-03, D-10).
+    /// words: 6 BIP39 words derived from fingerprint.
+    /// phrase: space-joined convenience field (e.g., "abandon ability able about above absent").
+    WordPhrase {
+        words:  Vec<String>,
+        phrase: String,
+    },
     Ok,
     Error {
         message: String,

@@ -7,15 +7,17 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize, Default)]
 pub struct Config {
     #[serde(default)]
-    pub daemon: DaemonConfig,
+    pub daemon:    DaemonConfig,
     #[serde(default)]
-    pub logging: LoggingConfig,
+    pub logging:   LoggingConfig,
     #[serde(default)]
-    pub peers: Vec<PeerConfig>,
+    pub peers:     Vec<PeerConfig>,
     #[serde(default)]
-    pub topology: TopologyConfig,
+    pub topology:  TopologyConfig,
     #[serde(default)]
-    pub capture: CaptureConfig,
+    pub capture:   CaptureConfig,
+    #[serde(default)]
+    pub identity:  IdentityConfig,
 }
 
 /// Daemon process configuration.
@@ -64,4 +66,22 @@ pub struct TopologyConfig {
 #[derive(Debug, Deserialize, Default)]
 pub struct CaptureConfig {
     // Captive window vs seamless mode, device path overrides -- populated in Phase 9.
+}
+
+/// Identity display configuration (SEC-04).
+#[derive(Debug, Deserialize)]
+pub struct IdentityConfig {
+    /// Show identicon on startup and in IPC GetIdenticon responses.
+    /// Set to `false` for headless or automated setups (SEC-04).
+    ///
+    /// Note: this field contains an underscore. Figment's `Env::prefixed("PERIPHORE_").split("_")`
+    /// would map `PERIPHORE_IDENTITY_SHOW_IDENTICON` to `identity.show.identicon` (wrong — 3 levels).
+    /// Configure via the TOML file only: `[identity]\nshow_identicon = false`.
+    pub show_identicon: bool,
+}
+
+impl Default for IdentityConfig {
+    fn default() -> Self {
+        Self { show_identicon: true }
+    }
 }
