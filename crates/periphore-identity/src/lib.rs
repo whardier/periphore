@@ -114,25 +114,126 @@ impl IdentityStore {
     /// Return the OpenSSH Drunken Bishop identicon for this identity's fingerprint.
     ///
     /// Pre-rendered 11-line terminal string (header + 9 grid rows + footer), newline-terminated.
-    /// Implemented in plan 02-02. Returns empty string until then.
+    /// SEC-02: visual fingerprint verification via Drunken Bishop algorithm (D-05, D-06, D-07).
     pub fn identicon(&self) -> String {
-        // TODO plan 02-02: implement Drunken Bishop algorithm (SEC-02, D-05, D-06, D-07).
-        String::new()
+        drunken_bishop(&self.fingerprint)
     }
 
     /// Return the BIP39 word phrase for this identity's fingerprint.
     ///
     /// Returns 6 words derived from sequential 11-bit windows of the SHA-256 fingerprint.
-    /// Implemented in plan 02-02. Returns empty vec until then.
+    /// SEC-03: typed character-by-character verification (D-11, D-12, D-13).
     pub fn word_phrase(&self) -> Vec<String> {
-        // TODO plan 02-02: implement BIP39 extraction (SEC-03, D-11, D-12).
-        Vec::new()
+        word_indices(&self.fingerprint)
+            .iter()
+            .map(|&i| crate::bip39::BIP39_WORDS[i].to_owned())
+            .collect()
     }
 
     fn compute_fingerprint(keypair: &SigningKey) -> [u8; 32] {
         let pubkey_bytes = keypair.verifying_key().to_bytes();
         Sha256::digest(pubkey_bytes).into()
     }
+}
+
+/// OpenSSH Drunken Bishop identicon algorithm.
+///
+/// Input: 32-byte fingerprint (SHA-256 of public key).
+/// Output: 11-line string — header + 9 grid rows + footer — newline-terminated.
+///
+/// Character table: " .o+=*BOX@%&#/^SE" (17 chars, index 0-16).
+/// Grid: 17 columns × 9 rows. Start: (col=8, row=4).
+/// Bit order: LSB first within each byte (RESEARCH.md Pitfall 3).
+/// D-05: 17×9 grid, center start.
+/// D-06: header "+--[ED25519 256]--+", footer "+--[PERIPHORE]----+".
+/// D-07: input is the SHA-256 fingerprint bytes.
+fn drunken_bishop(fingerprint: &[u8; 32]) -> String {
+    const CHARS: &[u8; 17] = b" .o+=*BOX@%&#/^SE";
+    const COLS: i32 = 17;
+    const ROWS: i32 = 9;
+
+    let mut grid = [0u32; (17 * 9) as usize];
+    let mut col: i32 = 8;
+    let mut row: i32 = 4;
+
+    for &byte in fingerprint.iter() {
+        let mut b = byte;
+        for _ in 0..4 {
+            let bits = b & 0x3;
+            b >>= 2;
+            let dx: i32 = if bits & 0x01 != 0 { 1 } else { -1 };
+            let dy: i32 = if bits & 0x02 != 0 { 1 } else { -1 };
+            col = (col + dx).clamp(0, COLS - 1);
+            row = (row + dy).clamp(0, ROWS - 1);
+            grid[(row * COLS + col) as usize] += 1;
+        }
+    }
+
+    let end_pos = (row * COLS + col) as usize;
+    let start_pos = (4 * COLS + 8) as usize; // 76
+
+    let header = build_border("ED25519 256");
+    let footer = build_border("PERIPHORE");
+
+    let mut out = String::with_capacity(11 * 20);
+    out.push_str(&header);
+    out.push('\n');
+
+    for r in 0..(ROWS as usize) {
+        out.push('|');
+        for c in 0..(COLS as usize) {
+            let pos = r * (COLS as usize) + c;
+            let ch = if pos == end_pos {
+                b'E'
+            } else if pos == start_pos {
+                b'S'
+            } else {
+                CHARS[grid[pos].min(16) as usize]
+            };
+            out.push(ch as char);
+        }
+        out.push('|');
+        out.push('\n');
+    }
+
+    out.push_str(&footer);
+    out.push('\n');
+    out
+}
+
+/// Build a border line for the identicon: "+--[label]----+"
+///
+/// Total line length is 19 chars:
+///   4 ("+--[") + label.len() + 1 ("]") + dashes + 1 ("+") = 19
+///   → dashes = 13 - label.len()
+///
+/// "ED25519 256" (11 chars) → 2 dashes → "+--[ED25519 256]--+"
+/// "PERIPHORE"   (9 chars)  → 4 dashes → "+--[PERIPHORE]----+"
+fn build_border(label: &str) -> String {
+    let dash_count = 13 - label.len();
+    format!("+--[{}]{:->width$}+", label, "", width = dash_count)
+}
+
+/// Extract 6 sequential 11-bit indices from a 32-byte big-endian fingerprint.
+///
+/// Used to select BIP39 words. The i-th window starts at bit offset i*11.
+/// Each window spans at most 3 bytes to guarantee alignment.
+///
+/// Python cross-validation confirmed this matches big-integer extraction (RESEARCH.md §5).
+fn word_indices(fingerprint: &[u8; 32]) -> [usize; 6] {
+    let mut indices = [0usize; 6];
+    for i in 0..6 {
+        let bit_offset = i * 11;
+        let byte_offset = bit_offset / 8;
+        let bit_shift = bit_offset % 8;
+        #[allow(clippy::cast_possible_truncation)]
+        let window = ((fingerprint[byte_offset] as u32) << 16
+            | (fingerprint[byte_offset + 1] as u32) << 8
+            | (fingerprint[byte_offset + 2] as u32))
+            >> (13 - bit_shift);
+        indices[i] = (window & 0x7FF) as usize;
+    }
+    indices
 }
 
 /// Return the platform-appropriate path for the identity key file.

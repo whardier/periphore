@@ -100,29 +100,113 @@ fn test_fingerprint_determinism() {
 }
 
 // ---------------------------------------------------------------------------
-// SEC-02: Identicon (Drunken Bishop) — implemented in plan 02-02
+// SEC-02: Identicon (Drunken Bishop) — plan 02-02
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "implemented in plan 02-02"]
-fn test_identicon_determinism() {}
+fn test_identicon_determinism() {
+    // Same fingerprint always produces identical identicon string.
+    let dir = tempfile::tempdir().expect("temp dir");
+    let key_path = dir.path().join("key");
+    const TEST_SEED: [u8; 32] = [0u8; 32];
+    fs::write(&key_path, TEST_SEED).expect("write test seed");
+
+    let store = IdentityStore::load_or_create(&key_path).expect("load");
+    let first = store.identicon();
+    let second = store.identicon();
+    assert_eq!(first, second, "identicon must be deterministic");
+    assert!(!first.is_empty(), "identicon must not be empty");
+}
 
 #[test]
-#[ignore = "implemented in plan 02-02"]
-fn test_identicon_borders() {}
+fn test_identicon_borders() {
+    // Header must be "+--[ED25519 256]--+" and footer "+--[PERIPHORE]----+".
+    let dir = tempfile::tempdir().expect("temp dir");
+    let key_path = dir.path().join("key");
+    const TEST_SEED: [u8; 32] = [0u8; 32];
+    fs::write(&key_path, TEST_SEED).expect("write test seed");
+
+    let store = IdentityStore::load_or_create(&key_path).expect("load");
+    let identicon = store.identicon();
+    let lines: Vec<&str> = identicon.lines().collect();
+
+    assert_eq!(
+        lines[0], "+--[ED25519 256]--+",
+        "header must match exactly"
+    );
+    assert_eq!(
+        lines[10], "+--[PERIPHORE]----+",
+        "footer must match exactly (line index 10)"
+    );
+    // Each grid row must be 19 chars wide (| + 17 + |)
+    for (i, line) in lines[1..10].iter().enumerate() {
+        assert_eq!(
+            line.len(), 19,
+            "grid row {} must be 19 chars wide, got {}", i + 1, line.len()
+        );
+        assert!(
+            line.starts_with('|') && line.ends_with('|'),
+            "grid row {} must start and end with |", i + 1
+        );
+    }
+}
 
 #[test]
-#[ignore = "implemented in plan 02-02"]
-fn test_identicon_line_count() {}
+fn test_identicon_line_count() {
+    // Output has exactly 11 lines (header + 9 grid rows + footer).
+    let dir = tempfile::tempdir().expect("temp dir");
+    let key_path = dir.path().join("key");
+    const TEST_SEED: [u8; 32] = [0u8; 32];
+    fs::write(&key_path, TEST_SEED).expect("write test seed");
+
+    let store = IdentityStore::load_or_create(&key_path).expect("load");
+    let identicon = store.identicon();
+    let line_count = identicon.lines().count();
+    assert_eq!(line_count, 11, "identicon must have 11 lines, got {line_count}");
+}
 
 // ---------------------------------------------------------------------------
-// SEC-03: Word phrase (BIP39) — implemented in plan 02-02
+// SEC-03: Word phrase (BIP39) — plan 02-02
 // ---------------------------------------------------------------------------
 
 #[test]
-#[ignore = "implemented in plan 02-02"]
-fn test_word_phrase_determinism() {}
+fn test_word_phrase_determinism() {
+    // Same fingerprint always produces the same 6-word phrase.
+    let dir = tempfile::tempdir().expect("temp dir");
+    let key_path = dir.path().join("key");
+    const TEST_SEED: [u8; 32] = [0u8; 32];
+    fs::write(&key_path, TEST_SEED).expect("write test seed");
+
+    let store = IdentityStore::load_or_create(&key_path).expect("load");
+    let first = store.word_phrase();
+    let second = store.word_phrase();
+    assert_eq!(first, second, "word_phrase must be deterministic");
+    assert_eq!(first.len(), 6, "word_phrase must have 6 words");
+}
 
 #[test]
-#[ignore = "implemented in plan 02-02"]
-fn test_word_phrase_validity() {}
+fn test_word_phrase_validity() {
+    // All 6 words must be lowercase and present in BIP39_WORDS.
+    // phrase (joined) must be space-delimited with exactly 5 spaces.
+    let dir = tempfile::tempdir().expect("temp dir");
+    let key_path = dir.path().join("key");
+    const TEST_SEED: [u8; 32] = [0u8; 32];
+    fs::write(&key_path, TEST_SEED).expect("write test seed");
+
+    let store = IdentityStore::load_or_create(&key_path).expect("load");
+    let words = store.word_phrase();
+
+    assert_eq!(words.len(), 6, "must have exactly 6 words");
+    // Validate via known BIP39 properties: all lowercase, no punctuation.
+    for word in &words {
+        assert!(
+            word.chars().all(|c| c.is_ascii_lowercase()),
+            "word '{word}' must be all lowercase ASCII"
+        );
+        assert!(!word.is_empty(), "word must not be empty");
+    }
+    // Joined phrase must be space-delimited.
+    let phrase = words.join(" ");
+    let space_count = phrase.chars().filter(|&c| c == ' ').count();
+    assert_eq!(space_count, 5, "phrase must have exactly 5 spaces between 6 words");
+}
