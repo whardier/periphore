@@ -205,21 +205,10 @@ fn send_ok(cmd: IpcCommand) {
         IpcCommand::GetWordPhrase { responder, .. } => {
             let _ = responder.send(IpcResponse::Ok);
         }
-        // These are handled in the main select! arms; listed for exhaustiveness.
-        IpcCommand::GetStatus { responder } => {
-            let _ = responder.send(IpcResponse::Status {
-                running: true,
-                fingerprint: None,
-            });
-        }
-        IpcCommand::InjectInputEvent { responder, .. } => {
-            let _ = responder.send(IpcResponse::Ok);
-        }
-        IpcCommand::SimulateEdgeCross { responder, .. } => {
-            let _ = responder.send(IpcResponse::Ok);
-        }
-        IpcCommand::ReloadConfig { responder } => {
-            let _ = responder.send(IpcResponse::Ok);
-        }
+        // GetStatus, InjectInputEvent, SimulateEdgeCross, and ReloadConfig have
+        // dedicated arms in the main select! loop and never reach send_ok.
+        // The wildcard arm satisfies Rust's exhaustiveness requirement without
+        // duplicating response logic that already exists in the select! arms.
+        _ => {}
     }
 }
