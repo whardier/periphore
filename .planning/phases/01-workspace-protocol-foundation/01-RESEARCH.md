@@ -898,22 +898,22 @@ pub struct KeyEventData   { pub scancode: u32, pub pressed: bool, pub modifiers:
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`directories` crate behavior on macOS for `runtime_dir()`**
    - What we know: `ProjectDirs::from` documentation shows `runtime_dir()` returns `None` on macOS (no XDG on macOS)
    - What's unclear: Whether `directories` 6.0 introduced a macOS-specific runtime path (e.g., `$HOME/Library/Caches`)
-   - Recommendation: Add a Wave 0 test that calls `socket_path()` on the CI machine and asserts it ends in `.sock` — catches wrong path resolution immediately
+   - **RESOLVED:** `runtime_dir()` returns `None` on macOS; the `$TMPDIR/periphore/periphore.sock` fallback specified in D-17 handles macOS correctly. The `socket_path_ends_in_periphore_sock` integration test in Plan 04 verifies this at runtime. No behavior change from `directories` 6.0 needed — the fallback path is the correct macOS answer.
 
 2. **`sha2` 0.11.0 stability status**
    - What we know: crates.io shows `0.11.0` as latest, but cargo search labels it distinctly; crates.io API non-rc query returns `0.10.9` as latest non-rc
    - What's unclear: Whether `0.11.0` final stable was published after our verification
-   - Recommendation: Use `sha2 = "0.10"` (any 0.10.x) in workspace deps for Phase 1; update to 0.11 when Phase 2 implements identity
+   - **RESOLVED:** Using `sha2 = "0.10.9"` (last confirmed stable) in workspace deps for Phase 1. Will re-evaluate at Phase 2 when identity is implemented. `periphore-identity` is a stub in Phase 1 — sha2 version is not observable until Phase 2.
 
 3. **Figment `clap` feature gate pattern**
    - What we know: `periphore-config` needs a `clap` feature that enables CLI override struct
    - What's unclear: Whether the CLI override struct should be in `periphore-config` or entirely in `periphore-cli`
-   - Recommendation: CLI args that map to config fields should live in `periphore-cli`, which passes a structured override to `periphore-config::load(overrides)`. Avoids the `clap` dep entirely in `periphore-config` if desired.
+   - **RESOLVED:** CLI override struct goes in `periphore-config` behind a `clap` feature gate per D-25 (locked decision from CONTEXT.md). `periphore-cli` activates the feature via `periphore-config = { workspace = true, features = ["clap"] }`. This is already implemented in Plan 01 Cargo.toml stubs. No further clarification needed.
 
 ---
 
