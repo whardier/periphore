@@ -58,7 +58,12 @@ Plans:
 3. The identicon rendered from a fingerprint is visually identical across platforms when compared side-by-side
 4. The word phrase generated from a fingerprint produces the same words on both platforms and can be typed character-by-character for verification
 5. Identicon display can be disabled via config or CLI flag, with word-phrase-only verification still functional
-**Plans:** TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 02-01-PLAN.md -- periphore-identity foundation: IdentityStore, keypair persistence (0600), fingerprint_hex, daemon startup wiring + SEC-01 tests
+- [ ] 02-02-PLAN.md -- identicon (Drunken Bishop 17x9) + word phrase (BIP39 6-word) implementations + golden-value tests
+- [ ] 02-03-PLAN.md -- IPC protocol variants (Identicon, WordPhrase), IdentityConfig (show_identicon), periphored dispatch wiring
 
 ### Phase 3: Configuration & Trust Persistence
 
@@ -183,7 +188,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Workspace & Protocol Foundation | 6/6 | Complete | 2026-04-23 |
-| 2. Identity & Cryptography | 0/? | Not started | - |
+| 2. Identity & Cryptography | 0/3 | In progress | - |
 | 3. Configuration & Trust Persistence | 0/? | Not started | - |
 | 4. IPC Layer | 0/? | Not started | - |
 | 5. CLI Tool (periphore-cli) | 0/? | Not started | - |
