@@ -19,8 +19,10 @@
 
 ### IPC Layer (IPC)
 
-- [ ] **IPC-01**: Service exposes a Unix domain socket (platform-appropriate) for local IPC
-- [ ] **IPC-02**: IPC layer is the modular boundary between transport and capture, testable without a network peer
+- [x] **IPC-01
+**: Service exposes a Unix domain socket (platform-appropriate) for local IPC
+- [x] **IPC-02
+**: IPC layer is the modular boundary between transport and capture, testable without a network peer
 
 ### Security & Identity (SEC)
 
@@ -52,7 +54,8 @@
 
 ### Configuration (CFG)
 
-- [ ] **CFG-01**: System never auto-writes configuration; all config is user-authored
+- [x] **CFG-01
+**: System never auto-writes configuration; all config is user-authored
 - [ ] **CFG-02**: Hard config conflicts between peers prevent peering
 - [ ] **CFG-03**: Config can define preferred monitor layouts for dynamic monitor scenarios
 
