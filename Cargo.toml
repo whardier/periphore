@@ -48,7 +48,7 @@ unsafe_code     = "warn"
 unreachable_pub = "warn"
 
 [workspace.lints.clippy]
-pedantic = "warn"
+pedantic = { level = "warn", priority = -1 }
 # Selective overrides — suppress false positives from pedantic that hurt readability
 module_name_repetitions = "allow"
 missing_errors_doc      = "allow"

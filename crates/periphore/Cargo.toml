@@ -1,0 +1,20 @@
+[package]
+name = "periphore"
+version.workspace    = true
+edition.workspace    = true
+authors.workspace    = true
+license.workspace    = true
+repository.workspace = true
+publish.workspace    = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "periphore"
+path = "src/main.rs"
+
+[dependencies]
+periphore-cli = { workspace = true }
+clap          = { workspace = true }
+anyhow        = { workspace = true }

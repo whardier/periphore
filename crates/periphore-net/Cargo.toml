@@ -1,0 +1,20 @@
+[package]
+name = "periphore-net"
+version.workspace    = true
+edition.workspace    = true
+authors.workspace    = true
+license.workspace    = true
+repository.workspace = true
+publish.workspace    = true
+
+[lints]
+workspace = true
+
+[dependencies]
+periphore-protocol = { workspace = true }
+tokio              = { workspace = true }
+tokio-util         = { workspace = true }
+bytes              = { workspace = true }
+serde              = { workspace = true }
+thiserror          = { workspace = true }
+tracing            = { workspace = true }
