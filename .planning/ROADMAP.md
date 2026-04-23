@@ -11,7 +11,7 @@
 ## Phases
 
 - [x] **Phase 1: Workspace & Protocol Foundation** - Cargo workspace scaffold, protocol message types, config discipline
-- [ ] **Phase 2: Identity & Cryptography** - Ed25519 keypairs, fingerprint derivation, identicon and word-phrase verification
+- [x] **Phase 2: Identity & Cryptography** - Ed25519 keypairs, fingerprint derivation, identicon and word-phrase verification
 - [ ] **Phase 3: Configuration & Trust Persistence** - Layered config loading, fingerprint caching, hard config conflict enforcement
 - [ ] **Phase 4: IPC Layer** - Unix domain socket service boundary, modular transport/capture decoupling
 - [ ] **Phase 5: CLI Tool (periphore-cli)** - CLI binary for daemon interaction, debug topology output
@@ -61,9 +61,10 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- periphore-identity foundation: IdentityStore, keypair persistence (0600), fingerprint_hex, daemon startup wiring + SEC-01 tests
-- [ ] 02-02-PLAN.md -- identicon (Drunken Bishop 17x9) + word phrase (BIP39 6-word) implementations + golden-value tests
-- [ ] 02-03-PLAN.md -- IPC protocol variants (Identicon, WordPhrase), IdentityConfig (show_identicon), periphored dispatch wiring
+- [x] 02-01-PLAN.md -- periphore-identity foundation: IdentityStore, keypair persistence (0600), fingerprint_hex, daemon startup wiring + SEC-01 tests
+- [x] 02-02-PLAN.md -- identicon (Drunken Bishop 17x9) + word phrase (BIP39 6-word) implementations + golden-value tests
+- [x] 02-03-PLAN.md -- IPC protocol variants (Identicon, WordPhrase), IdentityConfig (show_identicon), periphored dispatch wiring
+- [x] 02-04-PLAN.md -- SEC-04 gap closure: resolve_identicon helper, show_identicon gating, suppression unit tests
 
 ### Phase 3: Configuration & Trust Persistence
 
@@ -188,7 +189,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Workspace & Protocol Foundation | 6/6 | Complete | 2026-04-23 |
-| 2. Identity & Cryptography | 0/3 | In progress | - |
+| 2. Identity & Cryptography | 4/4 | Complete | 2026-04-23 |
 | 3. Configuration & Trust Persistence | 0/? | Not started | - |
 | 4. IPC Layer | 0/? | Not started | - |
 | 5. CLI Tool (periphore-cli) | 0/? | Not started | - |

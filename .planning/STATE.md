@@ -2,26 +2,26 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 2
-current_plan: 2 (02-02 next)
-status: executing
-stopped_at: "Completed 02-03-PLAN.md — IpcResponse::Identicon/WordPhrase wired end-to-end; IdentityConfig (SEC-04); all Phase 2 requirements complete"
-last_updated: "2026-04-23T04:48:31.060Z"
+current_phase: 3
+current_plan: 0
+status: ready
+stopped_at: "Phase 2 complete — all 4 plans done, 32 tests pass, SEC-01/02/03/04 all satisfied, cross-platform identicon verified"
+last_updated: "2026-04-23T00:00:00Z"
 progress:
   total_phases: 10
   completed_phases: 2
-  total_plans: 9
-  completed_plans: 9
-  percent: 100
+  total_plans: 10
+  completed_plans: 10
+  percent: 20
 ---
 
 # Project State
 
 **Project:** Periphore
 **Milestone:** 1 -- v1 Core
-**Current phase:** 2
-**Current plan:** 2 (02-02 next)
-**Status:** Executing
+**Current phase:** 3
+**Current plan:** 0 (phase 3 not started)
+**Status:** Ready
 **Last updated:** 2026-04-23
 
 ---
@@ -30,17 +30,16 @@ progress:
 
 **Core value:** A machine's input devices should be able to reach any peer on the network, flowing naturally across screen edges, with verified identity and no central authority.
 
-**Current focus:** Phase 02 -- Identity & Cryptography (plan 02-01 complete, plan 02-02 next)
+**Current focus:** Phase 03 -- Configuration & Trust Persistence (not yet started)
 
 ---
 
 ## Current Position
 
-Phase: 02 (Identity & Cryptography) -- IN PROGRESS
-Plan: 1 of 3 complete
-**Phase:** 2 of 10 -- Identity & Cryptography
-**Plan:** 1 plan executed (Wave 1)
-**Progress:** [██████████] 100%
+Phase: 02 (Identity & Cryptography) -- COMPLETE
+Phase: 03 (Configuration & Trust Persistence) -- NEXT
+**Phase:** 2 of 10 complete
+**Progress:** [██░░░░░░░░] 20%
 
 ---
 
@@ -48,15 +47,12 @@ Plan: 1 of 3 complete
 
 | Metric | Value |
 |--------|-------|
-| Phases complete | 1/10 (phase 2 in progress) |
-| Plans complete | 7/9 (02-01 complete) |
-| Requirements delivered | 4/30 (SEC-01 added) |
-| Session count | 4 |
+| Phases complete | 2/10 |
+| Plans complete | 10/10 (phases 1+2) |
+| Requirements delivered | SEC-01, SEC-02, SEC-03, SEC-04, CFG-01, IPC-01, IPC-02 (7/30) |
+| Session count | 5 |
 
 ---
-| Phase 02-identity-cryptography P01 | 4 | 3 tasks | 7 files |
-| Phase 02-identity-cryptography P02 | 2 | 2 tasks | 3 files |
-| Phase 02-identity-cryptography P03 | 178 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -83,11 +79,17 @@ Plan: 1 of 3 complete
 - rand_core 0.6 used directly (not rand 0.8/0.9) to avoid version conflict with ed25519-dalek 2.2 rand_core feature gate
 - OpenOptionsExt::mode(0o600) with create_new(true) for atomic key file creation — eliminates world-readable race window
 - Debug derive added to IdentityStore — required for Result<IdentityStore, IdentityError> in test panic messages
-- identicon() and word_phrase() return empty stubs intentionally — plan 02-02 implements SEC-02/SEC-03
+- resolve_identicon() extracted as pure free function in periphored/src/main.rs — testable without the async daemon
+- tempfile dev-dep added to periphored for SEC-04 unit tests (not workspace-pinned — noted in REVIEW.md IN-02)
+- Drunken Bishop output is character-for-character identical on macOS (darwin 25.4.0) and Linux (rust:1-slim) — ROADMAP SC3 verified
 
 ### Open TODOs
 
-(None)
+- CR-01 (Critical): periphored main loop spins at 100% CPU when IPC task exits cleanly — JoinSet::join_next() on empty set needs `if !tasks.is_empty()` guard + `break` on `Some(Ok(Ok(())))` arm
+- WR-01 (Warning): IdentityStore::keypair is pub — exposes raw private key material; should be private with sign()/verifying_key() accessors
+- WR-02 (Warning): build_border() panics on label > 13 chars — add assert!() to document invariant
+- WR-03 (Warning): key file written without sync_all() — identity lost on power failure during first-run
+- IN-03 (Info): missing key file 0600 permission test in identity test suite
 
 ### Blockers
 
@@ -100,6 +102,6 @@ Plan: 1 of 3 complete
 ### Last Session
 
 - **Date:** 2026-04-23
-- **Work done:** Plan 01-06 executed -- periphore CLI binary finalized with clap --help and periphore-cli library stub with pub fn run() placeholder. Phase 1 complete: all 6 plans, all 11 crates compile, both binaries produce --help, all tests pass.
-- **Stopped at:** Completed 02-03-PLAN.md — IpcResponse::Identicon/WordPhrase wired end-to-end; IdentityConfig (SEC-04); all Phase 2 requirements complete
-- **Next action:** Transition to Phase 2 (Identity & Cryptography)
+- **Work done:** Phase 2 gap closure (plan 02-04) — SEC-04 fully satisfied; resolve_identicon() helper extracted and GetIdenticon gated on config.identity.show_identicon; 2 unit tests added; cross-platform identicon verified via Docker (macOS == Linux); VERIFICATION.md status: passed; ROADMAP phase 2 marked complete
+- **Stopped at:** Phase 2 complete — ready for Phase 3
+- **Next action:** /gsd:discuss-phase 3 or /gsd:plan-phase 3
