@@ -16,6 +16,13 @@ A machine's input devices should be able to reach any peer on the network, flowi
 - [x] Service exposes a Unix domain socket (platform-appropriate) for local IPC — Validated in Phase 1: Workspace & Protocol Foundation
 - [x] IPC enables modular peering layer and supports testing without a network peer — Validated in Phase 1: Workspace & Protocol Foundation
 
+**Security & Identity (Phase 2 complete)**
+- [x] Each node generates a persistent keypair; fingerprint derived from public key — Validated in Phase 2: Identity & Cryptography
+- [x] Fingerprint displayed as an identicon (visual, shown on both machines) — Validated in Phase 2: Identity & Cryptography
+- [x] Fingerprint also available as a typed word phrase — Validated in Phase 2: Identity & Cryptography
+- [x] Identicon display can be disabled (headless/automated setups) — Validated in Phase 2: Identity & Cryptography
+- [x] Identicon output is character-for-character identical on macOS and Linux — Validated in Phase 2: Identity & Cryptography (cross-platform Docker verification)
+
 ### Active
 
 **Peering & Transport**
@@ -27,10 +34,6 @@ A machine's input devices should be able to reach any peer on the network, flowi
 - [ ] On other systems: daemon must be pre-running; listens on IPC + TCP
 
 **Security & Identity**
-- [ ] Each node generates a persistent keypair; fingerprint derived from public key
-- [ ] Fingerprint displayed as an identicon (visual, shown on both machines)
-- [ ] Fingerprint also available as a typed word phrase (one side reads, other types — not displayed on both simultaneously)
-- [ ] Identicon display can be disabled (headless/automated setups)
 - [ ] Accepted fingerprints cached between sessions (no auto-write to main config)
 - [ ] Hard configuration can include fingerprint — conflicts prevent peering (Scenario 5)
 
@@ -117,4 +120,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-22 after Phase 1 (Workspace & Protocol Foundation) complete*
+*Last updated: 2026-04-23 after Phase 2 (Identity & Cryptography) complete*
