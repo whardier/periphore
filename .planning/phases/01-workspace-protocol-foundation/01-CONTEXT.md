@@ -11,18 +11,18 @@ Phase 1 delivers a buildable Cargo workspace with:
 2. Full protocol type surface defined in `periphore-protocol`
 3. Layered config loading in `periphore-config` (full schema, never writes)
 4. Full IPC test harness in `periphore-ipc` (Unix domain socket + complete IpcRequest enum)
-5. Main daemon binary (`periphore`) starts, creates IPC socket, responds to basic commands
-6. `periphore-cli` scaffolded as a stub (real implementation in Phase 5)
+5. Daemon binary (`periphored`) starts, creates IPC socket, responds to basic commands
+6. CLI binary (`periphore`) scaffolded as thin entry calling `periphore-cli` library stub
 
 **Scope expansion from roadmap:** IPC implementation is pulled into Phase 1 (not Phase 4). Phase 4 is retained for IPC enhancements only.
 
 New Phase 1 success criteria (supersedes roadmap):
-1. `cargo build --workspace` succeeds with all 9 crates present
+1. `cargo build --workspace` succeeds with all 11 crates present
 2. Protocol crate defines the full PeerMessage enum (~15 variants) plus all supporting types — round-trips via `postcard`
 3. Config crate loads full schema from TOML with layered precedence (defaults < file < env < CLI), never writes to disk
 4. Daemon binary starts, creates Unix domain socket at platform-appropriate path, responds to `GetStatus` IPC command
 5. Full IpcRequest enum compiles and is reachable over the socket
-6. `periphore-cli` stub builds with `--help` output
+6. `periphore --help` produces usage output (thin entry calling `periphore-cli` lib)
 
 </domain>
 
@@ -30,18 +30,18 @@ New Phase 1 success criteria (supersedes roadmap):
 ## Implementation Decisions
 
 ### Workspace Scaffold
-- **D-01:** All 9 crates scaffolded in Phase 1 — `crates/` flat layout following uv/typst pattern (`members = ["crates/*"]`)
-- **D-02:** `default-members = ["crates/periphore"]` so plain `cargo build` builds the daemon only
+- **D-01:** All 11 crates scaffolded in Phase 1 — `crates/` flat layout following uv/typst pattern (`members = ["crates/*"]`)
+- **D-02:** `default-members = ["crates/periphored", "crates/periphore"]` so plain `cargo build` builds both binaries
 - **D-03:** Every crate declared in `[workspace.dependencies]` with both `path` and `version` — no bare path refs inside individual crate Cargo.tomls
 - **D-04:** `[workspace.lints.rust]` + `[workspace.lints.clippy]` set from day one; all crates use `[lints] workspace = true`
-- **D-05:** Binary crates live inside `crates/`, not at workspace root — `crates/periphore/src/main.rs` and `crates/periphore-cli/src/main.rs`
+- **D-05:** Binary crates live inside `crates/`, not at workspace root — `crates/periphored/src/main.rs` (daemon), `crates/periphore/src/main.rs` (CLI entry); `crates/periphore-cli/` is a library (no `main`)
 - **D-06:** Feature gating via features on internal crates (e.g., `periphore-config` gets a `clap` feature activated only by `periphore-cli`)
 - **D-07:** `[lib] doctest = false test = false` on thin foundational crates (`periphore-protocol`, `periphore-identity`)
 
 ### Crates Implemented vs Stubbed
-- **D-08:** Actively implemented in Phase 1: `periphore-protocol`, `periphore-config`, `periphore-ipc`, `crates/periphore` (daemon binary)
-- **D-09:** Stubbed (empty `src/lib.rs`) for later phases: `periphore-identity` (Phase 2), `periphore-core` (Phase 4+), `periphore-net` (Phase 6), `periphore-capture` (Phase 9), `periphore-inject` (Phase 9)
-- **D-10:** `crates/periphore-cli` scaffolded with thin `src/main.rs` stub — full implementation in Phase 5
+- **D-08:** Actively implemented in Phase 1: `periphore-protocol`, `periphore-config`, `periphore-ipc`, `crates/periphored` (daemon binary entry)
+- **D-09:** Stubbed for later phases: `periphore-identity` (Phase 2), `periphore-core` (Phase 4+), `periphore-net` (Phase 6), `periphore-capture` (Phase 9), `periphore-inject` (Phase 9)
+- **D-10:** `crates/periphore` (thin CLI entry) and `crates/periphore-cli` (CLI library) both scaffolded as stubs — full implementation in Phase 5
 
 ### Protocol Types (`periphore-protocol`)
 - **D-11:** Full PeerMessage enum defined — all ~15 variants: Hello, HelloAck, TopologyAdvertise, TopologyPropose, TopologyAccept, TopologyReject, FocusTransfer, FocusAck, FocusReclaim, MouseMove, MouseButton, MouseScroll, KeyEvent, Ping, Pong, Bye
@@ -62,13 +62,17 @@ New Phase 1 success criteria (supersedes roadmap):
 - **D-22:** Layering order: `Figment::new().merge(defaults).merge(toml).merge(env).merge(cli)` — Figment's default order is inverted from what's needed, must be explicit
 - **D-23:** Config never writes to disk under any code path — enforced at compile time (no `Serialize` impl on the config struct, no write paths)
 - **D-24:** Fingerprint cache is separate from main config (stored in XDG cache dir, written only by trust acceptance flow) — config crate does not own this path
-- **D-25:** `clap` feature on `periphore-config` gates the CLI-integrated config struct (only activated by `periphore` and `periphore-cli`)
+- **D-25:** `clap` feature on `periphore-config` gates the CLI-integrated config struct (only activated by `periphore-cli` library, which is only pulled in by the `periphore` CLI binary)
 
-### Daemon Binary (`crates/periphore`)
-- **D-26:** Thin `src/main.rs` — all command logic in `src/lib.rs`, binary just calls `periphore::main()`
+### Daemon Binary (`crates/periphored`)
+- **D-26:** Thin `src/main.rs` — no business logic; wires together `periphore-ipc`, `periphore-config`, and other functional crates via channels
 - **D-27:** Daemon starts IPC socket, responds to `GetStatus` with identity fingerprint placeholder and running status
-- **D-28:** `--help` produces usage output via `clap` v4 derive API
+- **D-28:** `periphored --help` produces usage output via `clap` v4 derive API
 - **D-29:** Signal handling: SIGTERM and SIGHUP handled via `tokio::signal`; clean shutdown removes IPC socket
+
+### CLI Binary Entry (`crates/periphore`)
+- **D-30:** Thin `src/main.rs` — calls into `periphore-cli` library for all command dispatch and IPC client logic
+- **D-31:** `periphore --help` produces usage output; all subcommand implementations live in `periphore-cli`
 
 ### Claude's Discretion
 - Exact Clippy lint configuration (which pedantic lints to allow vs warn) — follow uv's pattern of `pedantic = warn` with selective overrides
@@ -122,7 +126,7 @@ New Phase 1 success criteria (supersedes roadmap):
 - Follow uv's pattern for internal crate deps: declare in `[workspace.dependencies]` with `path` + `version`, reference as `{ workspace = true }` everywhere — verified against two production Rust multi-crate projects
 - Workspace lints: enable `unsafe_code = "warn"` and `unreachable_pub = "warn"` at workspace level from day one
 - IPC socket is the test backbone — by Phase 1's end, a test can inject a MouseMove via IPC and observe state change, proving the modular boundary works without a network peer
-- Binary crates in `crates/periphore/` and `crates/periphore-cli/` — not at workspace root (confirmed by uv + typst reference)
+- Binary crates in `crates/periphored/` (daemon) and `crates/periphore/` (CLI entry) — not at workspace root (confirmed by uv + typst reference); `crates/periphore-cli/` is a library
 
 </specifics>
 

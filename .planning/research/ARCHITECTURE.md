@@ -72,8 +72,9 @@ periphore/
     periphore-net/             (TCP transport, framing, peer handshake)
     periphore-capture/         (platform input capture — cfg-gated)
     periphore-inject/          (platform input injection — cfg-gated)
-    periphore/                 (binary — orchestrates everything)
-    periphore-cli/             (CLI control client binary, command: periphore)
+    periphored/                (daemon binary entry — thin main.rs, orchestrates all functional crates)
+    periphore/                 (CLI binary entry — thin main.rs, calls periphore-cli library)
+    periphore-cli/             (CLI support library — client-specific logic, no main)
 ```
 
 ### Dependency Graph
@@ -90,7 +91,8 @@ periphore-protocol   (shared types, no internal deps)
 periphore-config     (no internal deps)
 periphore-identity   (no internal deps)
 
-periphore (binary)   (depends on all crates, orchestrates)
+periphored (binary)  (depends on all functional crates, orchestrates daemon)
+periphore  (binary)  (depends on periphore-cli, thin CLI entry)
 ```
 
 **Critical insight:** `periphore-core` has zero platform dependencies. It is pure logic — the state machine, topology resolver, and routing algorithm. This is the most important crate and the most testable.

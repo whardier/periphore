@@ -41,7 +41,7 @@ Typst also includes non-crate workspace members: `docs`, `tests/`, `tests/fuzz/`
 
 **typst is coarser-grained** (16 crates, each covering a meaningful subsystem). Medium-to-large crates.
 
-**For Periphore:** 9 crates at the typst granularity level is appropriate. Each crate has a clear subsystem boundary.
+**For Periphore:** 11 crates — 9 functional/library crates at the typst granularity level plus 2 thin binary entry points (`periphore`, `periphored`). Each crate has a clear subsystem boundary.
 
 ---
 
@@ -53,8 +53,9 @@ Typst also includes non-crate workspace members: `docs`, `tests/`, `tests/fuzz/`
 - **typst:** `crates/typst-cli/src/main.rs` is the binary. `crates/typst/` is a pure library (facade re-exporting subcrates).
 
 **Implication for Periphore:**
-- Main daemon binary: `crates/periphore/` with thin `src/main.rs` (all logic in `src/lib.rs`)
-- CLI tool: `crates/periphore-cli/` with `src/main.rs`
+- Daemon binary: `crates/periphored/` — thin `src/main.rs` orchestrating all functional crates; no business logic of its own
+- CLI binary: `crates/periphore/` — thin `src/main.rs` calling into `periphore-cli` library; command: `periphore`
+- CLI library: `crates/periphore-cli/` — client-specific logic and support functions; no `main`
 - Neither binary at the workspace root
 
 ---
@@ -120,11 +121,11 @@ This gates `clap`-derived CLI args only in crates that need it (e.g., `periphore
 
 1. **Declare every crate in `[workspace.dependencies]` with both `path` and `version`** — enables feature activation per consumer without bare path refs inside crates.
 
-2. **Binary crates belong in `crates/`, not workspace root** — `crates/periphore/` (daemon) and `crates/periphore-cli/` (CLI), each with a thin `src/main.rs`.
+2. **Binary crates belong in `crates/`, not workspace root** — `crates/periphored/` (daemon entry), `crates/periphore/` (CLI entry), each with a thin `src/main.rs`. `crates/periphore-cli/` is a library (no `main`).
 
-3. **Set up `[workspace.lints]` and `[lints] workspace = true` on every crate from day one** — much harder to retrofit into 9 crates later.
+3. **Set up `[workspace.lints]` and `[lints] workspace = true` on every crate from day one** — much harder to retrofit into 11 crates later.
 
-4. **Use `default-members = ["crates/periphore"]`** so `cargo build` at the root builds only the daemon without requiring `-p`.
+4. **Use `default-members = ["crates/periphored", "crates/periphore"]`** so `cargo build` at the root builds both binaries without requiring `-p`.
 
 5. **Scaffold all 9 crate stubs in Phase 1** — each needs a Cargo.toml + `src/lib.rs`. This establishes the workspace dependency graph that all later phases build on. Creating empty crates is trivial; adding new crates to an established workspace later requires updating the workspace Cargo.toml and all consumer Cargo.tomls.
 

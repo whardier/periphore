@@ -53,13 +53,14 @@ Cargo workspace with purpose-scoped crates:
 - `periphore-identity` — Ed25519 keypairs, fingerprints, identicons, word phrases
 - `periphore-core` — pure-logic state machine (zero platform deps, fully testable)
 - `periphore-ipc` — Unix domain socket service boundary
-- `periphore-cli` — CLI crate; produces the `periphore` command (not `periphore-cli`)
+- `periphore-cli` — CLI support library; client-specific logic and support functions backing the `periphore` entrypoint (no `main`)
 - `periphore-net` — TCP peering, handshake, topology negotiation
 - `periphore-capture` — platform input capture (rdev → direct evdev/CGEvent)
 - `periphore-inject` — platform input injection
-- `periphore` — daemon binary crate
+- `periphore` — CLI binary entry point; thin `main.rs` calling `periphore-cli` (command: `periphore`)
+- `periphored` — daemon binary entry point; thin `main.rs` orchestrating all functional crates (command: `periphored`)
 
-**Build order:** protocol → config + identity → core + ipc + cli → net → capture + inject
+**Build order:** protocol → config + identity → core + ipc + cli → net → capture + inject → periphore + periphored
 
 ## Critical Implementation Notes
 

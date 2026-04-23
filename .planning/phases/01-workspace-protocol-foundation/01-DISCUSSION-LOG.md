@@ -86,11 +86,11 @@
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| Both daemon + ctl stubs | periphore daemon active + periphore-cli thin stub for Phase 5 | ✓ (implied by "all 9 stubs") |
-| Daemon binary only | periphore-cli added when Phase 5 begins | |
+| All binary crates scaffolded | periphored (daemon) active + periphore (CLI entry) and periphore-cli (library) as stubs | ✓ (implied by "all 11 stubs") |
+| Active crates only | periphore and periphore-cli added when Phase 5 begins | |
 
-**User's choice:** Both scaffolded (daemon active, ctl stub)
-**Notes:** Both binary crates live in `crates/`, not at workspace root. periphore-cli gets its real implementation in Phase 5.
+**User's choice:** All scaffolded — periphored active, periphore + periphore-cli as stubs for Phase 5
+**Notes:** Binary crates in `crates/periphored/` (daemon) and `crates/periphore/` (CLI entry); `crates/periphore-cli/` is a library (no main). Full CLI implementation in Phase 5.
 
 ---
 
