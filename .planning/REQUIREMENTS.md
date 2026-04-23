@@ -98,8 +98,8 @@
 | NET-04 | Phase 6: TCP Peering | Pending |
 | NET-05 | Phase 6: TCP Peering | Pending |
 | NET-06 | Phase 6: TCP Peering | Pending |
-| IPC-01 | Phase 4: IPC Layer | Pending |
-| IPC-02 | Phase 4: IPC Layer | Pending |
+| IPC-01 | Phase 1: IPC Implementation (01-04) | Complete |
+| IPC-02 | Phase 1: IPC Implementation (01-04) | Complete |
 | SEC-01 | Phase 2: Identity & Cryptography | Pending |
 | SEC-02 | Phase 2: Identity & Cryptography | Pending |
 | SEC-03 | Phase 2: Identity & Cryptography | Pending |
