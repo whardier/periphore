@@ -136,6 +136,19 @@ async fn main() -> anyhow::Result<()> {
                         tracing::debug!(?edge, position, "IPC: SimulateEdgeCross");
                         let _ = responder.send(IpcResponse::Ok);
                     }
+                    Some(IpcCommand::GetIdenticon { responder, .. }) => {
+                        tracing::debug!("IPC: GetIdenticon");
+                        let _ = responder.send(IpcResponse::Identicon {
+                            fingerprint_hex: identity.fingerprint_hex(),
+                            identicon:       identity.identicon(),
+                        });
+                    }
+                    Some(IpcCommand::GetWordPhrase { responder, .. }) => {
+                        tracing::debug!("IPC: GetWordPhrase");
+                        let words = identity.word_phrase();
+                        let phrase = words.join(" ");
+                        let _ = responder.send(IpcResponse::WordPhrase { words, phrase });
+                    }
                     Some(IpcCommand::ReloadConfig { responder }) => {
                         tracing::info!("IPC: ReloadConfig (Phase 4 placeholder)");
                         let _ = responder.send(IpcResponse::Ok);
@@ -209,14 +222,9 @@ fn send_ok(cmd: IpcCommand) {
         IpcCommand::GetPendingVerifications { responder } => {
             let _ = responder.send(IpcResponse::Ok);
         }
-        IpcCommand::GetIdenticon { responder, .. } => {
-            let _ = responder.send(IpcResponse::Ok);
-        }
-        IpcCommand::GetWordPhrase { responder, .. } => {
-            let _ = responder.send(IpcResponse::Ok);
-        }
-        // GetStatus, InjectInputEvent, SimulateEdgeCross, and ReloadConfig have
-        // dedicated arms in the main select! loop and never reach send_ok.
+        // GetStatus, InjectInputEvent, SimulateEdgeCross, ReloadConfig,
+        // GetIdenticon, and GetWordPhrase have dedicated arms in the main
+        // select! loop and never reach send_ok.
         // The wildcard arm satisfies Rust's exhaustiveness requirement without
         // duplicating response logic that already exists in the select! arms.
         _ => {}

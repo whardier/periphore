@@ -94,10 +94,19 @@ fn handle_test_command(cmd: IpcCommand) {
             let _ = responder.send(IpcResponse::Ok);
         }
         IpcCommand::GetIdenticon { responder, .. } => {
-            let _ = responder.send(IpcResponse::Ok);
+            // Test stub: return a minimal valid Identicon response.
+            let _ = responder.send(IpcResponse::Identicon {
+                fingerprint_hex: "0000000000000000000000000000000000000000000000000000000000000000"
+                    .to_owned(),
+                identicon: "+--[ED25519 256]--+\n".to_owned(),
+            });
         }
         IpcCommand::GetWordPhrase { responder, .. } => {
-            let _ = responder.send(IpcResponse::Ok);
+            // Test stub: return a minimal valid WordPhrase response.
+            let _ = responder.send(IpcResponse::WordPhrase {
+                words:  vec!["abandon".to_owned(); 6],
+                phrase: "abandon abandon abandon abandon abandon abandon".to_owned(),
+            });
         }
     }
 }
