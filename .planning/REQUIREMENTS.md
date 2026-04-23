@@ -32,7 +32,8 @@
 **: Fingerprint displayed as identicon (visual, shown on both machines simultaneously)
 - [x] **SEC-03
 **: Fingerprint available as typed word phrase (one side reads, other types -- not displayed simultaneously)
-- [ ] **SEC-04**: Identicon display can be disabled for headless/automated setups
+- [x] **SEC-04
+**: Identicon display can be disabled for headless/automated setups
 - [ ] **SEC-05**: Accepted fingerprints cached between sessions (no auto-write to main config)
 - [ ] **SEC-06**: Hard configuration can include peer fingerprint; conflicts prevent peering
 
