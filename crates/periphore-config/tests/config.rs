@@ -1,13 +1,33 @@
 //! Integration tests for periphore-config layered loading.
 //! Tests verify: defaults load, TOML overrides defaults, env overrides TOML.
 //! Compile-time CFG-01 invariant: Config has no Serialize impl.
+//!
+//! NOTE: Tests that modify environment variables use a shared mutex to prevent
+//! concurrent access. Env vars are process-global state, so tests that set
+//! PERIPHORE_* vars must not run in parallel with tests that read config.
 
 use std::io::Write;
+use std::sync::Mutex;
 
 use periphore_config::load;
 
+/// Mutex to serialize tests that depend on environment variable state.
+/// Figment reads PERIPHORE_* env vars on every `load()` call, so concurrent
+/// tests that set/clear these vars would interfere with each other.
+static ENV_MUTEX: Mutex<()> = Mutex::new(());
+
+/// Clear any PERIPHORE_ env vars that could leak between tests.
+fn clear_periphore_env() {
+    // Safety: these are test-only env var mutations; the ENV_MUTEX ensures
+    // no concurrent test is reading config while we mutate env state.
+    unsafe { std::env::remove_var("PERIPHORE_LOGGING_LEVEL") };
+}
+
 #[test]
 fn defaults_load_without_file() {
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
     // load() with no file path should succeed using compiled-in defaults.
     let config = load(None).expect("default config should load without error");
     // Logging level default is "info"
@@ -16,6 +36,9 @@ fn defaults_load_without_file() {
 
 #[test]
 fn toml_file_overrides_defaults() {
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
     // Write a temp TOML file that overrides the logging level.
     let mut tmp = tempfile::NamedTempFile::new().expect("temp file");
     writeln!(tmp, "[logging]").unwrap();
@@ -27,6 +50,9 @@ fn toml_file_overrides_defaults() {
 
 #[test]
 fn env_overrides_toml_file() {
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
     // Environment variable takes precedence over TOML file (env is higher priority).
     // Using PERIPHORE_LOGGING_LEVEL (Env::prefixed("PERIPHORE_").split("_") maps
     // PERIPHORE_LOGGING_LEVEL -> logging.level via nested key splitting).
@@ -45,6 +71,9 @@ fn env_overrides_toml_file() {
 
 #[test]
 fn missing_toml_file_is_ignored() {
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
     // If the config file path doesn't exist, load() should succeed with defaults
     // (not return an error). This is important for first-run experience.
     let nonexistent = std::path::Path::new("/tmp/periphore-nonexistent-config-xyz.toml");
@@ -54,6 +83,9 @@ fn missing_toml_file_is_ignored() {
 
 #[test]
 fn peer_config_vec_defaults_to_empty() {
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
     let config = load(None).expect("default config");
     assert!(config.peers.is_empty(), "peers should default to empty vec");
 }
