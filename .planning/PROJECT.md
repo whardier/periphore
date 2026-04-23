@@ -12,7 +12,9 @@ A machine's input devices should be able to reach any peer on the network, flowi
 
 ### Validated
 
-(None yet — ship to validate)
+**IPC Layer (Phase 1 complete)**
+- [x] Service exposes a Unix domain socket (platform-appropriate) for local IPC — Validated in Phase 1: Workspace & Protocol Foundation
+- [x] IPC enables modular peering layer and supports testing without a network peer — Validated in Phase 1: Workspace & Protocol Foundation
 
 ### Active
 
@@ -23,10 +25,6 @@ A machine's input devices should be able to reach any peer on the network, flowi
 - [ ] Connections are SSH-tunnelable (TCP-only transport, no UDP)
 - [ ] On Linux with X-Auth: service can be launched and supervised remotely via SSH
 - [ ] On other systems: daemon must be pre-running; listens on IPC + TCP
-
-**IPC Layer**
-- [ ] Service exposes a Unix domain socket (platform-appropriate) for local IPC
-- [ ] IPC enables modular peering layer and supports testing without a network peer
 
 **Security & Identity**
 - [ ] Each node generates a persistent keypair; fingerprint derived from public key
@@ -119,4 +117,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-22 after initialization*
+*Last updated: 2026-04-22 after Phase 1 (Workspace & Protocol Foundation) complete*
