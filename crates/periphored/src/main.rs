@@ -50,6 +50,18 @@ async fn main() -> anyhow::Result<()> {
         "periphored starting"
     );
 
+    // -- Identity load (SEC-01) --
+    // Loads the persistent Ed25519 keypair from the XDG data dir, or generates
+    // a new one on first run. The key file is created with mode 0600.
+    let key_path = periphore_identity::default_key_path()
+        .ok_or_else(|| anyhow::anyhow!("cannot determine identity key storage path"))?;
+    let identity = periphore_identity::IdentityStore::load_or_create(&key_path)
+        .map_err(|e| anyhow::anyhow!("identity error: {e}"))?;
+    tracing::info!(
+        fingerprint = %identity.fingerprint_hex(),
+        "identity loaded"
+    );
+
     // -- IPC socket path --
     // Use daemon.socket_path from config if set; otherwise use platform default.
     let socket_path = config
@@ -106,12 +118,10 @@ async fn main() -> anyhow::Result<()> {
             cmd = ipc_cmd_rx.recv() => {
                 match cmd {
                     Some(IpcCommand::GetStatus { responder }) => {
-                        // D-27: Respond to GetStatus with running=true and no fingerprint.
-                        // Phase 2 will fill in the real identity fingerprint.
                         tracing::debug!("IPC: GetStatus");
                         let _ = responder.send(IpcResponse::Status {
                             running:     true,
-                            fingerprint: None, // Phase 2: real Ed25519 fingerprint
+                            fingerprint: Some(identity.fingerprint_hex()),
                         });
                     }
                     Some(IpcCommand::InjectInputEvent { event, responder }) => {

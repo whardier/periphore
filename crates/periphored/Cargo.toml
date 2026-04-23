@@ -16,6 +16,7 @@ path = "src/main.rs"
 
 [dependencies]
 periphore-config   = { workspace = true }
+periphore-identity = { workspace = true }
 periphore-ipc      = { workspace = true }
 periphore-protocol = { workspace = true }
 tokio              = { workspace = true }
