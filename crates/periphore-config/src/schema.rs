@@ -10,7 +10,7 @@ pub struct Config {
     pub daemon:    DaemonConfig,
     #[serde(default)]
     pub logging:   LoggingConfig,
-    #[serde(default)]
+    #[serde(default, rename = "peer")]
     pub peers:     Vec<PeerConfig>,
     #[serde(default)]
     pub topology:  TopologyConfig,
@@ -50,16 +50,41 @@ pub struct PeerConfig {
     /// Expected peer fingerprint (hex string). Optional -- if set, connection from non-matching
     /// fingerprint is refused (hard config enforcement, Phase 3 SEC-06).
     pub fingerprint: Option<String>,
+    /// Human-readable label for this peer. Local-only convenience -- NOT sent over
+    /// the wire, does NOT participate in identity verification. Used in log
+    /// messages and error reports. If absent, logs use the fingerprint hex
+    /// or host address.
+    pub name: Option<String>,
     /// Manual host for connecting to this peer (Phase 6 NET-03).
     pub host: Option<String>,
     /// TCP port override for this peer.
     pub port: Option<u16>,
 }
 
-/// Monitor topology configuration (Phase 8 fills this in).
+/// Per-monitor configuration entry. Repeated as [[topology.monitor]] in TOML.
+/// Phase 3 defines the schema; Phase 8 adds processing logic.
+#[derive(Debug, Deserialize, Default)]
+pub struct MonitorConfig {
+    /// OS-level monitor identifier (xrandr output name, CoreGraphics display ID, etc.).
+    /// Free-form string -- Phase 8 implements matching against OS-provided identifiers.
+    /// Local per-node; no cross-node uniqueness requirement.
+    pub id: Option<String>,
+    /// Human-readable label (optional override for display in logs/CLI).
+    pub name: Option<String>,
+    /// Monitor width in pixels.
+    pub width: Option<u32>,
+    /// Monitor height in pixels.
+    pub height: Option<u32>,
+}
+
+/// Monitor topology configuration (Phase 3: monitor entries; Phase 8: edge config).
 #[derive(Debug, Deserialize, Default)]
 pub struct TopologyConfig {
-    // Edge layout, alignment preferences -- populated in Phase 8.
+    /// Preferred monitor layout entries. TOML: [[topology.monitor]].
+    /// The serde rename maps the TOML key "monitor" to the Rust field "monitors",
+    /// so [[topology.monitor]] entries deserialize into this Vec.
+    #[serde(default, rename = "monitor")]
+    pub monitors: Vec<MonitorConfig>,
 }
 
 /// Input capture configuration (Phase 9 fills this in).

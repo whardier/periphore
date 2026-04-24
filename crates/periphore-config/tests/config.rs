@@ -117,3 +117,95 @@ fn identity_show_identicon_can_be_disabled_via_toml() {
         "identity.show_identicon must be false when set in TOML"
     );
 }
+
+// ---------------------------------------------------------------------------
+// CFG-02: PeerConfig.name field (Phase 3)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn test_peer_name_field() {
+    // CFG-02: PeerConfig.name parses from TOML [[peer]] block.
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
+    let mut tmp = tempfile::NamedTempFile::new().expect("temp file");
+    writeln!(tmp, "[[peer]]").unwrap();
+    writeln!(tmp, r#"name = "work-mac""#).unwrap();
+    writeln!(tmp, r#"host = "192.168.1.100""#).unwrap();
+    writeln!(tmp, "port = 24800").unwrap();
+
+    let config = load(Some(tmp.path())).expect("should load with peer name");
+    assert_eq!(config.peers.len(), 1, "must have 1 peer entry");
+    assert_eq!(
+        config.peers[0].name,
+        Some("work-mac".to_owned()),
+        "peer name must parse from TOML"
+    );
+}
+
+#[test]
+fn test_peer_name_defaults_to_none() {
+    // CFG-02: PeerConfig without a name field defaults to None.
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
+    let mut tmp = tempfile::NamedTempFile::new().expect("temp file");
+    writeln!(tmp, "[[peer]]").unwrap();
+    writeln!(tmp, r#"host = "10.0.0.1""#).unwrap();
+
+    let config = load(Some(tmp.path())).expect("should load peer without name");
+    assert_eq!(config.peers.len(), 1);
+    assert_eq!(
+        config.peers[0].name, None,
+        "peer name must default to None when absent"
+    );
+}
+
+// ---------------------------------------------------------------------------
+// CFG-03: TopologyConfig.monitors (Phase 3)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn test_topology_monitor_config() {
+    // CFG-03: [[topology.monitor]] entries parse into TopologyConfig.monitors vec.
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
+    let mut tmp = tempfile::NamedTempFile::new().expect("temp file");
+    writeln!(tmp, "[[topology.monitor]]").unwrap();
+    writeln!(tmp, r#"id = "DP-1""#).unwrap();
+    writeln!(tmp, r#"name = "primary""#).unwrap();
+    writeln!(tmp, "width = 2560").unwrap();
+    writeln!(tmp, "height = 1440").unwrap();
+    writeln!(tmp, "").unwrap();
+    writeln!(tmp, "[[topology.monitor]]").unwrap();
+    writeln!(tmp, r#"id = "HDMI-1""#).unwrap();
+    writeln!(tmp, r#"name = "secondary""#).unwrap();
+    writeln!(tmp, "width = 1920").unwrap();
+    writeln!(tmp, "height = 1080").unwrap();
+
+    let config = load(Some(tmp.path())).expect("should load with monitor config");
+    assert_eq!(
+        config.topology.monitors.len(), 2,
+        "must have 2 monitor entries"
+    );
+    assert_eq!(config.topology.monitors[0].id, Some("DP-1".to_owned()));
+    assert_eq!(config.topology.monitors[0].name, Some("primary".to_owned()));
+    assert_eq!(config.topology.monitors[0].width, Some(2560));
+    assert_eq!(config.topology.monitors[0].height, Some(1440));
+    assert_eq!(config.topology.monitors[1].id, Some("HDMI-1".to_owned()));
+    assert_eq!(config.topology.monitors[1].width, Some(1920));
+}
+
+#[test]
+fn test_topology_monitors_default_empty() {
+    // CFG-03: No [[topology.monitor]] in TOML means monitors defaults to empty vec.
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
+    let config = load(None).expect("default config");
+    assert!(
+        config.topology.monitors.is_empty(),
+        "monitors must default to empty vec"
+    );
+}
