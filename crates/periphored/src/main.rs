@@ -74,6 +74,16 @@ async fn main() -> anyhow::Result<()> {
         "identity loaded"
     );
 
+    // -- Trust cache load (SEC-05) --
+    // Loads the fingerprint trust cache from the XDG data dir. If the file
+    // does not exist (first run), starts with an empty cache. The cache is
+    // only written to via AcceptFingerprint IPC.
+    let trust_path = periphore_trust::default_trust_path()
+        .ok_or_else(|| anyhow::anyhow!("cannot determine trust cache storage path"))?;
+    let mut trust_store = periphore_trust::TrustStore::load(&trust_path)
+        .map_err(|e| anyhow::anyhow!("trust cache error: {e}"))?;
+    tracing::info!(path = %trust_path.display(), "trust cache loaded");
+
     // -- IPC socket path --
     // Use daemon.socket_path from config if set; otherwise use platform default.
     let socket_path = config
@@ -161,6 +171,27 @@ async fn main() -> anyhow::Result<()> {
                         let phrase = words.join(" ");
                         let _ = responder.send(IpcResponse::WordPhrase { words, phrase });
                     }
+                    Some(IpcCommand::AcceptFingerprint { fingerprint, responder }) => {
+                        tracing::info!(fingerprint = %fingerprint, "IPC: AcceptFingerprint");
+                        match trust_store.add_trusted(&fingerprint, None, &trust_path) {
+                            Ok(()) => {
+                                tracing::info!(fingerprint = %fingerprint, "fingerprint trusted and cached");
+                                let _ = responder.send(IpcResponse::Ok);
+                            }
+                            Err(e) => {
+                                tracing::error!(error = %e, "failed to cache trusted fingerprint");
+                                let _ = responder.send(IpcResponse::Error {
+                                    message: format!("trust cache error: {e}"),
+                                });
+                            }
+                        }
+                    }
+                    Some(IpcCommand::RejectFingerprint { fingerprint, responder }) => {
+                        // Rejection is stateless — no state change needed.
+                        // The daemon simply does not add the fingerprint to the trust cache.
+                        tracing::info!(fingerprint = %fingerprint, "IPC: RejectFingerprint (no state change)");
+                        let _ = responder.send(IpcResponse::Ok);
+                    }
                     Some(IpcCommand::ReloadConfig { responder }) => {
                         tracing::info!("IPC: ReloadConfig (Phase 4 placeholder)");
                         let _ = responder.send(IpcResponse::Ok);
@@ -222,12 +253,6 @@ fn send_ok(cmd: IpcCommand) {
         IpcCommand::GetTopology { responder } => {
             let _ = responder.send(IpcResponse::Ok);
         }
-        IpcCommand::AcceptFingerprint { responder, .. } => {
-            let _ = responder.send(IpcResponse::Ok);
-        }
-        IpcCommand::RejectFingerprint { responder, .. } => {
-            let _ = responder.send(IpcResponse::Ok);
-        }
         IpcCommand::GetState { responder } => {
             let _ = responder.send(IpcResponse::Ok);
         }
@@ -235,8 +260,8 @@ fn send_ok(cmd: IpcCommand) {
             let _ = responder.send(IpcResponse::Ok);
         }
         // GetStatus, InjectInputEvent, SimulateEdgeCross, ReloadConfig,
-        // GetIdenticon, and GetWordPhrase have dedicated arms in the main
-        // select! loop and never reach send_ok.
+        // GetIdenticon, GetWordPhrase, AcceptFingerprint, and RejectFingerprint
+        // have dedicated arms in the main select! loop and never reach send_ok.
         // The wildcard arm satisfies Rust's exhaustiveness requirement without
         // duplicating response logic that already exists in the select! arms.
         _ => {}

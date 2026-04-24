@@ -19,6 +19,7 @@ periphore-config   = { workspace = true }
 periphore-identity = { workspace = true }
 periphore-ipc      = { workspace = true }
 periphore-protocol = { workspace = true }
+periphore-trust    = { workspace = true }
 tokio              = { workspace = true }
 clap               = { workspace = true }
 tracing            = { workspace = true }
@@ -26,4 +27,4 @@ tracing-subscriber = { workspace = true }
 anyhow             = { workspace = true }
 
 [dev-dependencies]
-tempfile = "3"
+tempfile = { workspace = true }

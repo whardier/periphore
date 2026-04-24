@@ -591,7 +591,7 @@ fingerprint = "b2e1b2e1b2e1b2e1b2e1b2e1b2e1b2e1b2e1b2e1b2e1b2e1b2e1b2e1b2e1b2e1"
 | A2 | `AlreadyTrusted` error variant is the right behavior for duplicate add -- rather than silently succeeding | Code Examples | If callers expect idempotent add, this would be a behavioral surprise. The planner should decide: error vs idempotent. Recommendation: make it idempotent (return Ok if already present) for better UX |
 | A3 | `tempfile` as both a regular dep (for periphore-trust write path) and workspace-level declaration works correctly with workspace = true in both deps and dev-deps sections | Standard Stack | Verified pattern -- Cargo handles this; same crate can be in both sections with workspace = true |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should `add_trusted` be idempotent or error on duplicate?**
    - What we know: D-07 signature is `add_trusted(fp, alias) -> Result<(), TrustError>`. A duplicate fingerprint is a conceivable scenario (user accepts the same peer twice).
