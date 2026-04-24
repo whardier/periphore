@@ -12,7 +12,7 @@
 
 - [x] **Phase 1: Workspace & Protocol Foundation** - Cargo workspace scaffold, protocol message types, config discipline
 - [x] **Phase 2: Identity & Cryptography** - Ed25519 keypairs, fingerprint derivation, identicon and word-phrase verification
-- [ ] **Phase 3: Configuration & Trust Persistence** - Layered config loading, fingerprint caching, hard config conflict enforcement
+- [x] **Phase 3: Configuration & Trust Persistence** - Layered config loading, fingerprint caching, hard config conflict enforcement
 - [ ] **Phase 4: IPC Layer** - Unix domain socket service boundary, modular transport/capture decoupling
 - [ ] **Phase 5: CLI Tool (periphore-cli)** - CLI binary for daemon interaction, debug topology output
 - [ ] **Phase 6: TCP Peering** - TCP peer connections, SSH tunnelability, manual host definition, daemon lifecycle
@@ -80,10 +80,10 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- Wave 0: periphore-trust crate scaffold, stub types, test stubs for SEC-05/SEC-06/CFG-02/CFG-03
-- [ ] 03-02-PLAN.md -- Config schema evolution: PeerConfig.name (CFG-02/SEC-06), MonitorConfig + TopologyConfig.monitors (CFG-03)
-- [ ] 03-03-PLAN.md -- TrustStore implementation: load/add/remove/is_trusted with atomic TOML persistence, check_peer_fingerprint (SEC-05, SEC-06)
-- [ ] 03-04-PLAN.md -- Daemon wiring: TrustStore startup load, AcceptFingerprint/RejectFingerprint IPC dispatch promotion
+- [x] 03-01-PLAN.md -- Wave 0: periphore-trust crate scaffold, stub types, test stubs for SEC-05/SEC-06/CFG-02/CFG-03
+- [x] 03-02-PLAN.md -- Config schema evolution: PeerConfig.name (CFG-02/SEC-06), MonitorConfig + TopologyConfig.monitors (CFG-03)
+- [x] 03-03-PLAN.md -- TrustStore implementation: load/add/remove/is_trusted with atomic TOML persistence, check_peer_fingerprint (SEC-05, SEC-06)
+- [x] 03-04-PLAN.md -- Daemon wiring: TrustStore startup load, AcceptFingerprint/RejectFingerprint IPC dispatch promotion
 
 ### Phase 4: IPC Layer
 
@@ -196,7 +196,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Workspace & Protocol Foundation | 6/6 | Complete | 2026-04-23 |
 | 2. Identity & Cryptography | 4/4 | Complete | 2026-04-23 |
-| 3. Configuration & Trust Persistence | 0/4 | Not started | - |
+| 3. Configuration & Trust Persistence | 4/4 | Complete | 2026-04-24 |
 | 4. IPC Layer | 0/? | Not started | - |
 | 5. CLI Tool (periphore-cli) | 0/? | Not started | - |
 | 6. TCP Peering | 0/? | Not started | - |
