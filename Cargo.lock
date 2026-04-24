@@ -723,6 +723,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "periphore-trust"
+version = "0.1.0"
+dependencies = [
+ "directories",
+ "serde",
+ "tempfile",
+ "thiserror",
+ "toml",
+ "tracing",
+]
+
+[[package]]
 name = "periphored"
 version = "0.1.0"
 dependencies = [
@@ -732,6 +744,7 @@ dependencies = [
  "periphore-identity",
  "periphore-ipc",
  "periphore-protocol",
+ "periphore-trust",
  "tempfile",
  "tokio",
  "tracing",
