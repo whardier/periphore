@@ -77,7 +77,13 @@ Plans:
 3. When a peer's fingerprint is hardcoded in config and the connecting peer presents a different fingerprint, the connection is refused with a clear error message
 4. When two peers have conflicting hard config (e.g., both claim the same edge), peering is refused and the conflict is reported
 5. Config can define preferred monitor layouts that are used when monitors change between sessions
-**Plans:** TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 03-01-PLAN.md -- Wave 0: periphore-trust crate scaffold, stub types, test stubs for SEC-05/SEC-06/CFG-02/CFG-03
+- [ ] 03-02-PLAN.md -- Config schema evolution: PeerConfig.name (CFG-02/SEC-06), MonitorConfig + TopologyConfig.monitors (CFG-03)
+- [ ] 03-03-PLAN.md -- TrustStore implementation: load/add/remove/is_trusted with atomic TOML persistence, check_peer_fingerprint (SEC-05, SEC-06)
+- [ ] 03-04-PLAN.md -- Daemon wiring: TrustStore startup load, AcceptFingerprint/RejectFingerprint IPC dispatch promotion
 
 ### Phase 4: IPC Layer
 
@@ -190,7 +196,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Workspace & Protocol Foundation | 6/6 | Complete | 2026-04-23 |
 | 2. Identity & Cryptography | 4/4 | Complete | 2026-04-23 |
-| 3. Configuration & Trust Persistence | 0/? | Not started | - |
+| 3. Configuration & Trust Persistence | 0/4 | Not started | - |
 | 4. IPC Layer | 0/? | Not started | - |
 | 5. CLI Tool (periphore-cli) | 0/? | Not started | - |
 | 6. TCP Peering | 0/? | Not started | - |
