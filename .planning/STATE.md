@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 4
-current_plan: 0
-status: planned
-stopped_at: "Phase 3 complete — SEC-05, SEC-06, CFG-02, CFG-03 delivered; 46 tests passing; phase 4 next"
-last_updated: "2026-04-24T00:00:00Z"
+current_plan: 1
+status: in_progress
+stopped_at: "Phase 4 plan 01 complete — CR-01 JoinSet spin fix applied; plans 02 and 03 remain"
+last_updated: "2026-04-25T00:10:00Z"
 progress:
   total_phases: 10
   completed_phases: 3
-  total_plans: 18
-  completed_plans: 14
-  percent: 30
+  total_plans: 21
+  completed_plans: 15
+  percent: 33
 ---
 
 # Project State
@@ -20,9 +20,9 @@ progress:
 **Project:** Periphore
 **Milestone:** 1 -- v1 Core
 **Current phase:** 4
-**Current plan:** 0 (phase 3 complete, phase 4 not yet planned)
-**Status:** Phase 3 complete — ready for Phase 4
-**Last updated:** 2026-04-24
+**Current plan:** 1 (04-01 complete — CR-01 fix applied)
+**Status:** Phase 4 in progress — plan 01 complete, plans 02 and 03 remain
+**Last updated:** 2026-04-25
 
 ---
 
@@ -38,8 +38,8 @@ progress:
 
 Phase: 02 (Identity & Cryptography) -- COMPLETE
 Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
-**Phase:** 3 of 10 complete
-**Progress:** [███░░░░░░░] 30%
+**Phase:** 4 of 10 (in progress — 1/3 plans complete)
+**Progress:** [████░░░░░░] 33%
 
 ---
 
@@ -89,10 +89,11 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 - PeerConfig.name is local-only label (NOT sent over wire, NOT used in identity verification) — D-11 constraint
 - AcceptFingerprint IPC promotes from send_ok stub to dedicated select arm with real trust_store.add_trusted(); RejectFingerprint is stateless
 - toml 0.8 with "display" feature used for trust cache serialization; features = ["display"] required for toml::to_string_pretty
+- CR-01 fix: tokio::select! join_next() branch must use `, if !tasks.is_empty()` precondition guard — empty JoinSet returns Poll::Ready(None) immediately, spinning the loop at 100% CPU without the guard
+- CR-01 fix: Some(Ok(Ok(()))) clean-exit arm on JoinSet must break the daemon loop — clean IPC server exit should shut down the daemon, not leave it alive with no tasks
 
 ### Open TODOs
 
-- CR-01 (Critical): periphored main loop spins at 100% CPU when IPC task exits cleanly — JoinSet::join_next() on empty set needs `if !tasks.is_empty()` guard + `break` on `Some(Ok(Ok(())))` arm
 - WR-01 (Warning): IdentityStore::keypair is pub — exposes raw private key material; should be private with sign()/verifying_key() accessors
 - WR-02 (Warning): build_border() panics on label > 13 chars — add assert!() to document invariant
 - WR-03 (Warning): key file written without sync_all() — identity lost on power failure during first-run
@@ -108,7 +109,7 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 
 ### Last Session
 
-- **Date:** 2026-04-24
-- **Work done:** Phase 3 executed — created periphore-trust crate (TrustStore with atomic TOML writes, check_peer_fingerprint), evolved config schema (PeerConfig.name, MonitorConfig, TopologyConfig.monitors), wired TrustStore into periphored startup + IPC dispatch; 46 tests passing; 4 atomic commits
-- **Stopped at:** Phase 3 complete — all 4 plans executed, all tests green
-- **Next action:** /gsd:next (proceed to Phase 4)
+- **Date:** 2026-04-25
+- **Work done:** Phase 4 plan 01 executed — CR-01 fix applied to crates/periphored/src/main.rs: added `if !tasks.is_empty()` precondition guard to JoinSet::join_next() branch and `break` on clean-exit arm; 46 tests passing; 1 atomic commit (a683eb6)
+- **Stopped at:** Phase 4 plan 01 complete — CR-01 resolved; plans 02 (config reload) and 03 (periphore-core state machine) remain
+- **Next action:** Execute 04-02-PLAN.md (full config reload)
