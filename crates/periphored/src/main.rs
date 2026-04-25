@@ -56,7 +56,7 @@ async fn main() -> anyhow::Result<()> {
     // -- Config loading --
     // periphore-config never writes to disk (CFG-01). CLI arg override (highest priority)
     // is handled by passing config_path here; full CLI override struct is a Phase 5 concern.
-    let config = periphore_config::load(args.config.as_deref())
+    let mut config = periphore_config::load(args.config.as_deref())
         .map_err(|e| anyhow::anyhow!("failed to load config: {e}"))?;
 
     tracing::info!(
@@ -132,10 +132,16 @@ async fn main() -> anyhow::Result<()> {
                 break;
             }
 
-            // Signal: SIGHUP -- config reload (placeholder; full reload in Phase 4)
+            // Signal: SIGHUP -- config reload (D-01, D-02, D-03)
             _ = sighup.recv() => {
-                tracing::info!("SIGHUP received -- config reload not yet implemented (Phase 4)");
-                // TODO Phase 4: reload config from disk and update live state.
+                tracing::info!("SIGHUP received -- reloading config");
+                if let Some(new_config) = reload_config(
+                    args.config.as_deref(),
+                    &config,
+                    &filter_handle,
+                ) {
+                    config = new_config;
+                }
             }
 
             // IPC command from client
@@ -195,8 +201,22 @@ async fn main() -> anyhow::Result<()> {
                         let _ = responder.send(IpcResponse::Ok);
                     }
                     Some(IpcCommand::ReloadConfig { responder }) => {
-                        tracing::info!("IPC: ReloadConfig (Phase 4 placeholder)");
-                        let _ = responder.send(IpcResponse::Ok);
+                        tracing::info!("IPC: ReloadConfig");
+                        match reload_config(
+                            args.config.as_deref(),
+                            &config,
+                            &filter_handle,
+                        ) {
+                            Some(new_config) => {
+                                config = new_config;
+                                let _ = responder.send(IpcResponse::Ok);
+                            }
+                            None => {
+                                let _ = responder.send(IpcResponse::Error {
+                                    message: "config reload failed — see daemon logs".to_owned(),
+                                });
+                            }
+                        }
                     }
                     Some(other) => {
                         // All other commands: acknowledge with Ok for now.
@@ -244,6 +264,69 @@ async fn main() -> anyhow::Result<()> {
 
     tracing::info!("periphored shutdown complete");
     Ok(())
+}
+
+/// Reload configuration from disk and update live daemon state.
+///
+/// On success: hot-reloads the tracing filter if `logging.level` changed (D-03),
+/// logs warnings for restart-required fields (D-02), and returns the new Config.
+///
+/// On failure: logs the error and returns `None` — the caller keeps the existing
+/// config (D-04). The daemon never crashes on reload failure.
+///
+/// Identity and trust store are NOT reloaded here (D-05).
+fn reload_config<S>(
+    config_path: Option<&std::path::Path>,
+    current_config: &periphore_config::Config,
+    filter_handle: &tracing_subscriber::reload::Handle<tracing_subscriber::EnvFilter, S>,
+) -> Option<periphore_config::Config>
+where
+    S: tracing::Subscriber,
+{
+    match periphore_config::load(config_path) {
+        Ok(new_config) => {
+            // Hot-reload logging level (D-03)
+            if new_config.logging.level != current_config.logging.level {
+                match tracing_subscriber::EnvFilter::try_new(&new_config.logging.level) {
+                    Ok(new_filter) => {
+                        if let Err(e) = filter_handle.reload(new_filter) {
+                            tracing::warn!(error = %e, "failed to reload tracing filter");
+                        } else {
+                            tracing::info!(
+                                level = %new_config.logging.level,
+                                "logging level reloaded"
+                            );
+                        }
+                    }
+                    Err(e) => {
+                        tracing::warn!(
+                            error = %e,
+                            "invalid logging level in new config — keeping old filter"
+                        );
+                    }
+                }
+            }
+
+            // Restart-required fields: log warn if changed, do NOT apply (D-02)
+            if new_config.daemon.socket_path != current_config.daemon.socket_path {
+                tracing::warn!(
+                    "config field 'daemon.socket_path' changed but requires restart to take effect"
+                );
+            }
+            if new_config.daemon.port != current_config.daemon.port {
+                tracing::warn!(
+                    "config field 'daemon.port' changed but requires restart to take effect"
+                );
+            }
+
+            tracing::info!("config reloaded successfully");
+            Some(new_config)
+        }
+        Err(e) => {
+            tracing::error!(error = %e, "config reload failed — keeping existing config");
+            None
+        }
+    }
 }
 
 /// Send `IpcResponse::Ok` (or appropriate placeholder) to remaining `IpcCommand` variants.
