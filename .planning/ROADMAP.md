@@ -97,9 +97,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 04-01-PLAN.md -- CR-01 fix: JoinSet empty-guard + clean-exit break in periphored main loop
-- [ ] 04-02-PLAN.md -- Config reload: SIGHUP + ReloadConfig IPC + tracing reload::Layer for logging level
-- [ ] 04-03-PLAN.md -- periphore-core: FocusStateMachine (LocalFocus / ForwardingTo), PeerId, FocusError + integration tests
+- [x] 04-01-PLAN.md -- CR-01 fix: JoinSet empty-guard + clean-exit break in periphored main loop
+- [x] 04-02-PLAN.md -- Config reload: SIGHUP + ReloadConfig IPC + tracing reload::Layer for logging level
+- [x] 04-03-PLAN.md -- periphore-core: FocusStateMachine (LocalFocus / ForwardingTo), PeerId, FocusError + integration tests
 
 ### Phase 5: CLI Tool (periphore-cli)
 
@@ -202,7 +202,7 @@ Plans:
 | 1. Workspace & Protocol Foundation | 6/6 | Complete | 2026-04-23 |
 | 2. Identity & Cryptography | 4/4 | Complete | 2026-04-23 |
 | 3. Configuration & Trust Persistence | 4/4 | Complete | 2026-04-24 |
-| 4. IPC Layer | 0/3 | Planned | - |
+| 4. IPC Layer | 3/3 | Complete | 2026-04-25 |
 | 5. CLI Tool (periphore-cli) | 0/? | Not started | - |
 | 6. TCP Peering | 0/? | Not started | - |
 | 7. Peer Discovery | 0/? | Not started | - |
