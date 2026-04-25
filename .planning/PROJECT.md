@@ -16,6 +16,16 @@ A machine's input devices should be able to reach any peer on the network, flowi
 - [x] Service exposes a Unix domain socket (platform-appropriate) for local IPC — Validated in Phase 1: Workspace & Protocol Foundation
 - [x] IPC enables modular peering layer and supports testing without a network peer — Validated in Phase 1: Workspace & Protocol Foundation
 
+**Configuration & Trust Persistence (Phase 3 complete)**
+- [x] Accepted fingerprints cached between sessions (no auto-write to main config) — Validated in Phase 3: Configuration & Trust Persistence
+- [x] Hard configuration can include peer fingerprint; conflicts prevent peering — Validated in Phase 3: Configuration & Trust Persistence
+- [x] Config discipline: system never auto-writes configuration — Validated in Phase 3: Configuration & Trust Persistence
+
+**CLI Tool (Phase 5 complete)**
+- [x] CLI debug output shows resolved topology when debug logging is enabled — Validated in Phase 5: CLI Tool (periphore-cli)
+- [x] `periphore status` connects to daemon via IPC and reports running state + fingerprint — Validated in Phase 5: CLI Tool (periphore-cli)
+- [x] `periphore` fails gracefully with clear error when daemon is not running — Validated in Phase 5: CLI Tool (periphore-cli)
+
 **Security & Identity (Phase 2 complete)**
 - [x] Each node generates a persistent keypair; fingerprint derived from public key — Validated in Phase 2: Identity & Cryptography
 - [x] Fingerprint displayed as an identicon (visual, shown on both machines) — Validated in Phase 2: Identity & Cryptography
@@ -120,4 +130,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-23 after Phase 2 (Identity & Cryptography) complete*
+*Last updated: 2026-04-25 after Phase 5 (CLI Tool) complete*
