@@ -92,6 +92,9 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 - toml 0.8 with "display" feature used for trust cache serialization; features = ["display"] required for toml::to_string_pretty
 - CR-01 fix: tokio::select! join_next() branch must use `, if !tasks.is_empty()` precondition guard — empty JoinSet returns Poll::Ready(None) immediately, spinning the loop at 100% CPU without the guard
 - CR-01 fix: Some(Ok(Ok(()))) clean-exit arm on JoinSet must break the daemon loop — clean IPC server exit should shut down the daemon, not leave it alive with no tasks
+- Config reload uses tracing_subscriber::reload::Layer wrapping EnvFilter — filter_handle stored in main() scope enables hot log-level updates without reinitializing the global subscriber
+- reload_config<S: tracing::Subscriber> free function pattern avoids inline duplication while satisfying Rust's generic Handle type requirements
+- daemon.socket_path and daemon.port are restart-required fields — warned but not applied on reload; identity and trust store never reloaded on SIGHUP/ReloadConfig (D-05)
 
 ### Open TODOs
 
@@ -111,6 +114,6 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 ### Last Session
 
 - **Date:** 2026-04-25
-- **Work done:** Phase 4 plan 01 executed — CR-01 fix applied to crates/periphored/src/main.rs: added `if !tasks.is_empty()` precondition guard to JoinSet::join_next() branch and `break` on clean-exit arm; 46 tests passing; 1 atomic commit (a683eb6)
-- **Stopped at:** Completed 04-03-PLAN.md — FocusStateMachine implementation
-- **Next action:** Execute 04-02-PLAN.md (full config reload)
+- **Work done:** Phase 4 plan 02 executed — full config reload via SIGHUP and ReloadConfig IPC; tracing subscriber restructured to reload::Layer; reload_config<S> free function added; 46 tests passing; 2 atomic commits (95a4cfb, ac70863)
+- **Stopped at:** Phase 4 plan 02 complete — config reload done; plan 03 (periphore-core state machine) remains
+- **Next action:** Execute 04-03-PLAN.md (periphore-core state machine)
