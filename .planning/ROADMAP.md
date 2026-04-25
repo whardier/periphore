@@ -13,8 +13,8 @@
 - [x] **Phase 1: Workspace & Protocol Foundation** - Cargo workspace scaffold, protocol message types, config discipline
 - [x] **Phase 2: Identity & Cryptography** - Ed25519 keypairs, fingerprint derivation, identicon and word-phrase verification
 - [x] **Phase 3: Configuration & Trust Persistence** - Layered config loading, fingerprint caching, hard config conflict enforcement
-- [ ] **Phase 4: IPC Layer** - Unix domain socket service boundary, modular transport/capture decoupling
-- [ ] **Phase 5: CLI Tool (periphore-cli)** - CLI binary for daemon interaction, debug topology output
+- [x] **Phase 4: IPC Layer** - Unix domain socket service boundary, modular transport/capture decoupling
+- [x] **Phase 5: CLI Tool (periphore-cli)** - CLI binary for daemon interaction, debug topology output
 - [ ] **Phase 6: TCP Peering** - TCP peer connections, SSH tunnelability, manual host definition, daemon lifecycle
 - [ ] **Phase 7: Peer Discovery** - mDNS auto-discovery of peers on the local network
 - [ ] **Phase 8: Monitor Topology** - Monitor enumeration, topology config/negotiation, multi-monitor edge resolution
@@ -113,9 +113,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 05-01-PLAN.md -- Foundation: Cargo.toml deps (tokio/serde_json/periphore-protocol) + cli.rs (Cli/Commands) + client.rs (ipc_request)
-- [ ] 05-02-PLAN.md -- Implementation: commands/ handlers (status/topology) + lib.rs dispatch + periphore/main.rs async entry
-- [ ] 05-03-PLAN.md -- Tests: integration tests for SC1 (status), TOP-04 (topology stub), SC3 (daemon not running)
+- [x] 05-01-PLAN.md -- Foundation: Cargo.toml deps (tokio/serde_json/periphore-protocol) + cli.rs (Cli/Commands) + client.rs (ipc_request)
+- [x] 05-02-PLAN.md -- Implementation: commands/ handlers (status/topology) + lib.rs dispatch + periphore/main.rs async entry
+- [x] 05-03-PLAN.md -- Tests: integration tests for SC1 (status), TOP-04 (topology stub), SC3 (daemon not running)
 
 ### Phase 6: TCP Peering
 
@@ -208,7 +208,7 @@ Plans:
 | 2. Identity & Cryptography | 4/4 | Complete | 2026-04-23 |
 | 3. Configuration & Trust Persistence | 4/4 | Complete | 2026-04-24 |
 | 4. IPC Layer | 3/3 | Complete | 2026-04-25 |
-| 5. CLI Tool (periphore-cli) | 0/3 | Not started | - |
+| 5. CLI Tool (periphore-cli) | 3/3 | Complete | 2026-04-25 |
 | 6. TCP Peering | 0/? | Not started | - |
 | 7. Peer Discovery | 0/? | Not started | - |
 | 8. Monitor Topology | 0/? | Not started | - |

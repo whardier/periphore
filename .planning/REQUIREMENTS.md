@@ -105,16 +105,16 @@
 | NET-06 | Phase 6: TCP Peering | Pending |
 | IPC-01 | Phase 1: IPC Implementation (01-04) | Complete |
 | IPC-02 | Phase 1: IPC Implementation (01-04) | Complete |
-| SEC-01 | Phase 2: Identity & Cryptography | Pending |
-| SEC-02 | Phase 2: Identity & Cryptography | Pending |
-| SEC-03 | Phase 2: Identity & Cryptography | Pending |
-| SEC-04 | Phase 2: Identity & Cryptography | Pending |
-| SEC-05 | Phase 3: Configuration & Trust Persistence | Pending |
-| SEC-06 | Phase 3: Configuration & Trust Persistence | Pending |
+| SEC-01 | Phase 2: Identity & Cryptography | Complete |
+| SEC-02 | Phase 2: Identity & Cryptography | Complete |
+| SEC-03 | Phase 2: Identity & Cryptography | Complete |
+| SEC-04 | Phase 2: Identity & Cryptography | Complete |
+| SEC-05 | Phase 3: Configuration & Trust Persistence | Complete |
+| SEC-06 | Phase 3: Configuration & Trust Persistence | Complete |
 | TOP-01 | Phase 8: Monitor Topology | Pending |
 | TOP-02 | Phase 8: Monitor Topology | Pending |
 | TOP-03 | Phase 8: Monitor Topology | Pending |
-| TOP-04 | Phase 5: CLI Tool (periphore-cli) | Pending |
+| TOP-04 | Phase 5: CLI Tool (periphore-cli) | Complete |
 | TOP-05 | Phase 8: Monitor Topology | Pending |
 | TOP-06 | Phase 8: Monitor Topology | Pending |
 | TOP-07 | Phase 8: Monitor Topology | Pending |
@@ -125,5 +125,5 @@
 | INP-04 | Phase 10: Captive Window Mode | Pending |
 | INP-05 | Phase 10: Captive Window Mode | Pending |
 | CFG-01 | Phase 1: Workspace & Protocol Foundation | Complete |
-| CFG-02 | Phase 3: Configuration & Trust Persistence | Pending |
-| CFG-03 | Phase 3: Configuration & Trust Persistence | Pending |
+| CFG-02 | Phase 3: Configuration & Trust Persistence | Complete |
+| CFG-03 | Phase 3: Configuration & Trust Persistence | Complete |
