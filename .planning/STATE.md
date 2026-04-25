@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 5
-current_plan: 0
-status: ready_to_execute
-stopped_at: "Phase 5 planning complete — 3 plans in 3 waves; ready to execute"
-last_updated: "2026-04-25T00:00:00Z"
+current_phase: 4
+current_plan: 2 (04-02 complete — config reload via SIGHUP and ReloadConfig IPC)
+status: executing
+stopped_at: "Completed 05-01-PLAN.md (CLI foundation: Cargo.toml deps, cli.rs, client.rs)"
+last_updated: "2026-04-25T15:38:26.902Z"
 progress:
   total_phases: 10
   completed_phases: 4
-  total_plans: 24
-  completed_plans: 21
-  percent: 40
+  total_plans: 20
+  completed_plans: 18
+  percent: 90
 ---
 
 # Project State
@@ -39,7 +39,7 @@ progress:
 Phase: 02 (Identity & Cryptography) -- COMPLETE
 Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 **Phase:** 4 of 10 (in progress — 2/3 plans complete)
-**Progress:** [██████████] 100%
+**Progress:** [█████████░] 90%
 
 ---
 
@@ -54,6 +54,7 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 
 ---
 | Phase 04-ipc-layer P03 | 5min | 3 tasks | 3 files |
+| Phase 05-cli-tool P01 | 2 | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -115,5 +116,5 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 
 - **Date:** 2026-04-25
 - **Work done:** Phase 4 plan 02 executed — full config reload via SIGHUP and ReloadConfig IPC; tracing subscriber restructured to reload::Layer; reload_config<S> free function added; 46 tests passing; 2 atomic commits (95a4cfb, ac70863)
-- **Stopped at:** Phase 4 plan 02 complete — config reload done; plan 03 (periphore-core state machine) remains
+- **Stopped at:** Completed 05-01-PLAN.md (CLI foundation: Cargo.toml deps, cli.rs, client.rs)
 - **Next action:** Execute 04-03-PLAN.md (periphore-core state machine)

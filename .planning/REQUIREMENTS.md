@@ -42,7 +42,8 @@
 - [ ] **TOP-01**: Service queries all monitors on the local machine at startup
 - [ ] **TOP-02**: Peer topology (monitor layout relative to peer monitors) configured via config file
 - [ ] **TOP-03**: Peers exchange and negotiate topology on connection
-- [ ] **TOP-04**: CLI debug output shows resolved topology when debug logging is enabled
+- [x] **TOP-04
+**: CLI debug output shows resolved topology when debug logging is enabled
 - [ ] **TOP-05**: Multi-monitor setups supported (N monitors on one machine, M on another)
 - [ ] **TOP-06**: Corner resolution and offset compensation for mismatched monitor arrangements
 - [ ] **TOP-07**: Edge definitions are directional per monitor (left/right/top/bottom of a specific monitor)
