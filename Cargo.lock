@@ -626,6 +626,7 @@ dependencies = [
  "anyhow",
  "clap",
  "periphore-cli",
+ "tokio",
 ]
 
 [[package]]
@@ -644,6 +645,9 @@ dependencies = [
  "clap",
  "periphore-config",
  "periphore-ipc",
+ "periphore-protocol",
+ "serde_json",
+ "tokio",
  "tracing",
 ]
 

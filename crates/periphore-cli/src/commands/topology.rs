@@ -19,7 +19,7 @@ use crate::client::ipc_request;
 /// # Errors
 ///
 /// Returns an error if the daemon is not running or the IPC call fails.
-pub async fn run(socket_path: &Path) -> anyhow::Result<()> {
+pub(crate) async fn run(socket_path: &Path) -> anyhow::Result<()> {
     let response = ipc_request(socket_path, IpcRequest::GetTopology).await?;
     match response {
         // Phase 8 will add a real Topology variant to IpcResponse.
