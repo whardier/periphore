@@ -110,7 +110,12 @@ Plans:
 1. `periphore status` connects to the daemon via IPC and reports whether it is running and its identity fingerprint
 2. `periphore topology` (or equivalent debug command) outputs the resolved monitor topology when debug logging is enabled
 3. `periphore` fails gracefully with a clear error when the daemon is not running
-**Plans:** TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 05-01-PLAN.md -- Foundation: Cargo.toml deps (tokio/serde_json/periphore-protocol) + cli.rs (Cli/Commands) + client.rs (ipc_request)
+- [ ] 05-02-PLAN.md -- Implementation: commands/ handlers (status/topology) + lib.rs dispatch + periphore/main.rs async entry
+- [ ] 05-03-PLAN.md -- Tests: integration tests for SC1 (status), TOP-04 (topology stub), SC3 (daemon not running)
 
 ### Phase 6: TCP Peering
 
@@ -203,7 +208,7 @@ Plans:
 | 2. Identity & Cryptography | 4/4 | Complete | 2026-04-23 |
 | 3. Configuration & Trust Persistence | 4/4 | Complete | 2026-04-24 |
 | 4. IPC Layer | 3/3 | Complete | 2026-04-25 |
-| 5. CLI Tool (periphore-cli) | 0/? | Not started | - |
+| 5. CLI Tool (periphore-cli) | 0/3 | Not started | - |
 | 6. TCP Peering | 0/? | Not started | - |
 | 7. Peer Discovery | 0/? | Not started | - |
 | 8. Monitor Topology | 0/? | Not started | - |
