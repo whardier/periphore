@@ -2,26 +2,26 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 4
-current_plan: 2 (04-02 complete — config reload via SIGHUP and ReloadConfig IPC)
+current_phase: 5
+current_plan: 2 (05-02 complete — CLI command handlers, lib.rs run(), main.rs entry)
 status: executing
-stopped_at: "Completed 05-01-PLAN.md (CLI foundation: Cargo.toml deps, cli.rs, client.rs)"
-last_updated: "2026-04-25T15:38:26.902Z"
+stopped_at: "Completed 05-02-PLAN.md (commands/status.rs, commands/topology.rs, lib.rs run(), main.rs tokio::main entry)"
+last_updated: "2026-04-25T15:43:21.647Z"
 progress:
   total_phases: 10
   completed_phases: 4
   total_plans: 20
-  completed_plans: 18
-  percent: 90
+  completed_plans: 19
+  percent: 95
 ---
 
 # Project State
 
 **Project:** Periphore
 **Milestone:** 1 -- v1 Core
-**Current phase:** 4
-**Current plan:** 2 (04-02 complete — config reload via SIGHUP and ReloadConfig IPC)
-**Status:** Phase 4 in progress — plans 01 and 02 complete, plan 03 (periphore-core) remains
+**Current phase:** 5
+**Current plan:** 2 (05-02 complete — CLI command handlers, lib.rs run(), main.rs entry)
+**Status:** Phase 5 in progress — plans 01 and 02 complete
 **Last updated:** 2026-04-25
 
 ---
@@ -30,7 +30,7 @@ progress:
 
 **Core value:** A machine's input devices should be able to reach any peer on the network, flowing naturally across screen edges, with verified identity and no central authority.
 
-**Current focus:** Phase 04 -- next phase (plan next)
+**Current focus:** Phase 05 -- CLI Tool (periphore-cli)
 
 ---
 
@@ -39,7 +39,7 @@ progress:
 Phase: 02 (Identity & Cryptography) -- COMPLETE
 Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 **Phase:** 4 of 10 (in progress — 2/3 plans complete)
-**Progress:** [█████████░] 90%
+**Progress:** [██████████] 95%
 
 ---
 
@@ -55,6 +55,7 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 ---
 | Phase 04-ipc-layer P03 | 5min | 3 tasks | 3 files |
 | Phase 05-cli-tool P01 | 2 | 3 tasks | 3 files |
+| Phase 05-cli-tool P02 | 145 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -116,5 +117,5 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 
 - **Date:** 2026-04-25
 - **Work done:** Phase 4 plan 02 executed — full config reload via SIGHUP and ReloadConfig IPC; tracing subscriber restructured to reload::Layer; reload_config<S> free function added; 46 tests passing; 2 atomic commits (95a4cfb, ac70863)
-- **Stopped at:** Completed 05-01-PLAN.md (CLI foundation: Cargo.toml deps, cli.rs, client.rs)
-- **Next action:** Execute 04-03-PLAN.md (periphore-core state machine)
+- **Stopped at:** Completed 05-02-PLAN.md (commands/status.rs, commands/topology.rs, lib.rs run(), main.rs tokio::main entry)
+- **Next action:** Execute 05-03-PLAN.md (periphore-cli integration tests)
