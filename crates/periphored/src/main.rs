@@ -211,10 +211,11 @@ async fn main() -> anyhow::Result<()> {
             }
 
             // Task completion: handle IPC server task exit
-            result = tasks.join_next() => {
+            result = tasks.join_next(), if !tasks.is_empty() => {
                 match result {
                     Some(Ok(Ok(()))) => {
-                        tracing::info!("IPC server task completed");
+                        tracing::info!("IPC server task completed -- shutting down");
+                        break;
                     }
                     Some(Ok(Err(e))) => {
                         tracing::error!("IPC server task error: {e}");
@@ -225,7 +226,7 @@ async fn main() -> anyhow::Result<()> {
                         break;
                     }
                     None => {
-                        // JoinSet empty -- no more tasks.
+                        // JoinSet empty -- unreachable with is_empty guard, but handled defensively.
                     }
                 }
             }
