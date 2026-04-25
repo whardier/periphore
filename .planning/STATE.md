@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 4
-current_plan: 1
-status: in_progress
-stopped_at: "Phase 4 plan 01 complete — CR-01 JoinSet spin fix applied; plans 02 and 03 remain"
-last_updated: "2026-04-25T00:10:00Z"
+current_plan: 2 (04-02 complete — config reload via SIGHUP and ReloadConfig IPC)
+status: executing
+stopped_at: Completed 04-03-PLAN.md — FocusStateMachine implementation
+last_updated: "2026-04-25T09:50:23.516Z"
 progress:
   total_phases: 10
-  completed_phases: 3
-  total_plans: 21
-  completed_plans: 15
-  percent: 33
+  completed_phases: 4
+  total_plans: 17
+  completed_plans: 17
+  percent: 100
 ---
 
 # Project State
@@ -20,8 +20,8 @@ progress:
 **Project:** Periphore
 **Milestone:** 1 -- v1 Core
 **Current phase:** 4
-**Current plan:** 1 (04-01 complete — CR-01 fix applied)
-**Status:** Phase 4 in progress — plan 01 complete, plans 02 and 03 remain
+**Current plan:** 2 (04-02 complete — config reload via SIGHUP and ReloadConfig IPC)
+**Status:** Phase 4 in progress — plans 01 and 02 complete, plan 03 (periphore-core) remains
 **Last updated:** 2026-04-25
 
 ---
@@ -38,8 +38,8 @@ progress:
 
 Phase: 02 (Identity & Cryptography) -- COMPLETE
 Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
-**Phase:** 4 of 10 (in progress — 1/3 plans complete)
-**Progress:** [████░░░░░░] 33%
+**Phase:** 4 of 10 (in progress — 2/3 plans complete)
+**Progress:** [██████████] 100%
 
 ---
 
@@ -53,6 +53,7 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 | Session count | 6 |
 
 ---
+| Phase 04-ipc-layer P03 | 5min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -111,5 +112,5 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 
 - **Date:** 2026-04-25
 - **Work done:** Phase 4 plan 01 executed — CR-01 fix applied to crates/periphored/src/main.rs: added `if !tasks.is_empty()` precondition guard to JoinSet::join_next() branch and `break` on clean-exit arm; 46 tests passing; 1 atomic commit (a683eb6)
-- **Stopped at:** Phase 4 plan 01 complete — CR-01 resolved; plans 02 (config reload) and 03 (periphore-core state machine) remain
+- **Stopped at:** Completed 04-03-PLAN.md — FocusStateMachine implementation
 - **Next action:** Execute 04-02-PLAN.md (full config reload)

@@ -94,7 +94,12 @@ Plans:
 1. The daemon creates a Unix domain socket at a platform-appropriate path on startup and removes it on clean shutdown
 2. A local process can connect to the socket and exchange structured messages (request/response) with the daemon
 3. The IPC layer can simulate peer input events locally without any TCP connection, proving the modular boundary works
-**Plans:** TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 04-01-PLAN.md -- CR-01 fix: JoinSet empty-guard + clean-exit break in periphored main loop
+- [ ] 04-02-PLAN.md -- Config reload: SIGHUP + ReloadConfig IPC + tracing reload::Layer for logging level
+- [ ] 04-03-PLAN.md -- periphore-core: FocusStateMachine (LocalFocus / ForwardingTo), PeerId, FocusError + integration tests
 
 ### Phase 5: CLI Tool (periphore-cli)
 
@@ -197,7 +202,7 @@ Plans:
 | 1. Workspace & Protocol Foundation | 6/6 | Complete | 2026-04-23 |
 | 2. Identity & Cryptography | 4/4 | Complete | 2026-04-23 |
 | 3. Configuration & Trust Persistence | 4/4 | Complete | 2026-04-24 |
-| 4. IPC Layer | 0/? | Not started | - |
+| 4. IPC Layer | 0/3 | Planned | - |
 | 5. CLI Tool (periphore-cli) | 0/? | Not started | - |
 | 6. TCP Peering | 0/? | Not started | - |
 | 7. Peer Discovery | 0/? | Not started | - |
