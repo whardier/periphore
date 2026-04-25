@@ -41,15 +41,17 @@ async fn main() -> anyhow::Result<()> {
     // -- Logging initialization --
     // Only the daemon binary initializes the tracing subscriber (D-26).
     // Library crates use tracing:: macros but never initialize a subscriber.
+    // Use reload::Layer so the log filter can be updated at runtime (D-03).
+    use tracing_subscriber::layer::SubscriberExt as _;
+    use tracing_subscriber::util::SubscriberInitExt as _;
     let log_level = if args.verbose { "debug" } else { "info" };
-    let subscriber = tracing_subscriber::FmtSubscriber::builder()
-        .with_env_filter(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new(log_level)),
-        )
-        .finish();
-    tracing::subscriber::set_global_default(subscriber)
-        .expect("failed to set tracing subscriber");
+    let initial_filter = tracing_subscriber::EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new(log_level));
+    let (filter_layer, filter_handle) = tracing_subscriber::reload::Layer::new(initial_filter);
+    tracing_subscriber::registry()
+        .with(filter_layer)
+        .with(tracing_subscriber::fmt::layer())
+        .init();
 
     // -- Config loading --
     // periphore-config never writes to disk (CFG-01). CLI arg override (highest priority)
