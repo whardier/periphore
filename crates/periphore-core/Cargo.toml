@@ -7,9 +7,14 @@ license.workspace    = true
 repository.workspace = true
 publish.workspace    = true
 
+[lib]
+doctest = false
+test    = false
+
 [lints]
 workspace = true
 
 [dependencies]
-periphore-protocol = { workspace = true }
-serde              = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]

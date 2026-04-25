@@ -662,8 +662,7 @@ dependencies = [
 name = "periphore-core"
 version = "0.1.0"
 dependencies = [
- "periphore-protocol",
- "serde",
+ "thiserror",
 ]
 
 [[package]]
