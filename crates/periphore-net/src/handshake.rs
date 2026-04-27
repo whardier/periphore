@@ -233,6 +233,7 @@ pub async fn perform_handshake_responder(
         .send(encode_message(&ack)?)
         .await
         .map_err(NetError::Io)?;
+    framed_write.flush().await.map_err(NetError::Io)?;
 
     // Step 5: Check trust store
     let is_trusted = trust_store
