@@ -11,10 +11,13 @@
 
 mod error;
 pub mod codec;
-// event and connection are added in Task 2.
+mod event;
+mod connection;
 // handshake and manager are added in Plan 03.
 
 pub use error::NetError;
+pub use event::PeerEvent;
+pub use connection::{ActiveConn, ConnectionControl, HandshakeResult, PendingPeer};
 pub use codec::MAX_FRAME_LENGTH;
 
 /// Default TCP port for peer connections (IANA unassigned, D-08).
