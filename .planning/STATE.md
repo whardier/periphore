@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 6
-current_plan: 1 (06-01 complete — protocol/config/net-crate foundations)
+current_plan: 5 (06-04 complete — periphored wiring + macOS SSH check + systemd unit)
 status: executing
-stopped_at: Completed 06-03-PLAN.md (handshake.rs + manager.rs + lib.rs — periphore-net complete)
-last_updated: "2026-04-27T09:13:34.738Z"
+stopped_at: Completed 06-04-PLAN.md (periphored wiring + macOS SSH check + systemd unit)
+last_updated: "2026-04-27T09:18:53.113Z"
 progress:
   total_phases: 10
   completed_phases: 5
   total_plans: 25
-  completed_plans: 23
-  percent: 92
+  completed_plans: 24
+  percent: 96
 ---
 
 # Project State
@@ -20,8 +20,8 @@ progress:
 **Project:** Periphore
 **Milestone:** 1 -- v1 Core
 **Current phase:** 6
-**Current plan:** 1 (06-01 complete — protocol/config/net-crate foundations)
-**Status:** Phase 6 in progress — plan 01 complete
+**Current plan:** 5 (06-04 complete — periphored wiring + macOS SSH check + systemd unit)
+**Status:** Phase 6 in progress — plans 01-04 complete (4/5)
 **Last updated:** 2026-04-27
 
 ---
@@ -40,8 +40,8 @@ Phase: 02 (Identity & Cryptography) -- COMPLETE
 Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 Phase: 04 (IPC Layer) -- COMPLETE
 Phase: 05 (CLI Tool) -- COMPLETE
-**Phase:** 6 of 10 (in progress — 1/5 plans complete)
-**Progress:** [█████████░] 92%
+**Phase:** 6 of 10 (in progress — 4/5 plans complete)
+**Progress:** [██████████] 96%
 
 ---
 
@@ -62,6 +62,7 @@ Phase: 05 (CLI Tool) -- COMPLETE
 | Phase 06-tcp-peering P01 | 15 | 2 tasks | 8 files |
 | Phase 06-tcp-peering P02 | 4 | 2 tasks | 7 files |
 | Phase 06 P06-03 | 4 | 2 tasks | 6 files |
+| Phase 06 P06-04 | 3 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -130,5 +131,5 @@ Phase: 05 (CLI Tool) -- COMPLETE
 
 - **Date:** 2026-04-27
 - **Work done:** Phase 6 plan 02 executed — NetError + codec (c63b7ee, bdfedb9), PeerEvent + connection types + lib.rs (7188cb2, a81a114); 20 periphore-net tests passing; cargo build --workspace green
-- **Stopped at:** Completed 06-03-PLAN.md (handshake.rs + manager.rs + lib.rs — periphore-net complete)
+- **Stopped at:** Completed 06-04-PLAN.md (periphored wiring + macOS SSH check + systemd unit)
 - **Next action:** Execute 06-03-PLAN.md (handshake and connection manager)

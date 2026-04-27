@@ -17,8 +17,10 @@
 **: Manual host definition works as alternative to auto-discovery
 - [x] **NET-04
 **: Connections are SSH-tunnelable (TCP-only transport, no UDP)
-- [ ] **NET-05**: On Linux with X-Auth, service can be launched and supervised remotely via SSH
-- [ ] **NET-06**: On other systems, daemon must be pre-running; listens on IPC + TCP
+- [x] **NET-05
+**: On Linux with X-Auth, service can be launched and supervised remotely via SSH
+- [x] **NET-06
+**: On other systems, daemon must be pre-running; listens on IPC + TCP
 
 ### IPC Layer (IPC)
 
