@@ -8,6 +8,6 @@ pub mod peer;
 pub mod types;
 
 // Re-export the most commonly used types at crate root
-pub use ipc::{IpcRequest, IpcResponse};
+pub use ipc::{IpcRequest, IpcResponse, PendingPeerInfo};
 pub use peer::PeerMessage;
 pub use types::{Edge, EdgeMapping, InputEvent, KeyEventData, MonitorInfo, MouseEventData};

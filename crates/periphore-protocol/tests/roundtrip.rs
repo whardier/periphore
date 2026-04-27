@@ -4,7 +4,7 @@
 
 use periphore_protocol::{
     Edge, EdgeMapping, InputEvent, IpcRequest, IpcResponse, KeyEventData, MonitorInfo,
-    MouseEventData, PeerMessage,
+    MouseEventData, PeerMessage, PendingPeerInfo,
 };
 
 // -- PeerMessage postcard round-trip --
@@ -180,6 +180,38 @@ fn ipc_response_all_variants_round_trip() {
             "IpcResponse round-trip JSON mismatch"
         );
     }
+}
+
+/// Phase 6 D-03: PendingPeerInfo + IpcResponse::PendingPeers round-trip
+#[test]
+fn ipc_response_pending_peers_round_trip() {
+    let info = PendingPeerInfo {
+        fingerprint: "a3f92b1e".repeat(8),
+        identicon: "+--[ED25519 256]--+\n|      .S        |\n+--[PERIPHORE]----+\n".to_owned(),
+        word_phrase: vec![
+            "abandon".to_owned(),
+            "ability".to_owned(),
+            "able".to_owned(),
+            "about".to_owned(),
+            "above".to_owned(),
+            "absent".to_owned(),
+        ],
+    };
+    let resp = IpcResponse::PendingPeers {
+        peers: vec![info],
+    };
+    let json = serde_json::to_string(&resp).expect("serialize failed");
+    assert!(
+        json.contains("\"type\":\"pending_peers\""),
+        "JSON must contain type:pending_peers tag: {json}"
+    );
+    assert!(
+        json.contains("\"fingerprint\""),
+        "JSON must contain fingerprint field: {json}"
+    );
+    let decoded: IpcResponse = serde_json::from_str(&json).expect("deserialize failed");
+    let decoded_json = serde_json::to_string(&decoded).expect("re-serialize failed");
+    assert_eq!(json, decoded_json, "PendingPeers round-trip JSON mismatch");
 }
 
 #[test]

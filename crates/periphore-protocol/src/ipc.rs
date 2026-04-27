@@ -37,6 +37,18 @@ pub enum IpcRequest {
     },
 }
 
+/// Information about a peer held in pending verification state.
+/// Returned by GetPendingVerifications IPC command (D-03).
+/// fingerprint: 64-char lowercase hex SHA-256 fingerprint.
+/// identicon: pre-rendered Drunken Bishop terminal string (11 lines).
+/// word_phrase: 6 BIP39 words for verbal verification.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PendingPeerInfo {
+    pub fingerprint:  String,
+    pub identicon:    String,
+    pub word_phrase:  Vec<String>,
+}
+
 /// IPC response variants. Extended in Phase 4.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
@@ -47,6 +59,11 @@ pub enum IpcResponse {
     },
     Peers {
         peers: Vec<String>,
+    },
+    /// Response to GetPendingVerifications (Phase 6, D-03).
+    /// peers: all connections awaiting user acceptance via AcceptFingerprint.
+    PendingPeers {
+        peers: Vec<PendingPeerInfo>,
     },
     /// Response to GetIdenticon (SEC-02, D-09).
     /// fingerprint_hex: 64-char lowercase hex of SHA-256 public key fingerprint.
