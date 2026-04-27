@@ -12,8 +12,8 @@
 mod error;
 pub mod codec;
 mod event;
-mod connection;
-mod handshake;
+pub mod connection;
+pub mod handshake;
 mod manager;
 
 pub use error::NetError;
