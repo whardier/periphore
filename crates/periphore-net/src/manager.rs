@@ -251,7 +251,9 @@ impl ConnectionManager {
     /// disconnection, retries with exponential backoff (1s→30s cap, D-09). Each retry checks
     /// the CancellationToken so the task exits promptly when `cancel_peer()` is called (T-6-05).
     ///
-    /// The key used for `peer_tokens` is `peer_config.name` if set, otherwise `peer_config.host`.
+    /// The key used for `peer_tokens` is `peer_config.name` if set, otherwise
+    /// `"host:port"` (matching the format used by the SIGHUP diff logic in periphored).
+    /// Callers that need to cancel a connector should use the same key format.
     pub fn spawn_connector(
         &mut self,
         tasks: &mut JoinSet<anyhow::Result<()>>,
@@ -259,10 +261,11 @@ impl ConnectionManager {
         identity: Arc<IdentityStore>,
         trust_store: Arc<RwLock<TrustStore>>,
     ) {
-        let peer_key = peer_config
-            .name
-            .clone()
-            .unwrap_or_else(|| peer_config.host.clone().unwrap_or_default());
+        let peer_key = peer_config.name.clone().unwrap_or_else(|| {
+            let host = peer_config.host.as_deref().unwrap_or("");
+            let port = peer_config.port.unwrap_or(DEFAULT_PORT);
+            format!("{host}:{port}")
+        });
 
         let token = CancellationToken::new();
         self.peer_tokens.insert(peer_key.clone(), token.clone());
