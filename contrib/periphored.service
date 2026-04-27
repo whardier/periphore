@@ -1,0 +1,33 @@
+# Periphore daemon -- systemd user unit (NET-05, D-13, D-14)
+#
+# Install:
+#   cp contrib/periphored.service ~/.config/systemd/user/periphored.service
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now periphored
+#
+# For boot-time start (survives logout):
+#   loginctl enable-linger <username>
+#
+# View logs:
+#   journalctl --user -u periphored -f
+#
+# To use nohup instead (quick start, no persistence across reboot):
+#   nohup periphored >~/.local/share/periphore/periphored.log 2>&1 &
+
+[Unit]
+Description=Periphore input sharing daemon
+Documentation=https://github.com/whardier/periphore
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/.cargo/bin/periphored
+Restart=on-failure
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target
