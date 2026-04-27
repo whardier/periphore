@@ -136,6 +136,29 @@ impl IdentityStore {
     }
 }
 
+/// Return the Drunken Bishop identicon for an arbitrary 32-byte fingerprint.
+///
+/// Used to display visual identification for PEER fingerprints during
+/// pending verification (D-02). For local identity, use `IdentityStore::identicon()`.
+/// Same algorithm as `IdentityStore::identicon()` — operates on the fingerprint
+/// bytes directly without requiring a keypair or IdentityStore.
+pub fn identicon_from_fingerprint(fp: &[u8; 32]) -> String {
+    drunken_bishop(fp)
+}
+
+/// Return the BIP39 word phrase for an arbitrary 32-byte fingerprint.
+///
+/// Used to display verbal verification words for PEER fingerprints during
+/// pending verification (D-02). For local identity, use `IdentityStore::word_phrase()`.
+/// Same algorithm as `IdentityStore::word_phrase()` — operates on the fingerprint
+/// bytes directly without requiring a keypair or IdentityStore.
+pub fn word_phrase_from_fingerprint(fp: &[u8; 32]) -> Vec<String> {
+    word_indices(fp)
+        .iter()
+        .map(|&i| crate::bip39::BIP39_WORDS[i].to_owned())
+        .collect()
+}
+
 /// OpenSSH Drunken Bishop identicon algorithm.
 ///
 /// Input: 32-byte fingerprint (SHA-256 of public key).

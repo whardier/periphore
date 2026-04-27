@@ -30,7 +30,7 @@ periphore-cli      = { path = "crates/periphore-cli",      version = "0.1.0" }
 # External dependencies — versions verified 2026-04-22 via cargo registry
 tokio             = { version = "1.52", features = ["net", "macros", "rt-multi-thread", "signal", "io-util", "sync", "time"] }
 tokio-util        = { version = "0.7",  features = ["codec"] }
-futures-util      = { version = "0.3" }
+futures-util      = { version = "0.3",  features = ["sink"] }
 serde             = { version = "1.0",  features = ["derive"] }
 serde_json        = { version = "1.0" }
 postcard          = { version = "1.1",  features = ["alloc"] }
