@@ -10,10 +10,12 @@
 
 ### Transport (NET)
 
-- [ ] **NET-01**: Two machines establish a peer connection over TCP
+- [x] **NET-01
+**: Two machines establish a peer connection over TCP
 - [ ] **NET-02**: Auto-discovery locates peers on the local network via mDNS
 - [ ] **NET-03**: Manual host definition works as alternative to auto-discovery
-- [ ] **NET-04**: Connections are SSH-tunnelable (TCP-only transport, no UDP)
+- [x] **NET-04
+**: Connections are SSH-tunnelable (TCP-only transport, no UDP)
 - [ ] **NET-05**: On Linux with X-Auth, service can be launched and supervised remotely via SSH
 - [ ] **NET-06**: On other systems, daemon must be pre-running; listens on IPC + TCP
 

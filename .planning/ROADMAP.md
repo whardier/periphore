@@ -132,7 +132,7 @@ Plans:
 
 Plans:
 - [x] 06-01-PLAN.md -- Protocol/config/net-crate foundations: PendingPeerInfo, IpcResponse::PendingPeers, daemon.listen, periphore-net Cargo.toml deps
-- [ ] 06-02-PLAN.md -- periphore-net types: error.rs, codec.rs (LengthDelimitedCodec+postcard+max_frame_length), event.rs, connection.rs
+- [x] 06-02-PLAN.md -- periphore-net types: error.rs, codec.rs (LengthDelimitedCodec+postcard+max_frame_length), event.rs, connection.rs
 - [ ] 06-03-PLAN.md -- periphore-net runtime: handshake.rs (Hello/HelloAck protocol), manager.rs (ConnectionManager, backoff, CancellationToken), lib.rs
 - [ ] 06-04-PLAN.md -- periphored wiring: Cargo.toml deps, main.rs (macOS SSH check, ConnectionManager init, select! integration, AcceptFingerprint promotion, GetPendingVerifications, FocusStateMachine), contrib/periphored.service
 - [ ] 06-05-PLAN.md -- Integration tests: periphore-net handshake tests (trusted/pending/version mismatch), periphored net_wiring tests (NET-03, GetPendingVerifications IPC)

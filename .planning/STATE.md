@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 6
-current_plan: 1 (06-01 complete — protocol/config/net-crate foundations)
+current_plan: 2 (06-02 complete — periphore-net error, codec, event, connection types)
 status: executing
-stopped_at: "Completed 06-01-PLAN.md (PendingPeerInfo, IpcResponse::PendingPeers, daemon.listen, periphore-net deps)"
-last_updated: "2026-04-27T08:58:32Z"
+stopped_at: "Completed 06-02-PLAN.md (NetError, codec framing, PeerEvent, connection types)"
+last_updated: "2026-04-27T09:05:27.274Z"
 progress:
   total_phases: 10
   completed_phases: 5
   total_plans: 25
-  completed_plans: 22
-  percent: 88
+  completed_plans: 23
+  percent: 92
 ---
 
 # Project State
@@ -60,6 +60,7 @@ Phase: 05 (CLI Tool) -- COMPLETE
 | Phase 05-cli-tool P02 | 145 | 2 tasks | 6 files |
 | Phase 05-cli-tool P03 | 1 | 1 tasks | 1 files |
 | Phase 06-tcp-peering P01 | 15 | 2 tasks | 8 files |
+| Phase 06-tcp-peering P02 | 4 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,9 @@ Phase: 05 (CLI Tool) -- COMPLETE
 - DaemonConfig.Default derive replaced with manual impl returning listen=true — bool derive default is false, which is wrong for P2P symmetric model (D-07)
 - futures-util 0.3 added as workspace dep — provides SinkExt/StreamExt for FramedWrite/FramedRead in periphore-net (D-03 resolved)
 - periphore-net Cargo.toml extended to 13 deps: added periphore-identity, periphore-trust, periphore-config, periphore-core, postcard, futures-util, tempfile (dev) — full Phase 6 dep list (D-20)
+- Two separate LengthDelimitedCodec instances in split_framed() — LengthDelimitedCodec does not implement Clone
+- codec module declared pub (pub mod codec) so integration tests can import split_framed/encode_message/decode_message
+- HandshakeResult::Pending state is T-6-02 mitigation — unknown peers cannot reach ActiveConn without explicit ConnectionControl::PromoteTrusted
 
 ### Open TODOs
 
@@ -124,6 +128,6 @@ Phase: 05 (CLI Tool) -- COMPLETE
 ### Last Session
 
 - **Date:** 2026-04-27
-- **Work done:** Phase 6 plan 01 executed — PendingPeerInfo + IpcResponse::PendingPeers (b54730a), DaemonConfig.listen=true default + periphore-net deps (21d7b87); 5 protocol tests + 14 config tests passing; cargo build --workspace green
-- **Stopped at:** Completed 06-01-PLAN.md (protocol/config/net-crate foundations)
-- **Next action:** Execute 06-02-PLAN.md (periphore-net codec and error types)
+- **Work done:** Phase 6 plan 02 executed — NetError + codec (c63b7ee, bdfedb9), PeerEvent + connection types + lib.rs (7188cb2, a81a114); 20 periphore-net tests passing; cargo build --workspace green
+- **Stopped at:** Completed 06-02-PLAN.md (error, codec, event, connection types)
+- **Next action:** Execute 06-03-PLAN.md (handshake and connection manager)
