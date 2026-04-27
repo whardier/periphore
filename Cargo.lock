@@ -738,6 +738,7 @@ dependencies = [
 name = "periphore-net"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "bytes",
  "futures-util",
  "periphore-config",

@@ -14,13 +14,14 @@ pub mod codec;
 mod event;
 mod connection;
 mod handshake;
-// manager is added in Plan 03 (Task 2).
+mod manager;
 
 pub use error::NetError;
 pub use event::PeerEvent;
 pub use connection::{ActiveConn, ConnectionControl, HandshakeResult, PendingPeer};
 pub use codec::MAX_FRAME_LENGTH;
 pub use handshake::PROTOCOL_VERSION;
+pub use manager::ConnectionManager;
 
 /// Default TCP port for peer connections (IANA unassigned, D-08).
 pub const DEFAULT_PORT: u16 = 7888;
