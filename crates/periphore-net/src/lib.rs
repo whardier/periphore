@@ -1,2 +1,21 @@
-// periphore-net: TCP peering, handshake, topology negotiation.
-// Implementation deferred to Phase 6. See ROADMAP.md.
+//! periphore-net: TCP peer connections, handshake, and connection lifecycle.
+//!
+//! Provides:
+//! - `ConnectionManager`: accepts inbound and initiates outbound peer connections
+//! - `PeerEvent`: one-way notifications from the network layer to the daemon
+//! - `NetError`: typed error enum for all network operations
+//! - `DEFAULT_PORT`: default TCP listen port (7888)
+//!
+//! D-18: Framing uses LengthDelimitedCodec (4-byte big-endian) + postcard.
+//! D-19: TCP_NODELAY is set immediately after every connect() and accept() — hard requirement.
+
+mod error;
+pub mod codec;
+// event and connection are added in Task 2.
+// handshake and manager are added in Plan 03.
+
+pub use error::NetError;
+pub use codec::MAX_FRAME_LENGTH;
+
+/// Default TCP port for peer connections (IANA unassigned, D-08).
+pub const DEFAULT_PORT: u16 = 7888;
