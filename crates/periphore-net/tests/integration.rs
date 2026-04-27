@@ -402,11 +402,11 @@ async fn promote_pending() {
     let mut tasks: JoinSet<anyhow::Result<()>> = JoinSet::new();
 
     // Bind on port 0, then pass the SocketAddr to spawn_listener.
-    // spawn_listener will bind its own listener on that address.
-    // We pre-bind to discover the port, then drop our listener so spawn_listener can rebind.
+    // We pre-bind to discover an available port, drop our listener, then retry connecting
+    // until spawn_listener's internal bind succeeds — mitigating the TOCTOU window.
     let tmp_listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
     let bound_addr = tmp_listener.local_addr().unwrap();
-    drop(tmp_listener); // Release — TOCTOU window acceptable in tests
+    drop(tmp_listener); // Release so spawn_listener can rebind the same port
 
     conn_mgr.spawn_listener(
         &mut tasks,
@@ -415,8 +415,13 @@ async fn promote_pending() {
         Arc::clone(&ts_a),
     );
 
-    // Small delay for spawn_listener to bind
-    tokio::time::sleep(Duration::from_millis(50)).await;
+    // Retry connecting until spawn_listener's bind is ready (avoids fixed-sleep TOCTOU risk).
+    for _ in 0..20u32 {
+        if TcpStream::connect(bound_addr).await.is_ok() {
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(10)).await;
+    }
 
     // Spawn peer B as the outbound connector — no trust store entry for A on B's side either
     let id_b_clone = Arc::clone(&id_b);
