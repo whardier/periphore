@@ -18,8 +18,11 @@ static ENV_MUTEX: Mutex<()> = Mutex::new(());
 
 /// Clear any PERIPHORE_ env vars that could leak between tests.
 fn clear_periphore_env() {
-    // Safety: these are test-only env var mutations; the ENV_MUTEX ensures
-    // no concurrent test is reading config while we mutate env state.
+    // SAFETY: ENV_MUTEX serializes all PERIPHORE_* env var mutations in this
+    // test binary. This assumes no background thread (e.g., from figment,
+    // tempfile, or tokio) reads PERIPHORE_* vars concurrently. If that
+    // assumption breaks, move to process-isolated tests (separate test binary
+    // per env-sensitive test).
     unsafe { std::env::remove_var("PERIPHORE_LOGGING_LEVEL") };
 }
 
@@ -60,6 +63,7 @@ fn env_overrides_toml_file() {
     writeln!(tmp, "[logging]").unwrap();
     writeln!(tmp, r#"level = "warn""#).unwrap();
 
+    // SAFETY: ENV_MUTEX held; see clear_periphore_env() for full safety rationale.
     // Set env var -- PERIPHORE_LOGGING_LEVEL maps to logging.level via split("_")
     unsafe { std::env::set_var("PERIPHORE_LOGGING_LEVEL", "trace") };
     let config = load(Some(tmp.path())).expect("should load with env override");
