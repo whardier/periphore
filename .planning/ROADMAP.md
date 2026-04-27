@@ -128,7 +128,14 @@ Plans:
 3. On Linux with X-Auth, the daemon can be launched remotely via SSH and supervised (stays running after SSH session ends)
 4. On macOS, the daemon must be pre-running locally; attempting to launch it remotely produces a clear error explaining why
 5. Manual host definition in config or CLI args successfully connects to a peer without requiring discovery
-**Plans:** TBD
+**Plans:** 5 plans
+
+Plans:
+- [ ] 06-01-PLAN.md -- Protocol/config/net-crate foundations: PendingPeerInfo, IpcResponse::PendingPeers, daemon.listen, periphore-net Cargo.toml deps
+- [ ] 06-02-PLAN.md -- periphore-net types: error.rs, codec.rs (LengthDelimitedCodec+postcard+max_frame_length), event.rs, connection.rs
+- [ ] 06-03-PLAN.md -- periphore-net runtime: handshake.rs (Hello/HelloAck protocol), manager.rs (ConnectionManager, backoff, CancellationToken), lib.rs
+- [ ] 06-04-PLAN.md -- periphored wiring: Cargo.toml deps, main.rs (macOS SSH check, ConnectionManager init, select! integration, AcceptFingerprint promotion, GetPendingVerifications, FocusStateMachine), contrib/periphored.service
+- [ ] 06-05-PLAN.md -- Integration tests: periphore-net handshake tests (trusted/pending/version mismatch), periphored net_wiring tests (NET-03, GetPendingVerifications IPC)
 
 ### Phase 7: Peer Discovery
 
