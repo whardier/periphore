@@ -190,7 +190,25 @@ impl ConnectionManager {
                                     match promote_rx.recv().await {
                                         Some(ConnectionControl::PromoteTrusted) => {
                                             event_tx
-                                                .send(PeerEvent::PeerConnected { peer_id })
+                                                .send(PeerEvent::PeerConnected {
+                                                    peer_id: peer_id.clone(),
+                                                })
+                                                .await
+                                                .ok();
+                                            // Hold connection open until EOF/error (same as Trusted path)
+                                            loop {
+                                                match tokio::time::timeout(
+                                                    Duration::from_secs(30),
+                                                    framed_read.next(),
+                                                )
+                                                .await
+                                                {
+                                                    Ok(Some(Ok(_frame))) => {}
+                                                    _ => break,
+                                                }
+                                            }
+                                            event_tx
+                                                .send(PeerEvent::PeerDisconnected { peer_id })
                                                 .await
                                                 .ok();
                                         }
@@ -356,7 +374,25 @@ impl ConnectionManager {
                                     match promote_rx.recv().await {
                                         Some(ConnectionControl::PromoteTrusted) => {
                                             event_tx
-                                                .send(PeerEvent::PeerConnected { peer_id })
+                                                .send(PeerEvent::PeerConnected {
+                                                    peer_id: peer_id.clone(),
+                                                })
+                                                .await
+                                                .ok();
+                                            // Hold connection open until EOF/error (same as Trusted path)
+                                            loop {
+                                                match tokio::time::timeout(
+                                                    Duration::from_secs(30),
+                                                    framed_read.next(),
+                                                )
+                                                .await
+                                                {
+                                                    Ok(Some(Ok(_frame))) => {}
+                                                    _ => break,
+                                                }
+                                            }
+                                            event_tx
+                                                .send(PeerEvent::PeerDisconnected { peer_id })
                                                 .await
                                                 .ok();
                                         }
