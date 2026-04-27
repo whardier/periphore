@@ -131,7 +131,7 @@ Plans:
 **Plans:** 5 plans
 
 Plans:
-- [ ] 06-01-PLAN.md -- Protocol/config/net-crate foundations: PendingPeerInfo, IpcResponse::PendingPeers, daemon.listen, periphore-net Cargo.toml deps
+- [x] 06-01-PLAN.md -- Protocol/config/net-crate foundations: PendingPeerInfo, IpcResponse::PendingPeers, daemon.listen, periphore-net Cargo.toml deps
 - [ ] 06-02-PLAN.md -- periphore-net types: error.rs, codec.rs (LengthDelimitedCodec+postcard+max_frame_length), event.rs, connection.rs
 - [ ] 06-03-PLAN.md -- periphore-net runtime: handshake.rs (Hello/HelloAck protocol), manager.rs (ConnectionManager, backoff, CancellationToken), lib.rs
 - [ ] 06-04-PLAN.md -- periphored wiring: Cargo.toml deps, main.rs (macOS SSH check, ConnectionManager init, select! integration, AcceptFingerprint promotion, GetPendingVerifications, FocusStateMachine), contrib/periphored.service
@@ -216,7 +216,7 @@ Plans:
 | 3. Configuration & Trust Persistence | 4/4 | Complete | 2026-04-24 |
 | 4. IPC Layer | 3/3 | Complete | 2026-04-25 |
 | 5. CLI Tool (periphore-cli) | 3/3 | Complete | 2026-04-25 |
-| 6. TCP Peering | 0/? | Not started | - |
+| 6. TCP Peering | 1/5 | In progress | - |
 | 7. Peer Discovery | 0/? | Not started | - |
 | 8. Monitor Topology | 0/? | Not started | - |
 | 9. Input Capture & Injection | 0/? | Not started | - |

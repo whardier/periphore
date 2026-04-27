@@ -3,25 +3,26 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 6
-current_plan: 0 (phase 5 complete — next: discuss or plan phase 6)
-status: planning
-last_updated: "2026-04-25T00:00:00.000Z"
+current_plan: 1 (06-01 complete — protocol/config/net-crate foundations)
+status: executing
+stopped_at: "Completed 06-01-PLAN.md (PendingPeerInfo, IpcResponse::PendingPeers, daemon.listen, periphore-net deps)"
+last_updated: "2026-04-27T08:58:32Z"
 progress:
   total_phases: 10
   completed_phases: 5
-  total_plans: 20
-  completed_plans: 20
-  percent: 100
+  total_plans: 25
+  completed_plans: 22
+  percent: 88
 ---
 
 # Project State
 
 **Project:** Periphore
 **Milestone:** 1 -- v1 Core
-**Current phase:** 5
-**Current plan:** 2 (05-02 complete — CLI command handlers, lib.rs run(), main.rs entry)
-**Status:** Phase 5 in progress — plans 01 and 02 complete
-**Last updated:** 2026-04-25
+**Current phase:** 6
+**Current plan:** 1 (06-01 complete — protocol/config/net-crate foundations)
+**Status:** Phase 6 in progress — plan 01 complete
+**Last updated:** 2026-04-27
 
 ---
 
@@ -29,7 +30,7 @@ progress:
 
 **Core value:** A machine's input devices should be able to reach any peer on the network, flowing naturally across screen edges, with verified identity and no central authority.
 
-**Current focus:** Phase 05 -- CLI Tool (periphore-cli)
+**Current focus:** Phase 06 -- TCP Peering (periphore-net)
 
 ---
 
@@ -37,8 +38,10 @@ progress:
 
 Phase: 02 (Identity & Cryptography) -- COMPLETE
 Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
-**Phase:** 4 of 10 (in progress — 2/3 plans complete)
-**Progress:** [██████████] 100%
+Phase: 04 (IPC Layer) -- COMPLETE
+Phase: 05 (CLI Tool) -- COMPLETE
+**Phase:** 6 of 10 (in progress — 1/5 plans complete)
+**Progress:** [████████--] 88%
 
 ---
 
@@ -56,6 +59,7 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 | Phase 05-cli-tool P01 | 2 | 3 tasks | 3 files |
 | Phase 05-cli-tool P02 | 145 | 2 tasks | 6 files |
 | Phase 05-cli-tool P03 | 1 | 1 tasks | 1 files |
+| Phase 06-tcp-peering P01 | 15 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -97,6 +101,10 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 - Config reload uses tracing_subscriber::reload::Layer wrapping EnvFilter — filter_handle stored in main() scope enables hot log-level updates without reinitializing the global subscriber
 - reload_config<S: tracing::Subscriber> free function pattern avoids inline duplication while satisfying Rust's generic Handle type requirements
 - daemon.socket_path and daemon.port are restart-required fields — warned but not applied on reload; identity and trust store never reloaded on SIGHUP/ReloadConfig (D-05)
+- PendingPeerInfo defined in ipc.rs adjacent to IpcResponse (not a separate module) — keeps related types together per D-03
+- DaemonConfig.Default derive replaced with manual impl returning listen=true — bool derive default is false, which is wrong for P2P symmetric model (D-07)
+- futures-util 0.3 added as workspace dep — provides SinkExt/StreamExt for FramedWrite/FramedRead in periphore-net (D-03 resolved)
+- periphore-net Cargo.toml extended to 13 deps: added periphore-identity, periphore-trust, periphore-config, periphore-core, postcard, futures-util, tempfile (dev) — full Phase 6 dep list (D-20)
 
 ### Open TODOs
 
@@ -115,7 +123,7 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 
 ### Last Session
 
-- **Date:** 2026-04-25
-- **Work done:** Phase 4 plan 02 executed — full config reload via SIGHUP and ReloadConfig IPC; tracing subscriber restructured to reload::Layer; reload_config<S> free function added; 46 tests passing; 2 atomic commits (95a4cfb, ac70863)
-- **Stopped at:** Completed 05-03-PLAN.md (CLI integration tests: SC1, TOP-04, SC3 — 3 tests green, workspace 63 tests passing)
-- **Next action:** Execute 05-03-PLAN.md (periphore-cli integration tests)
+- **Date:** 2026-04-27
+- **Work done:** Phase 6 plan 01 executed — PendingPeerInfo + IpcResponse::PendingPeers (b54730a), DaemonConfig.listen=true default + periphore-net deps (21d7b87); 5 protocol tests + 14 config tests passing; cargo build --workspace green
+- **Stopped at:** Completed 06-01-PLAN.md (protocol/config/net-crate foundations)
+- **Next action:** Execute 06-02-PLAN.md (periphore-net codec and error types)
