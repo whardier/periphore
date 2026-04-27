@@ -64,7 +64,7 @@ impl Default for LoggingConfig {
 }
 
 /// Per-peer configuration. Repeated as [[peer]] in TOML.
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Clone, Deserialize, Default)]
 pub struct PeerConfig {
     /// Expected peer fingerprint (hex string). Optional -- if set, connection from non-matching
     /// fingerprint is refused (hard config enforcement, Phase 3 SEC-06).
