@@ -113,7 +113,7 @@ pub async fn perform_handshake_initiator(
     // Step 5: Check trust store
     let is_trusted = trust_store
         .read()
-        .map_err(|_| NetError::Decode("trust lock poisoned".into()))?
+        .map_err(|_| NetError::Internal("trust store lock poisoned".into()))?
         .is_trusted(&peer_fp_hex);
 
     if is_trusted {
@@ -238,7 +238,7 @@ pub async fn perform_handshake_responder(
     // Step 5: Check trust store
     let is_trusted = trust_store
         .read()
-        .map_err(|_| NetError::Decode("trust lock poisoned".into()))?
+        .map_err(|_| NetError::Internal("trust store lock poisoned".into()))?
         .is_trusted(&peer_fp_hex);
 
     if is_trusted {

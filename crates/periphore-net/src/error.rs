@@ -36,4 +36,8 @@ pub enum NetError {
     /// promote_pending() called for a fingerprint not currently in pending state.
     #[error("peer not found in pending connections: {0}")]
     PeerNotFound(String),
+
+    /// Internal error unrelated to the network protocol (e.g. lock poisoning).
+    #[error("internal error: {0}")]
+    Internal(String),
 }
