@@ -12,9 +12,18 @@ workspace = true
 
 [dependencies]
 periphore-protocol = { workspace = true }
+periphore-identity = { workspace = true }
+periphore-trust    = { workspace = true }
+periphore-config   = { workspace = true }
+periphore-core     = { workspace = true }
 tokio              = { workspace = true }
 tokio-util         = { workspace = true }
 bytes              = { workspace = true }
 serde              = { workspace = true }
 thiserror          = { workspace = true }
 tracing            = { workspace = true }
+postcard           = { workspace = true }
+futures-util       = { workspace = true }
+
+[dev-dependencies]
+tempfile           = { workspace = true }

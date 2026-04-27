@@ -119,6 +119,58 @@ fn identity_show_identicon_can_be_disabled_via_toml() {
 }
 
 // ---------------------------------------------------------------------------
+// NET-04 / D-07: DaemonConfig.listen field (Phase 6)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn daemon_listen_defaults_to_true() {
+    // D-07: daemon.listen must default to true (P2P symmetric model).
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
+    let config = load(None).expect("default config should load");
+    assert!(
+        config.daemon.listen,
+        "daemon.listen must default to true"
+    );
+}
+
+#[test]
+fn daemon_listen_can_be_set_false_via_toml() {
+    // D-07: daemon.listen = false disables TCP listener for CI/testing setups.
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
+    let mut tmp = tempfile::NamedTempFile::new().expect("temp file");
+    writeln!(tmp, "[daemon]").unwrap();
+    writeln!(tmp, "listen = false").unwrap();
+
+    let config = load(Some(tmp.path())).expect("should load with daemon.listen = false");
+    assert!(
+        !config.daemon.listen,
+        "daemon.listen must be false when set to false in TOML"
+    );
+}
+
+#[test]
+fn daemon_listen_true_when_absent_from_toml() {
+    // D-07: TOML without listen field must produce listen = true via serde default.
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
+    let mut tmp = tempfile::NamedTempFile::new().expect("temp file");
+    writeln!(tmp, "[daemon]").unwrap();
+    // Intentionally no listen field — serde default must kick in
+    writeln!(tmp, "# port = 7888").unwrap();
+
+    let config = load(Some(tmp.path())).expect("should load with partial daemon section");
+    assert!(
+        config.daemon.listen,
+        "daemon.listen must be true when absent from TOML [daemon] section"
+    );
+}
+
+// ---------------------------------------------------------------------------
 // CFG-02: PeerConfig.name field (Phase 3)
 // ---------------------------------------------------------------------------
 

@@ -21,12 +21,31 @@ pub struct Config {
 }
 
 /// Daemon process configuration.
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize)]
 pub struct DaemonConfig {
     /// Override for the IPC socket path. If None, platform default is used (via periphore-ipc).
     pub socket_path: Option<std::path::PathBuf>,
     /// TCP port the daemon listens on for peer connections (Phase 6).
     pub port: Option<u16>,
+    /// Whether the daemon listens for incoming peer TCP connections.
+    /// Default: true (P2P symmetric model, D-07).
+    /// Set to false for CI/testing setups that should not accept incoming peers.
+    #[serde(default = "default_listen")]
+    pub listen: bool,
+}
+
+impl Default for DaemonConfig {
+    fn default() -> Self {
+        Self {
+            socket_path: None,
+            port:        None,
+            listen:      true,
+        }
+    }
+}
+
+fn default_listen() -> bool {
+    true
 }
 
 /// Logging configuration.
