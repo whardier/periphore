@@ -20,8 +20,9 @@ periphore-identity = { path = "crates/periphore-identity", version = "0.1.0" }
 periphore-trust    = { path = "crates/periphore-trust",    version = "0.1.0" }
 periphore-core     = { path = "crates/periphore-core",     version = "0.1.0" }
 periphore-ipc      = { path = "crates/periphore-ipc",      version = "0.1.0" }
-periphore-net      = { path = "crates/periphore-net",      version = "0.1.0" }
-periphore-capture  = { path = "crates/periphore-capture",  version = "0.1.0" }
+periphore-net       = { path = "crates/periphore-net",       version = "0.1.0" }
+periphore-discovery = { path = "crates/periphore-discovery", version = "0.1.0" }
+periphore-capture   = { path = "crates/periphore-capture",   version = "0.1.0" }
 periphore-inject   = { path = "crates/periphore-inject",   version = "0.1.0" }
 periphore-cli      = { path = "crates/periphore-cli",      version = "0.1.0" }
 # Note: periphore and periphored are binary crates — they are NOT listed here
@@ -45,6 +46,7 @@ ed25519-dalek     = { version = "2.2", features = ["rand_core"] }
 sha2              = { version = "0.10" }
 rand_core         = { version = "0.6", features = ["getrandom"] }
 anyhow            = { version = "1.0" }
+mdns-sd           = { version = "0.19", default-features = true }
 toml              = { version = "0.8", features = ["display"] }
 tempfile          = { version = "3" }
 

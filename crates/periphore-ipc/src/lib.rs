@@ -60,6 +60,9 @@ pub enum IpcCommand {
     GetPendingVerifications {
         responder: oneshot::Sender<IpcResponse>,
     },
+    GetDiscoveredPeers {
+        responder: oneshot::Sender<IpcResponse>,
+    },
     GetIdenticon {
         fingerprint: String,
         responder: oneshot::Sender<IpcResponse>,
@@ -106,6 +109,9 @@ impl IpcCommand {
             IpcRequest::GetState => Self::GetState { responder },
             IpcRequest::GetPendingVerifications => {
                 Self::GetPendingVerifications { responder }
+            }
+            IpcRequest::GetDiscoveredPeers => {
+                Self::GetDiscoveredPeers { responder }
             }
             IpcRequest::GetIdenticon { fingerprint } => {
                 Self::GetIdenticon {
