@@ -3,8 +3,8 @@
 //! IpcRequest/IpcResponse: serde_json serialization (IPC protocol)
 
 use periphore_protocol::{
-    Edge, EdgeMapping, InputEvent, IpcRequest, IpcResponse, KeyEventData, MonitorInfo,
-    MouseEventData, PeerMessage, PendingPeerInfo,
+    DiscoveredPeerInfo, Edge, EdgeMapping, InputEvent, IpcRequest, IpcResponse, KeyEventData,
+    MonitorInfo, MouseEventData, PeerMessage, PendingPeerInfo,
 };
 
 // -- PeerMessage postcard round-trip --
@@ -121,6 +121,7 @@ fn ipc_request_all_variants_round_trip() {
         },
         IpcRequest::GetState,
         IpcRequest::GetPendingVerifications,
+        IpcRequest::GetDiscoveredPeers,
         IpcRequest::GetIdenticon {
             fingerprint: "abc123".to_owned(),
         },
@@ -163,6 +164,14 @@ fn ipc_response_all_variants_round_trip() {
             words:  vec!["abandon".to_owned(), "ability".to_owned(), "able".to_owned(),
                          "about".to_owned(), "above".to_owned(), "absent".to_owned()],
             phrase: "abandon ability able about above absent".to_owned(),
+        },
+        IpcResponse::DiscoveredPeers {
+            peers: vec![DiscoveredPeerInfo {
+                hostname:        "peer.local".to_owned(),
+                port:            7888,
+                last_seen_epoch: 1_700_000_000,
+                source:          "mdns".to_owned(),
+            }],
         },
         IpcResponse::Ok,
         IpcResponse::Error {

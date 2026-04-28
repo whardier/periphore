@@ -18,6 +18,8 @@ pub struct Config {
     pub capture:   CaptureConfig,
     #[serde(default)]
     pub identity:  IdentityConfig,
+    #[serde(default)]
+    pub discovery: DiscoveryConfig,
 }
 
 /// Daemon process configuration.
@@ -127,5 +129,55 @@ pub struct IdentityConfig {
 impl Default for IdentityConfig {
     fn default() -> Self {
         Self { show_identicon: true }
+    }
+}
+
+/// Discovery configuration (Phase 7).
+/// Opt-in: disabled by default (D-03, CFG-01).
+/// CRITICAL: does NOT derive Serialize — enforces CFG-01 at compile time.
+#[derive(Debug, Deserialize)]
+pub struct DiscoveryConfig {
+    /// Enable mDNS peer discovery.
+    /// Default: false (opt-in per D-03).
+    #[serde(default)]
+    pub enabled: bool,
+
+    /// Override the mDNS service instance name.
+    /// Default: system hostname (set at runtime by periphore-discovery).
+    pub instance_name: Option<String>,
+
+    /// mDNS service type to browse/register.
+    /// Default: "_periphore._tcp.local."
+    #[serde(default = "default_service_type")]
+    pub service_type: String,
+
+    /// Enable SSH tunnel port probing for forwarded Periphore daemons.
+    /// Default: false (independent of mDNS `enabled`).
+    #[serde(default)]
+    pub ssh_probe_enabled: bool,
+
+    /// Ports to probe for SSH-forwarded Periphore daemons on localhost.
+    /// Default: [17880, 17881, ..., 17890]
+    #[serde(default = "default_ssh_probe_ports")]
+    pub ssh_probe_ports: Vec<u16>,
+}
+
+fn default_service_type() -> String {
+    "_periphore._tcp.local.".to_owned()
+}
+
+fn default_ssh_probe_ports() -> Vec<u16> {
+    (17880..=17890).collect()
+}
+
+impl Default for DiscoveryConfig {
+    fn default() -> Self {
+        Self {
+            enabled: false,
+            instance_name: None,
+            service_type: default_service_type(),
+            ssh_probe_enabled: false,
+            ssh_probe_ports: default_ssh_probe_ports(),
+        }
     }
 }

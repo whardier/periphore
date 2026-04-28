@@ -29,6 +29,7 @@ pub enum IpcRequest {
     },
     GetState,
     GetPendingVerifications,
+    GetDiscoveredPeers,
     GetIdenticon {
         fingerprint: String,
     },
@@ -49,6 +50,20 @@ pub struct PendingPeerInfo {
     pub word_phrase:  Vec<String>,
 }
 
+/// Information about a peer discovered via mDNS or SSH tunnel probe.
+/// Returned by GetDiscoveredPeers IPC command (Phase 7, D-06).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DiscoveredPeerInfo {
+    /// Hostname or IP address of the discovered peer.
+    pub hostname: String,
+    /// TCP port the peer is listening on.
+    pub port: u16,
+    /// Seconds since Unix epoch when this peer was last seen.
+    pub last_seen_epoch: u64,
+    /// Discovery source: "mdns" or "ssh_probe".
+    pub source: String,
+}
+
 /// IPC response variants. Extended in Phase 4.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
@@ -64,6 +79,11 @@ pub enum IpcResponse {
     /// peers: all connections awaiting user acceptance via AcceptFingerprint.
     PendingPeers {
         peers: Vec<PendingPeerInfo>,
+    },
+    /// Response to GetDiscoveredPeers (Phase 7, D-06).
+    /// peers: all peers discovered via mDNS broadcast or SSH tunnel probe.
+    DiscoveredPeers {
+        peers: Vec<DiscoveredPeerInfo>,
     },
     /// Response to GetIdenticon (SEC-02, D-09).
     /// fingerprint_hex: 64-char lowercase hex of SHA-256 public key fingerprint.
