@@ -200,8 +200,11 @@ async fn main() -> anyhow::Result<()> {
         tracing::debug!("discovery disabled (neither mDNS nor SSH probe enabled)");
     }
 
+    // Spawn the IPC server into a dedicated JoinHandle (not the shared JoinSet).
+    // This allows graceful exit of discovery/background tasks (CR-01 fix: any Ok(())
+    // completion from a non-critical task no longer triggers daemon shutdown).
     let ipc_path = socket_path.clone();
-    tasks.spawn(async move {
+    let mut ipc_handle = tokio::spawn(async move {
         periphore_ipc::serve(&ipc_path, ipc_cmd_tx)
             .await
             .map_err(|e| anyhow::anyhow!("IPC server error: {e}"))
@@ -423,20 +426,39 @@ async fn main() -> anyhow::Result<()> {
                 }
             }
 
-            // Task completion: handle IPC server task exit
-            result = tasks.join_next(), if !tasks.is_empty() => {
+            // IPC server task completion: any exit (graceful or error) triggers shutdown.
+            // Polled via dedicated JoinHandle so discovery/GC tasks can exit without
+            // triggering shutdown (CR-01 fix).
+            result = &mut ipc_handle => {
                 match result {
-                    Some(Ok(Ok(()))) => {
+                    Ok(Ok(())) => {
                         tracing::info!("IPC server task completed -- shutting down");
                         break;
                     }
-                    Some(Ok(Err(e))) => {
+                    Ok(Err(e)) => {
                         tracing::error!("IPC server task error: {e}");
                         break;
                     }
-                    Some(Err(e)) => {
-                        tracing::error!("Task panicked: {e}");
+                    Err(e) => {
+                        tracing::error!("IPC server task panicked: {e}");
                         break;
+                    }
+                }
+            }
+
+            // Background task completion (discovery, GC, connectors): log but do NOT shut down.
+            // These tasks may exit cleanly (e.g., mDNS unavailable on corporate networks) without
+            // terminating the daemon (CR-01 fix).
+            result = tasks.join_next(), if !tasks.is_empty() => {
+                match result {
+                    Some(Ok(Ok(()))) => {
+                        tracing::debug!("background task completed normally");
+                    }
+                    Some(Ok(Err(e))) => {
+                        tracing::warn!("background task error: {e}");
+                    }
+                    Some(Err(e)) => {
+                        tracing::error!("background task panicked: {e}");
                     }
                     None => {
                         // JoinSet empty -- unreachable with is_empty guard, but handled defensively.
@@ -449,7 +471,8 @@ async fn main() -> anyhow::Result<()> {
     // -- Clean shutdown --
     // Cancel discovery tasks gracefully before aborting all tasks.
     discovery_cancel.cancel();
-    // Cancel all spawned tasks.
+    // Abort the IPC server handle and all background tasks.
+    ipc_handle.abort();
     tasks.abort_all();
 
     // Remove IPC socket (D-18, D-29). .ok() suppresses error if already removed.
