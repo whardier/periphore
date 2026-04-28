@@ -31,8 +31,17 @@ pub async fn ipc_request(socket_path: &Path, req: IpcRequest) -> anyhow::Result<
     json.push('\n');
     writer_half.write_all(json.as_bytes()).await?;
 
+    // WR-01: wrap read in a timeout so the CLI never hangs indefinitely if the
+    // daemon accepts the connection but the responder is dropped before sending
+    // (e.g., routing task deadlock, future command variant with missing send_ok arm).
     let mut line = String::new();
-    reader.read_line(&mut line).await?;
+    tokio::time::timeout(
+        std::time::Duration::from_secs(10),
+        reader.read_line(&mut line),
+    )
+    .await
+    .map_err(|_| anyhow::anyhow!("timed out waiting for daemon response (10 s)"))?
+    .map_err(|e| anyhow::anyhow!("IPC read error: {e}"))?;
 
     let response = serde_json::from_str::<IpcResponse>(line.trim())?;
     Ok(response)
