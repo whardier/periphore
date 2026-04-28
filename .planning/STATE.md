@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 7
-current_plan: 2 (07-02 complete — periphore-discovery crate with mDNS + SSH probe + GC)
+current_plan: 3 (07-03 complete — peers discovered + pending CLI handlers)
 status: executing
-stopped_at: Phase 07 plan 02 complete
-last_updated: "2026-04-28T18:42:00Z"
+stopped_at: Phase 07 plan 03 complete
+last_updated: "2026-04-28T18:48:13Z"
 progress:
   total_phases: 10
   completed_phases: 6
   total_plans: 29
-  completed_plans: 27
-  percent: 93
+  completed_plans: 28
+  percent: 97
 ---
 
 # Project State
@@ -20,7 +20,7 @@ progress:
 **Project:** Periphore
 **Milestone:** 1 -- v1 Core
 **Current phase:** 7
-**Current plan:** 2 (07-02 complete — periphore-discovery crate with mDNS + SSH probe + GC)
+**Current plan:** 3 (07-03 complete — peers discovered + pending CLI handlers)
 **Status:** Executing
 **Last updated:** 2026-04-28
 
@@ -41,7 +41,7 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 Phase: 04 (IPC Layer) -- COMPLETE
 Phase: 05 (CLI Tool) -- COMPLETE
 **Phase:** 6 of 10 (in progress — 4/5 plans complete)
-**Progress:** [█████████░] 93%
+**Progress:** [██████████] 97%
 
 ---
 
@@ -64,6 +64,7 @@ Phase: 05 (CLI Tool) -- COMPLETE
 | Phase 06 P06-03 | 4 | 2 tasks | 6 files |
 | Phase 06 P06-04 | 3 | 2 tasks | 4 files |
 | Phase 06 P06-05 | 3 | 2 tasks | 3 files |
+| Phase 07 P07-03 | 2 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -116,6 +117,9 @@ Phase: 05 (CLI Tool) -- COMPLETE
 - ServiceEvent::Ok(_) wildcard arm required in mdns.rs — ServiceEvent is #[non_exhaustive] in mdns-sd 0.19 requiring exhaustive catch-all
 - periphore-discovery crate: GC task always spawned regardless of mDNS/SSH probe config — ensures stale entries are cleaned even in discovery-disabled mode
 - SSH probe uses real Hello/HelloAck handshake for daemon identification; fingerprint comparison skips self-discovered daemon (Pitfall 3 mitigation)
+- GetPendingVerifications test mock corrected from IpcResponse::Ok to IpcResponse::PendingPeers { peers: [] } — stub response was wrong since PendingPeers variant was added in Phase 6
+- GetDiscoveredPeers added to test mock router returning IpcResponse::DiscoveredPeers { peers: [] } — fixes non-exhaustive match from Plan 01 IpcCommand addition
+- format_age() uses std::time::SystemTime without chrono — avoids new dependency for simple relative timestamp formatting in peers discovered output
 
 ### Open TODOs
 
@@ -134,7 +138,7 @@ Phase: 05 (CLI Tool) -- COMPLETE
 
 ### Last Session
 
-- **Date:** 2026-04-27
-- **Work done:** Phase 6 plan 02 executed — NetError + codec (c63b7ee, bdfedb9), PeerEvent + connection types + lib.rs (7188cb2, a81a114); 20 periphore-net tests passing; cargo build --workspace green
-- **Stopped at:** Phase 07 context gathered
-- **Next action:** Execute 06-03-PLAN.md (handshake and connection manager)
+- **Date:** 2026-04-28
+- **Work done:** Phase 07 plan 03 executed — peers discovered/pending CLI handlers (c633af6, 740ae27); 3 periphore-cli tests passing; cargo build --workspace green
+- **Stopped at:** Phase 07 plan 03 complete
+- **Next action:** Execute 07-04-PLAN.md (daemon wiring: GetDiscoveredPeers dispatch + DiscoveryService spawn)
