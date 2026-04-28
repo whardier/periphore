@@ -12,7 +12,7 @@
 
 - [x] **NET-01
 **: Two machines establish a peer connection over TCP
-- [ ] **NET-02**: Auto-discovery locates peers on the local network via mDNS
+- [x] **NET-02**: Auto-discovery locates peers on the local network via mDNS
 - [x] **NET-03
 **: Manual host definition works as alternative to auto-discovery
 - [x] **NET-04
@@ -103,7 +103,7 @@
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
 | NET-01 | Phase 6: TCP Peering | Pending |
-| NET-02 | Phase 7: Peer Discovery | Pending |
+| NET-02 | Phase 7: Peer Discovery | Complete |
 | NET-03 | Phase 6: TCP Peering | Pending |
 | NET-04 | Phase 6: TCP Peering | Pending |
 | NET-05 | Phase 6: TCP Peering | Pending |

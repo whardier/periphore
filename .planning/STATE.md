@@ -2,27 +2,27 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 6
-current_plan: 5 (06-04 complete — periphored wiring + macOS SSH check + systemd unit)
+current_phase: 7
+current_plan: 2 (07-02 complete — periphore-discovery crate with mDNS + SSH probe + GC)
 status: executing
-stopped_at: Phase 07 context gathered
-last_updated: "2026-04-28T17:01:18.616Z"
+stopped_at: Phase 07 plan 02 complete
+last_updated: "2026-04-28T18:42:00Z"
 progress:
   total_phases: 10
   completed_phases: 6
   total_plans: 29
-  completed_plans: 25
-  percent: 86
+  completed_plans: 27
+  percent: 93
 ---
 
 # Project State
 
 **Project:** Periphore
 **Milestone:** 1 -- v1 Core
-**Current phase:** 6
-**Current plan:** 5 (06-04 complete — periphored wiring + macOS SSH check + systemd unit)
-**Status:** Ready to execute
-**Last updated:** 2026-04-27
+**Current phase:** 7
+**Current plan:** 2 (07-02 complete — periphore-discovery crate with mDNS + SSH probe + GC)
+**Status:** Executing
+**Last updated:** 2026-04-28
 
 ---
 
@@ -41,7 +41,7 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 Phase: 04 (IPC Layer) -- COMPLETE
 Phase: 05 (CLI Tool) -- COMPLETE
 **Phase:** 6 of 10 (in progress — 4/5 plans complete)
-**Progress:** [██████████] 100%
+**Progress:** [█████████░] 93%
 
 ---
 
@@ -112,6 +112,10 @@ Phase: 05 (CLI Tool) -- COMPLETE
 - Two separate LengthDelimitedCodec instances in split_framed() — LengthDelimitedCodec does not implement Clone
 - codec module declared pub (pub mod codec) so integration tests can import split_framed/encode_message/decode_message
 - HandshakeResult::Pending state is T-6-02 mitigation — unknown peers cannot reach ActiveConn without explicit ConnectionControl::PromoteTrusted
+- DiscoveryConfig exported from periphore-config/src/lib.rs — was defined in schema.rs but missing from pub use; required for periphore_config::DiscoveryConfig type path
+- ServiceEvent::Ok(_) wildcard arm required in mdns.rs — ServiceEvent is #[non_exhaustive] in mdns-sd 0.19 requiring exhaustive catch-all
+- periphore-discovery crate: GC task always spawned regardless of mDNS/SSH probe config — ensures stale entries are cleaned even in discovery-disabled mode
+- SSH probe uses real Hello/HelloAck handshake for daemon identification; fingerprint comparison skips self-discovered daemon (Pitfall 3 mitigation)
 
 ### Open TODOs
 

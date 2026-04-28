@@ -146,11 +146,11 @@ Plans:
 1. A daemon started with discovery enabled broadcasts its presence via mDNS and appears in another daemon's peer list within 5 seconds on the same subnet
 2. Discovered peers proceed through the same identity verification handshake as manually-configured peers
 3. When mDNS fails silently (corporate network, firewall), the daemon logs a warning and manual host config still works as fallback
-**Plans:** 4 plans
+**Plans:** 2/4 plans executed
 
 Plans:
-- [ ] 07-01-PLAN.md -- Protocol + config foundations: DiscoveredPeerInfo, GetDiscoveredPeers IPC, DiscoveryConfig schema, workspace deps
-- [ ] 07-02-PLAN.md -- periphore-discovery crate: mDNS register/browse, SSH tunnel port probe, discovered peer list with cap + TTL GC
+- [x] 07-01-PLAN.md -- Protocol + config foundations: DiscoveredPeerInfo, GetDiscoveredPeers IPC, DiscoveryConfig schema, workspace deps
+- [x] 07-02-PLAN.md -- periphore-discovery crate: mDNS register/browse, SSH tunnel port probe, discovered peer list with cap + TTL GC
 - [ ] 07-03-PLAN.md -- CLI subcommands: periphore peers discovered (table output) + periphore peers pending (verification display)
 - [ ] 07-04-PLAN.md -- Daemon wiring + integration tests: DiscoveryService in select! loop, GetDiscoveredPeers IPC dispatch, 7 integration tests
 
@@ -223,7 +223,7 @@ Plans:
 | 4. IPC Layer | 3/3 | Complete | 2026-04-25 |
 | 5. CLI Tool (periphore-cli) | 3/3 | Complete | 2026-04-25 |
 | 6. TCP Peering | 1/5 | In progress | - |
-| 7. Peer Discovery | 0/4 | Not started | - |
+| 7. Peer Discovery | 2/4 | In Progress|  |
 | 8. Monitor Topology | 0/? | Not started | - |
 | 9. Input Capture & Injection | 0/? | Not started | - |
 | 10. Captive Window Mode | 0/? | Not started | - |
