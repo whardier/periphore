@@ -12,7 +12,7 @@
 
 mod schema;
 
-pub use schema::{CaptureConfig, Config, DaemonConfig, IdentityConfig, LoggingConfig, PeerConfig, TopologyConfig};
+pub use schema::{CaptureConfig, Config, DaemonConfig, DiscoveryConfig, IdentityConfig, LoggingConfig, PeerConfig, TopologyConfig};
 
 use figment::{
     providers::{Env, Format, Toml},
