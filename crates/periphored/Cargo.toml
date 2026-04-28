@@ -15,18 +15,20 @@ name = "periphored"
 path = "src/main.rs"
 
 [dependencies]
-periphore-config   = { workspace = true }
-periphore-core     = { workspace = true }
-periphore-identity = { workspace = true }
-periphore-ipc      = { workspace = true }
-periphore-net      = { workspace = true }
-periphore-protocol = { workspace = true }
-periphore-trust    = { workspace = true }
-tokio              = { workspace = true }
-clap               = { workspace = true }
-tracing            = { workspace = true }
-tracing-subscriber = { workspace = true }
-anyhow             = { workspace = true }
+periphore-config    = { workspace = true }
+periphore-core      = { workspace = true }
+periphore-discovery = { workspace = true }
+periphore-identity  = { workspace = true }
+periphore-ipc       = { workspace = true }
+periphore-net       = { workspace = true }
+periphore-protocol  = { workspace = true }
+periphore-trust     = { workspace = true }
+tokio               = { workspace = true }
+tokio-util          = { workspace = true }
+clap                = { workspace = true }
+tracing             = { workspace = true }
+tracing-subscriber  = { workspace = true }
+anyhow              = { workspace = true }
 
 [dev-dependencies]
 tempfile = { workspace = true }

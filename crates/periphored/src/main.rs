@@ -173,6 +173,33 @@ async fn main() -> anyhow::Result<()> {
         }
     }
 
+    // -- Phase 7: Discovery service (NET-02) --
+    let discovery_service = periphore_discovery::DiscoveryService::new();
+    let (discovery_event_tx, mut discovery_event_rx) =
+        tokio::sync::mpsc::channel::<periphore_discovery::DiscoveryEvent>(64);
+    let discovery_cancel = tokio_util::sync::CancellationToken::new();
+
+    if config.discovery.enabled || config.discovery.ssh_probe_enabled {
+        discovery_service.start(
+            &mut tasks,
+            &config.discovery,
+            discovery_event_tx,
+            std::sync::Arc::clone(&identity),
+            discovery_cancel.clone(),
+        );
+        if config.discovery.enabled {
+            tracing::info!("mDNS discovery enabled");
+        }
+        if config.discovery.ssh_probe_enabled {
+            tracing::info!(
+                ports = ?config.discovery.ssh_probe_ports,
+                "SSH tunnel port probing enabled"
+            );
+        }
+    } else {
+        tracing::debug!("discovery disabled (neither mDNS nor SSH probe enabled)");
+    }
+
     let ipc_path = socket_path.clone();
     tasks.spawn(async move {
         periphore_ipc::serve(&ipc_path, ipc_cmd_tx)
@@ -225,9 +252,7 @@ async fn main() -> anyhow::Result<()> {
                     Some(periphore_net::PeerEvent::PeerPending { fingerprint, identicon, word_phrase }) => {
                         // D-02: log at WARN so operator sees the pending peer in daemon output
                         tracing::warn!(
-                            fingerprint = %fingerprint,
-                            "unknown peer pending verification -- run: periphore trust accept {}",
-                            &fingerprint[..fingerprint.len().min(16)]
+                            "unknown peer pending verification -- run: periphore trust accept {fingerprint}"
                         );
                         if !identicon.is_empty() {
                             tracing::warn!("peer identicon:\n{identicon}");
@@ -246,6 +271,40 @@ async fn main() -> anyhow::Result<()> {
                     }
                     None => {
                         tracing::warn!("net event channel closed");
+                    }
+                }
+            }
+
+            // Discovery event from DiscoveryService (Phase 7, NET-02)
+            discovery_event = discovery_event_rx.recv() => {
+                match discovery_event {
+                    Some(periphore_discovery::DiscoveryEvent::PeerDiscovered {
+                        hostname,
+                        port,
+                        source,
+                    }) => {
+                        tracing::info!(
+                            hostname = %hostname,
+                            port,
+                            source = ?source,
+                            "peer discovered"
+                        );
+                    }
+                    Some(periphore_discovery::DiscoveryEvent::PeerRemoved {
+                        hostname,
+                        port,
+                    }) => {
+                        tracing::info!(
+                            hostname = %hostname,
+                            port,
+                            "discovered peer removed"
+                        );
+                    }
+                    Some(periphore_discovery::DiscoveryEvent::Error(msg)) => {
+                        tracing::warn!(error = %msg, "discovery error");
+                    }
+                    None => {
+                        tracing::debug!("discovery event channel closed");
                     }
                 }
             }
@@ -311,6 +370,11 @@ async fn main() -> anyhow::Result<()> {
                         tracing::debug!("IPC: GetPendingVerifications");
                         let peers = conn_mgr.pending_list();
                         let _ = responder.send(IpcResponse::PendingPeers { peers });
+                    }
+                    Some(IpcCommand::GetDiscoveredPeers { responder }) => {
+                        tracing::debug!("IPC: GetDiscoveredPeers");
+                        let peers = discovery_service.discovered_list();
+                        let _ = responder.send(IpcResponse::DiscoveredPeers { peers });
                     }
                     Some(IpcCommand::ReloadConfig { responder }) => {
                         tracing::info!("IPC: ReloadConfig");
@@ -383,6 +447,8 @@ async fn main() -> anyhow::Result<()> {
     }
 
     // -- Clean shutdown --
+    // Cancel discovery tasks gracefully before aborting all tasks.
+    discovery_cancel.cancel();
     // Cancel all spawned tasks.
     tasks.abort_all();
 
@@ -476,8 +542,8 @@ fn send_ok(cmd: IpcCommand) {
         }
         // GetStatus, InjectInputEvent, SimulateEdgeCross, ReloadConfig,
         // GetIdenticon, GetWordPhrase, AcceptFingerprint, RejectFingerprint,
-        // GetPendingVerifications have dedicated arms in the main select! loop
-        // and never reach send_ok.
+        // GetPendingVerifications, GetDiscoveredPeers have dedicated arms
+        // in the main select! loop and never reach send_ok.
         // The wildcard arm satisfies Rust's exhaustiveness requirement without
         // duplicating response logic that already exists in the select! arms.
         _ => {}
