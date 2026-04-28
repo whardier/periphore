@@ -95,8 +95,8 @@ impl DiscoveryService {
                 event_tx_clone,
                 cancel_clone,
             ));
-
-            tracing::info!("mDNS discovery enabled");
+            // WR-02: log removed here; caller in periphored/src/main.rs already
+            // logs "mDNS discovery enabled" with appropriate config guard context.
         }
 
         if config.ssh_probe_enabled {
@@ -114,8 +114,8 @@ impl DiscoveryService {
                 event_tx_clone,
                 cancel_clone,
             ));
-
-            tracing::info!("SSH tunnel port probing enabled");
+            // WR-02: log removed here; caller in periphored/src/main.rs already
+            // logs "SSH tunnel port probing enabled" with ports list context.
         }
 
         // Always spawn the GC task — sweeps stale entries every 30 seconds (D-07/D-08).
