@@ -828,22 +828,25 @@ Notes on this unit:
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`IdentityStore::fingerprint_bytes()` vs `fingerprint_hex()`**
    - What we know: `fingerprint_hex()` is confirmed in `periphore-identity/src/lib.rs`. The Hello message requires `fingerprint: [u8; 32]` (raw bytes).
    - What's unclear: Does `IdentityStore` expose a method to get raw `[u8; 32]`? Or must we decode the hex string?
    - Recommendation: Add `pub fn fingerprint_bytes(&self) -> [u8; 32]` to `IdentityStore` in Phase 6 if it doesn't exist, rather than decoding hex in periphore-net.
+   - **RESOLVED:** `IdentityStore.fingerprint` is a `pub [u8; 32]` field — direct access, no new method needed.
 
 2. **Trust store thread safety**
    - What we know: `TrustStore` has no `Send + Sync` bounds; its `add_trusted` takes `&mut self`.
    - What's unclear: Connection tasks need to call `is_trusted()` (read-only) during handshake. The daemon's select! loop calls `add_trusted()`.
    - Recommendation: Pass `Arc<RwLock<TrustStore>>` to connection tasks. The handshake task holds a read lock briefly; the daemon holds a write lock during AcceptFingerprint. This is safe and low-contention.
+   - **RESOLVED:** `Arc<RwLock<TrustStore>>` adopted — connection tasks read-lock during handshake, daemon write-locks during AcceptFingerprint.
 
 3. **futures crate for SinkExt**
    - What we know: `FramedWrite::send()` requires `SinkExt` from the `futures` crate (or `futures-util`).
    - What's unclear: Is `futures` already a transitive dep of tokio-util that re-exports the trait?
    - Recommendation: Add `futures-util` to `periphore-net/Cargo.toml` if `SinkExt` and `StreamExt` are needed. Alternatively, use `FramedWrite::get_mut().write_all()` pattern but that bypasses codec framing — use the `SinkExt` path.
+   - **RESOLVED:** `futures-util` added to workspace root `Cargo.toml` and `periphore-net/Cargo.toml` in Plan 06-01 Task 2.
 
 ---
 
