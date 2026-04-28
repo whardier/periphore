@@ -88,7 +88,10 @@ fn handle_test_command(cmd: IpcCommand) {
             let _ = responder.send(IpcResponse::Ok);
         }
         IpcCommand::GetPendingVerifications { responder } => {
-            let _ = responder.send(IpcResponse::Ok);
+            let _ = responder.send(IpcResponse::PendingPeers { peers: vec![] });
+        }
+        IpcCommand::GetDiscoveredPeers { responder } => {
+            let _ = responder.send(IpcResponse::DiscoveredPeers { peers: vec![] });
         }
         IpcCommand::GetIdenticon { responder, .. } => {
             let _ = responder.send(IpcResponse::Identicon {
