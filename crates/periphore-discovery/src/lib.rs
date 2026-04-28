@@ -77,10 +77,13 @@ impl DiscoveryService {
         cancel: CancellationToken,
     ) {
         if config.enabled {
+            // IN-03 (upgraded WR): derive a host-unique instance_name from the identity
+            // fingerprint when not explicitly configured. Using the literal "periphore"
+            // causes mDNS name collisions when multiple nodes share the default config.
             let instance_name = config
                 .instance_name
                 .clone()
-                .unwrap_or_else(|| "periphore".to_owned());
+                .unwrap_or_else(|| format!("periphore-{}", &identity.fingerprint_hex()[..8]));
             let port = periphore_net::DEFAULT_PORT;
             let peers = Arc::clone(&self.peers);
             let event_tx_clone = event_tx.clone();

@@ -40,14 +40,17 @@ pub(crate) async fn mdns_register_and_browse(
     };
 
     // Build the service info.
-    // Empty string for host_name triggers mdns-sd auto-detection from system hostname.
+    // mdns-sd requires host_name to end with ".local." (validated at register time).
+    // Passing "" causes "Hostname must end with '.local.'" and falls back to browse-only.
+    // We construct host_name from instance_name (already unique per IN-03 fix).
     // enable_addr_auto() detects local IP addresses on all interfaces.
+    let host_name = format!("{instance_name}.local.");
     let properties = [("proto_ver", periphore_net::PROTOCOL_VERSION.to_string())];
     let service_info = match ServiceInfo::new(
         &service_type,
         &instance_name,
-        "",    // auto-detect hostname
-        "",    // auto-detect IP
+        &host_name,
+        "",    // auto-detect IP via enable_addr_auto()
         port,
         &properties[..],
     ) {
