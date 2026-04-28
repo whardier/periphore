@@ -1,0 +1,30 @@
+[package]
+name = "periphore-discovery"
+version.workspace    = true
+edition.workspace    = true
+authors.workspace    = true
+license.workspace    = true
+repository.workspace = true
+publish.workspace    = true
+
+[lints]
+workspace = true
+
+[lib]
+test = false
+
+[dependencies]
+periphore-protocol = { workspace = true }
+periphore-identity = { workspace = true }
+periphore-config   = { workspace = true }
+periphore-net      = { workspace = true }
+tokio              = { workspace = true }
+tokio-util         = { workspace = true }
+futures-util       = { workspace = true }
+mdns-sd            = { workspace = true }
+thiserror          = { workspace = true }
+tracing            = { workspace = true }
+anyhow             = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
