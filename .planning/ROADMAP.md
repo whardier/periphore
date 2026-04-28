@@ -16,7 +16,7 @@
 - [x] **Phase 4: IPC Layer** - Unix domain socket service boundary, modular transport/capture decoupling
 - [x] **Phase 5: CLI Tool (periphore-cli)** - CLI binary for daemon interaction, debug topology output
 - [ ] **Phase 6: TCP Peering** - TCP peer connections, SSH tunnelability, manual host definition, daemon lifecycle
-- [ ] **Phase 7: Peer Discovery** - mDNS auto-discovery of peers on the local network
+- [x] **Phase 7: Peer Discovery** - mDNS auto-discovery of peers on the local network (completed 2026-04-28)
 - [ ] **Phase 8: Monitor Topology** - Monitor enumeration, topology config/negotiation, multi-monitor edge resolution
 - [ ] **Phase 9: Input Capture & Injection** - Source/sink input flow, relative coordinates, bidirectional control
 - [ ] **Phase 10: Captive Window Mode** - Fullscreen/kiosk input capture, hotkey escape
@@ -146,13 +146,13 @@ Plans:
 1. A daemon started with discovery enabled broadcasts its presence via mDNS and appears in another daemon's peer list within 5 seconds on the same subnet
 2. Discovered peers proceed through the same identity verification handshake as manually-configured peers
 3. When mDNS fails silently (corporate network, firewall), the daemon logs a warning and manual host config still works as fallback
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [x] 07-01-PLAN.md -- Protocol + config foundations: DiscoveredPeerInfo, GetDiscoveredPeers IPC, DiscoveryConfig schema, workspace deps
 - [x] 07-02-PLAN.md -- periphore-discovery crate: mDNS register/browse, SSH tunnel port probe, discovered peer list with cap + TTL GC
 - [x] 07-03-PLAN.md -- CLI subcommands: periphore peers discovered (table output) + periphore peers pending (verification display)
-- [ ] 07-04-PLAN.md -- Daemon wiring + integration tests: DiscoveryService in select! loop, GetDiscoveredPeers IPC dispatch, 7 integration tests
+- [x] 07-04-PLAN.md -- Daemon wiring + integration tests: DiscoveryService in select! loop, GetDiscoveredPeers IPC dispatch, 7 integration tests
 
 ### Phase 8: Monitor Topology
 
@@ -223,7 +223,7 @@ Plans:
 | 4. IPC Layer | 3/3 | Complete | 2026-04-25 |
 | 5. CLI Tool (periphore-cli) | 3/3 | Complete | 2026-04-25 |
 | 6. TCP Peering | 1/5 | In progress | - |
-| 7. Peer Discovery | 3/4 | In Progress|  |
+| 7. Peer Discovery | 4/4 | Complete   | 2026-04-28 |
 | 8. Monitor Topology | 0/? | Not started | - |
 | 9. Input Capture & Injection | 0/? | Not started | - |
 | 10. Captive Window Mode | 0/? | Not started | - |

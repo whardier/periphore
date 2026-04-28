@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 7
-current_plan: 3 (07-03 complete — peers discovered + pending CLI handlers)
+current_plan: 4 (07-04 complete — daemon wiring + integration tests)
 status: executing
-stopped_at: Phase 07 plan 03 complete
-last_updated: "2026-04-28T18:48:13Z"
+stopped_at: Phase 07 plan 04 complete
+last_updated: "2026-04-28T18:55:44Z"
 progress:
   total_phases: 10
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 29
-  completed_plans: 28
-  percent: 97
+  completed_plans: 29
+  percent: 100
 ---
 
 # Project State
@@ -20,7 +20,7 @@ progress:
 **Project:** Periphore
 **Milestone:** 1 -- v1 Core
 **Current phase:** 7
-**Current plan:** 3 (07-03 complete — peers discovered + pending CLI handlers)
+**Current plan:** 4 (07-04 complete — daemon wiring + integration tests)
 **Status:** Executing
 **Last updated:** 2026-04-28
 
@@ -41,7 +41,7 @@ Phase: 03 (Configuration & Trust Persistence) -- COMPLETE
 Phase: 04 (IPC Layer) -- COMPLETE
 Phase: 05 (CLI Tool) -- COMPLETE
 **Phase:** 6 of 10 (in progress — 4/5 plans complete)
-**Progress:** [██████████] 97%
+**Progress:** [██████████] 100%
 
 ---
 
@@ -65,6 +65,7 @@ Phase: 05 (CLI Tool) -- COMPLETE
 | Phase 06 P06-04 | 3 | 2 tasks | 4 files |
 | Phase 06 P06-05 | 3 | 2 tasks | 3 files |
 | Phase 07 P07-03 | 2 | 2 tasks | 7 files |
+| Phase 07 P07-04 | 5 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -120,6 +121,8 @@ Phase: 05 (CLI Tool) -- COMPLETE
 - GetPendingVerifications test mock corrected from IpcResponse::Ok to IpcResponse::PendingPeers { peers: [] } — stub response was wrong since PendingPeers variant was added in Phase 6
 - GetDiscoveredPeers added to test mock router returning IpcResponse::DiscoveredPeers { peers: [] } — fixes non-exhaustive match from Plan 01 IpcCommand addition
 - format_age() uses std::time::SystemTime without chrono — avoids new dependency for simple relative timestamp formatting in peers discovered output
+- discovery_cancel.cancel() called before tasks.abort_all() in periphored shutdown — ensures cancellation token propagates to discovery tasks before JoinSet abort
+- Integration test listeners for SSH probe tests use looping accept() + per-connection tokio::spawn — handles multiple probe connection attempts within test window
 
 ### Open TODOs
 
@@ -139,6 +142,6 @@ Phase: 05 (CLI Tool) -- COMPLETE
 ### Last Session
 
 - **Date:** 2026-04-28
-- **Work done:** Phase 07 plan 03 executed — peers discovered/pending CLI handlers (c633af6, 740ae27); 3 periphore-cli tests passing; cargo build --workspace green
-- **Stopped at:** Phase 07 plan 03 complete
-- **Next action:** Execute 07-04-PLAN.md (daemon wiring: GetDiscoveredPeers dispatch + DiscoveryService spawn)
+- **Work done:** Phase 07 plan 04 executed — DiscoveryService wired into periphored + 7 integration tests (24cf23b, 347b75f); full workspace tests green
+- **Stopped at:** Phase 07 plan 04 complete
+- **Next action:** Execute Phase 08 (Topology Routing)
