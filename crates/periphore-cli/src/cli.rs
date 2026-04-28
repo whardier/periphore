@@ -33,4 +33,36 @@ pub enum Commands {
     Status,
     /// Show the resolved monitor topology (requires daemon; stub output until Phase 8).
     Topology,
+    /// Manage peer trust (fingerprint acceptance).
+    Trust {
+        #[command(subcommand)]
+        action: TrustAction,
+    },
+    /// Manage and inspect peers.
+    Peers {
+        #[command(subcommand)]
+        action: PeersAction,
+    },
+}
+
+/// Sub-actions for `periphore trust`.
+#[derive(Subcommand, Debug)]
+pub enum TrustAction {
+    /// Accept a peer's fingerprint and add it to the trust cache.
+    ///
+    /// The fingerprint is the 64-character hex string shown in daemon logs:
+    ///   WARN unknown peer pending verification -- run: periphore trust accept <fingerprint>
+    Accept {
+        /// 64-character hex fingerprint to trust.
+        fingerprint: String,
+    },
+}
+
+/// Sub-actions for `periphore peers`.
+#[derive(Subcommand, Debug)]
+pub enum PeersAction {
+    /// List peers discovered via mDNS or SSH tunnel probe.
+    Discovered,
+    /// List peers awaiting trust verification.
+    Pending,
 }

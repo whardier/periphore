@@ -23,6 +23,15 @@ pub async fn run(cli: Cli) -> anyhow::Result<()> {
     match cli.command {
         cli::Commands::Status   => commands::status::run(&socket_path).await,
         cli::Commands::Topology => commands::topology::run(&socket_path).await,
+        cli::Commands::Trust { action } => match action {
+            cli::TrustAction::Accept { fingerprint } => {
+                commands::trust::run_accept(&socket_path, &fingerprint).await
+            }
+        },
+        cli::Commands::Peers { action } => match action {
+            cli::PeersAction::Discovered => commands::peers::discovered::run(&socket_path).await,
+            cli::PeersAction::Pending => commands::peers::pending::run(&socket_path).await,
+        },
     }
 }
 
