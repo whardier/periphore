@@ -50,8 +50,6 @@ Phase 7 adds mDNS-based peer discovery so daemons on the same local network can 
 
 - **D-10:** `periphore peers discovered` — new subcommand in `periphore-cli`. Sends `IpcRequest::GetDiscoveredPeers`, displays result as a table: hostname/IP, port, last-seen time. Shows a helpful note if the list is empty ("No peers discovered. Enable discovery in config: [discovery] enabled = true").
 - **D-11:** `periphore peers pending` — new subcommand in `periphore-cli`. Sends `IpcRequest::GetPendingVerifications` (already defined in Phase 6, just needs wiring in CLI). Displays pending peers: fingerprint hex + word phrase for out-of-band verification.
-- **D-12:** `periphore connect <host>` — **deferred to a future phase**. Not in Phase 7.
-- **D-13:** `periphore peers list` (combined active + pending view) — **deferred to a future phase**.
 
 ### Claude's Discretion
 
@@ -62,6 +60,8 @@ Phase 7 adds mDNS-based peer discovery so daemons on the same local network can 
 - Output table format for `periphore peers discovered` (align with `periphore status` output style)
 - Error type design for `periphore-discovery` (`thiserror`-derived `DiscoveryError`)
 - Whether the mDNS service instance name includes a random suffix to avoid collisions on multi-daemon hosts
+- `periphore connect <host>` on-demand connect command — deferred to a future phase, not in Phase 7
+- `periphore peers list` combined view (active + pending + discovered) — deferred to a future phase
 
 </decisions>
 

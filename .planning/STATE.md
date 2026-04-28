@@ -6,13 +6,13 @@ current_phase: 6
 current_plan: 5 (06-04 complete — periphored wiring + macOS SSH check + systemd unit)
 status: executing
 stopped_at: Phase 07 context gathered
-last_updated: "2026-04-28T09:38:09.552Z"
+last_updated: "2026-04-28T17:01:18.616Z"
 progress:
   total_phases: 10
   completed_phases: 6
-  total_plans: 25
+  total_plans: 29
   completed_plans: 25
-  percent: 100
+  percent: 86
 ---
 
 # Project State
@@ -21,7 +21,7 @@ progress:
 **Milestone:** 1 -- v1 Core
 **Current phase:** 6
 **Current plan:** 5 (06-04 complete — periphored wiring + macOS SSH check + systemd unit)
-**Status:** Phase 6 in progress — plans 01-04 complete (4/5)
+**Status:** Ready to execute
 **Last updated:** 2026-04-27
 
 ---

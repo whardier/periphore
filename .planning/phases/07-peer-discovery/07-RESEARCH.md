@@ -731,22 +731,25 @@ Some(IpcCommand::GetDiscoveredPeers { responder }) => {
 | A4 | SSH probe interval of 30 seconds is reasonable (not too aggressive, not too slow) | Pattern 3 | Low -- configurable; 30s matches the GC sweep interval |
 | A5 | flume::Receiver::recv_async() is cancel-safe in tokio::select! | Pattern 2 | Medium -- if not cancel-safe, may need to wrap in a pinned future; flume docs suggest it is safe |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should SSH probe be a separate config flag from mDNS?**
    - What we know: The user specified SSH probing as a secondary mechanism. The two have different failure modes (mDNS needs LAN, SSH probe needs forwarded ports).
    - What's unclear: Whether users want to enable one without the other frequently enough to justify separate flags.
    - Recommendation: Use separate flags (`enabled` for mDNS, `ssh_probe_enabled` for SSH probe). This gives users precise control. Both default to `false`.
+   - RESOLVED: Plans use separate `discovery.enabled` (mDNS) and `discovery.ssh_probe_enabled` (SSH probe) flags in `DiscoveryConfig` — both default `false`, independently configurable.
 
 2. **How to handle SSH probe connecting to own daemon on forwarded port?**
    - What we know: If the user has `ssh -R 17888:localhost:7888` running, the local daemon at 7888 is exposed on 17888. The probe would discover itself.
    - What's unclear: Whether fingerprint comparison (probe fingerprint == local fingerprint) is sufficient, or if the daemon's own port should be excluded from probe results.
    - Recommendation: Compare HelloAck fingerprint against local identity. If same fingerprint, skip the entry (it's the local daemon forwarded to itself). This handles all cases including port forwarding loops.
+   - RESOLVED: Plan 02 `probe.rs` implements fingerprint comparison in `probe_handshake` — if `HelloAck.fingerprint == identity.fingerprint_hex`, the entry is skipped (self-detection via identity, not port exclusion).
 
 3. **mDNS instance name collision on multi-daemon hosts**
    - What we know: Multiple Periphore daemons on the same host (different ports) would have hostname collisions.
    - What's unclear: Whether this is a real use case in v1.
    - Recommendation: Default to `hostname-{port}` as instance name to avoid collisions. Users can override via `instance_name` config.
+   - RESOLVED: Plan 01 adds `instance_name: Option<String>` to `DiscoveryConfig`; `mdns.rs` defaults to `hostname-{port}` format when not set, with user override available.
 
 ## Environment Availability
 
