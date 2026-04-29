@@ -200,6 +200,32 @@ fn test_peer_name_field() {
 }
 
 #[test]
+fn discovery_ssh_probe_ports_accepts_single_integer() {
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
+    let mut tmp = tempfile::NamedTempFile::new().expect("temp file");
+    writeln!(tmp, "[discovery]").unwrap();
+    writeln!(tmp, "ssh_probe_ports = 17888").unwrap();
+
+    let config = load(Some(tmp.path())).expect("should parse single port integer");
+    assert_eq!(config.discovery.ssh_probe_ports, vec![17888]);
+}
+
+#[test]
+fn discovery_ssh_probe_ports_accepts_array() {
+    let _guard = ENV_MUTEX.lock().unwrap();
+    clear_periphore_env();
+
+    let mut tmp = tempfile::NamedTempFile::new().expect("temp file");
+    writeln!(tmp, "[discovery]").unwrap();
+    writeln!(tmp, "ssh_probe_ports = [17888, 17889]").unwrap();
+
+    let config = load(Some(tmp.path())).expect("should parse port array");
+    assert_eq!(config.discovery.ssh_probe_ports, vec![17888, 17889]);
+}
+
+#[test]
 fn test_peer_name_defaults_to_none() {
     // CFG-02: PeerConfig without a name field defaults to None.
     let _guard = ENV_MUTEX.lock().unwrap();

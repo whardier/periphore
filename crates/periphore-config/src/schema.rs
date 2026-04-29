@@ -1,4 +1,22 @@
-use serde::Deserialize;
+use serde::{Deserialize, Deserializer};
+
+/// Accept either a single integer or an array of integers.
+/// Allows `ssh_probe_ports = 17888` and `ssh_probe_ports = [17888, 17889]`.
+fn deserialize_port_or_ports<'de, D>(deserializer: D) -> Result<Vec<u16>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum OneOrMany {
+        One(u16),
+        Many(Vec<u16>),
+    }
+    match OneOrMany::deserialize(deserializer)? {
+        OneOrMany::One(p) => Ok(vec![p]),
+        OneOrMany::Many(v) => Ok(v),
+    }
+}
 
 // CRITICAL: Config intentionally does NOT derive Serialize.
 // This enforces CFG-01 at compile time: no code path can serialize Config to disk.
@@ -158,7 +176,8 @@ pub struct DiscoveryConfig {
 
     /// Ports to probe for SSH-forwarded Periphore daemons on localhost.
     /// Default: [17880, 17881, ..., 17890]
-    #[serde(default = "default_ssh_probe_ports")]
+    /// Accepts a single integer or an array: `17888` or `[17888, 17889]`.
+    #[serde(default = "default_ssh_probe_ports", deserialize_with = "deserialize_port_or_ports")]
     pub ssh_probe_ports: Vec<u16>,
 }
 
