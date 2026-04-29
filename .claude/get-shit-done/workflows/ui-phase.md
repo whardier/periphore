@@ -5,7 +5,7 @@ UI-SPEC.md locks spacing, typography, color, copywriting, and design system deci
 </purpose>
 
 <required_reading>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
 </required_reading>
 
 <available_agent_types>
@@ -21,8 +21,8 @@ Valid GSD subagent types (use exact names — do not fall back to 'general-purpo
 ```bash
 INIT=$(gsd-sdk query init.plan-phase "$PHASE")
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
-AGENT_SKILLS_UI=$(gsd-sdk query agent-skills gsd-ui-researcher 2>/dev/null)
-AGENT_SKILLS_UI_CHECKER=$(gsd-sdk query agent-skills gsd-ui-checker 2>/dev/null)
+AGENT_SKILLS_UI=$(gsd-sdk query agent-skills gsd-ui-researcher)
+AGENT_SKILLS_UI_CHECKER=$(gsd-sdk query agent-skills gsd-ui-checker)
 ```
 
 Parse JSON for: `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `padded_phase`, `has_context`, `has_research`, `commit_docs`.
@@ -123,7 +123,7 @@ Display:
 Build prompt:
 
 ```markdown
-Read /Users/spencersr/src/whardier/periphore/.claude/agents/gsd-ui-researcher.md for instructions.
+Read /Users/spencersr/src/github/whardier/periphore/.claude/agents/gsd-ui-researcher.md for instructions.
 
 <objective>
 Create UI design contract for Phase {phase_number}: {phase_name}
@@ -143,7 +143,7 @@ ${AGENT_SKILLS_UI}
 
 <output>
 Write to: {phase_dir}/{padded_phase}-UI-SPEC.md
-Template: /Users/spencersr/src/whardier/periphore/.claude/get-shit-done/templates/UI-SPEC.md
+Template: /Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/templates/UI-SPEC.md
 </output>
 
 <config>
@@ -186,7 +186,7 @@ Display:
 Build prompt:
 
 ```markdown
-Read /Users/spencersr/src/whardier/periphore/.claude/agents/gsd-ui-checker.md for instructions.
+Read /Users/spencersr/src/github/whardier/periphore/.claude/agents/gsd-ui-checker.md for instructions.
 
 <objective>
 Validate UI design contract for Phase {phase_number}: {phase_name}

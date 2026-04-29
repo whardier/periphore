@@ -3,7 +3,7 @@ Audit Nyquist validation gaps for a completed phase. Generate missing tests. Upd
 </purpose>
 
 <required_reading>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
 </required_reading>
 
 <available_agent_types>
@@ -18,7 +18,7 @@ Valid GSD subagent types (use exact names — do not fall back to 'general-purpo
 ```bash
 INIT=$(gsd-sdk query init.phase-op "${PHASE_ARG}")
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
-AGENT_SKILLS_AUDITOR=$(gsd-sdk query agent-skills gsd-nyquist-auditor 2>/dev/null)
+AGENT_SKILLS_AUDITOR=$(gsd-sdk query agent-skills gsd-nyquist-auditor)
 ```
 
 Parse: `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `padded_phase`.
@@ -94,7 +94,7 @@ Call AskUserQuestion with gap table and options:
 
 ```
 Task(
-  prompt="Read /Users/spencersr/src/whardier/periphore/.claude/agents/gsd-nyquist-auditor.md for instructions.\n\n" +
+  prompt="Read /Users/spencersr/src/github/whardier/periphore/.claude/agents/gsd-nyquist-auditor.md for instructions.\n\n" +
     "<files_to_read>{PLAN, SUMMARY, impl files, VALIDATION.md}</files_to_read>" +
     "<gaps>{gap list}</gaps>" +
     "<test_infrastructure>{framework, config, commands}</test_infrastructure>" +
@@ -114,7 +114,7 @@ Handle return:
 ## 6. Generate/Update VALIDATION.md
 
 **State B (create):**
-1. Read template from `/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/templates/VALIDATION.md`
+1. Read template from `/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/templates/VALIDATION.md`
 2. Fill: frontmatter, Test Infrastructure, Per-Task Map, Manual-Only, Sign-Off
 3. Write to `${PHASE_DIR}/${PADDED_PHASE}-VALIDATION.md`
 

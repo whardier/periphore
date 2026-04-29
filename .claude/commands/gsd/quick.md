@@ -39,7 +39,7 @@ Granular flags are composable: `--discuss --research --validate` gives the same 
 </objective>
 
 <execution_context>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/quick.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/quick.md
 </execution_context>
 
 <context>
@@ -71,7 +71,7 @@ For each directory found:
 - Check if PLAN.md exists
 - Check if SUMMARY.md exists; if so, read `status` from its frontmatter via:
   ```bash
-  gsd-sdk query frontmatter.get .planning/quick/{dir}/SUMMARY.md status 2>/dev/null
+  gsd-sdk query frontmatter.get .planning/quick/{dir}/SUMMARY.md status
   ```
 - Determine directory creation date: `stat -f "%SB" -t "%Y-%m-%d"` (macOS) or `stat -c "%w"` (Linux); fall back to the date prefix in the directory name (format: `YYYYMMDD-` prefix)
 - Derive display status:
@@ -153,7 +153,7 @@ When SUBCMD=resume and SLUG is set (already sanitized):
 
 When SUBCMD=run:
 
-Execute the quick workflow from @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/quick.md end-to-end.
+Execute the quick workflow from @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/quick.md end-to-end.
 Preserve all workflow gates (validation, task description, planning, execution, state updates, commits).
 
 </process>

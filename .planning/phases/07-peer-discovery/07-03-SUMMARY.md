@@ -130,6 +130,16 @@ No new network endpoints or trust boundaries introduced. CLI sends IPC requests 
 - Plan 04 (daemon wiring: `IpcCommand::GetDiscoveredPeers` dispatch + `DiscoveryService` spawn in `periphored`) can now be executed
 - The CLI is ready end-to-end; `periphore peers discovered` will work as soon as Plan 04 wires the daemon side
 
+## Self-Check: PASSED
+
+- FOUND: crates/periphore-cli/src/commands/peers/mod.rs
+- FOUND: crates/periphore-cli/src/commands/peers/discovered.rs
+- FOUND: crates/periphore-cli/src/commands/peers/pending.rs
+- FOUND: .planning/phases/07-peer-discovery/07-03-SUMMARY.md
+- FOUND commit: c633af6 (Task 1)
+- FOUND commit: 740ae27 (Task 2)
+- FOUND commit: 7e62fe9 (Final metadata)
+
 ---
 *Phase: 07-peer-discovery*
 *Completed: 2026-04-28*

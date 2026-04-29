@@ -17,8 +17,8 @@ project history. Output skill goes to `./.claude/skills/spike-findings-[project]
 </objective>
 
 <execution_context>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/spike-wrap-up.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/spike-wrap-up.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
 </execution_context>
 
 <runtime_note>
@@ -26,6 +26,6 @@ project history. Output skill goes to `./.claude/skills/spike-findings-[project]
 </runtime_note>
 
 <process>
-Execute the spike-wrap-up workflow from @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/spike-wrap-up.md end-to-end.
-Preserve all curation gates (per-spike review, grouping approval, CLAUDE.md routing line).
+Execute the spike-wrap-up workflow from @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/spike-wrap-up.md end-to-end.
+Preserve all workflow gates (auto-include, feature-area grouping, skill synthesis, CLAUDE.md routing line, intelligent next-step routing).
 </process>

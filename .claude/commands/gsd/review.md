@@ -19,7 +19,7 @@ planning via /gsd-plan-phase --reviews.
 </objective>
 
 <execution_context>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/review.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/review.md
 </execution_context>
 
 <context>
@@ -36,5 +36,5 @@ Phase number: extracted from $ARGUMENTS (required)
 </context>
 
 <process>
-Execute the review workflow from @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/review.md end-to-end.
+Execute the review workflow from @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/review.md end-to-end.
 </process>

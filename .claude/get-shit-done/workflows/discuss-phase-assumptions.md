@@ -66,7 +66,7 @@ Phase number from argument (required).
 ```bash
 INIT=$(gsd-sdk query init.phase-op "${PHASE}")
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
-AGENT_SKILLS_ANALYZER=$(gsd-sdk query agent-skills gsd-assumptions-analyzer 2>/dev/null)
+AGENT_SKILLS_ANALYZER=$(gsd-sdk query agent-skills gsd-assumptions-analyzer)
 ```
 
 Parse JSON for: `commit_docs`, `phase_found`, `phase_dir`, `phase_number`, `phase_name`,
@@ -236,7 +236,7 @@ keeps raw file contents out of the main context window, protecting token budget.
 **Resolve calibration tier (if USER-PROFILE.md exists):**
 
 ```bash
-PROFILE_PATH="/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/USER-PROFILE.md"
+PROFILE_PATH="/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/USER-PROFILE.md"
 ```
 
 If file exists at PROFILE_PATH:
@@ -619,24 +619,23 @@ Check for auto-advance trigger:
 2. Sync chain flag:
    ```bash
    if [[ ! "$ARGUMENTS" =~ --auto ]]; then
-     gsd-sdk query config-set workflow._auto_chain_active false 2>/dev/null
+     gsd-sdk query config-set workflow._auto_chain_active false || true
    fi
    ```
-3. Read chain flag and user preference:
+3. Read consolidated auto-mode (`active` = chain flag OR user preference):
    ```bash
-   AUTO_CHAIN=$(gsd-sdk query config-get workflow._auto_chain_active 2>/dev/null || echo "false")
-   AUTO_CFG=$(gsd-sdk query config-get workflow.auto_advance 2>/dev/null || echo "false")
+   AUTO_MODE=$(gsd-sdk query check auto-mode --pick active 2>/dev/null || echo "false")
    ```
 
-**If `--auto` flag present AND `AUTO_CHAIN` is not true:**
+**If `--auto` flag present AND `AUTO_MODE` is not true:**
 ```bash
 gsd-sdk query config-set workflow._auto_chain_active true
 ```
 
-**If `--auto` flag present OR `AUTO_CHAIN` is true OR `AUTO_CFG` is true:**
+**If `--auto` flag present OR `AUTO_MODE` is true:**
 
 Display banner:
-```
+```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► AUTO-ADVANCING TO PLAN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

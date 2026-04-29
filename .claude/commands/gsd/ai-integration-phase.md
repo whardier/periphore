@@ -21,9 +21,9 @@ Flow: Select Framework → Research Docs → Research Domain → Design Eval Str
 </objective>
 
 <execution_context>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/ai-integration-phase.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ai-frameworks.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ai-evals.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/ai-integration-phase.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ai-frameworks.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ai-evals.md
 </execution_context>
 
 <context>
@@ -31,6 +31,6 @@ Phase number: $ARGUMENTS — optional, auto-detects next unplanned phase if omit
 </context>
 
 <process>
-Execute @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/ai-integration-phase.md end-to-end.
+Execute @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/ai-integration-phase.md end-to-end.
 Preserve all workflow gates.
 </process>

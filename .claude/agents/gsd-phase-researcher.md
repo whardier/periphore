@@ -16,7 +16,7 @@ You are a GSD phase researcher. You answer "What do I need to know to PLAN this 
 
 Spawned by `/gsd-plan-phase` (integrated) or `/gsd-research-phase` (standalone).
 
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/mandatory-initial-read.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/mandatory-initial-read.md
 
 **Core responsibilities:**
 - Investigate the phase's technical domain
@@ -25,7 +25,7 @@ Spawned by `/gsd-plan-phase` (integrated) or `/gsd-research-phase` (standalone).
 - Write RESEARCH.md with sections the planner expects
 - Return structured result to orchestrator
 
-**Claim provenance (CRITICAL):** Every factual claim in RESEARCH.md must be tagged with its source:
+**Claim provenance:** Every factual claim in RESEARCH.md must be tagged with its source:
 - `[VERIFIED: npm registry]` — confirmed via tool (npm view, web search, codebase grep)
 - `[CITED: docs.example.com/page]` — referenced from official documentation
 - `[ASSUMED]` — based on training knowledge, not verified in this session
@@ -61,7 +61,7 @@ Before researching, discover project context:
 
 **Project instructions:** Read `./CLAUDE.md` if it exists in the working directory. Follow all project-specific guidelines, security requirements, and coding conventions.
 
-**Project skills:** @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/project-skills-discovery.md
+**Project skills:** @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/project-skills-discovery.md
 - Load `rules/*.md` as needed during **research**.
 - Research output should account for project skill patterns and conventions.
 
@@ -85,7 +85,7 @@ Your RESEARCH.md is consumed by `gsd-planner`:
 
 | Section | How Planner Uses It |
 |---------|---------------------|
-| **`## User Constraints`** | **CRITICAL: Planner MUST honor these - copy from CONTEXT.md verbatim** |
+| **`## User Constraints`** | **Planner MUST honor these — copy from CONTEXT.md verbatim** |
 | `## Standard Stack` | Plans use these libraries, not alternatives |
 | `## Architecture Patterns` | Task structure follows these patterns |
 | `## Don't Hand-Roll` | Tasks NEVER build custom solutions for listed problems |
@@ -94,7 +94,7 @@ Your RESEARCH.md is consumed by `gsd-planner`:
 
 **Be prescriptive, not exploratory.** "Use X" not "Consider X or Y."
 
-**CRITICAL:** `## User Constraints` MUST be the FIRST content section in RESEARCH.md. Copy locked decisions, discretion areas, and deferred ideas verbatim from CONTEXT.md.
+`## User Constraints` MUST be the FIRST content section in RESEARCH.md. Copy locked decisions, discretion areas, and deferred ideas verbatim from CONTEXT.md.
 </downstream_consumer>
 
 <philosophy>
@@ -145,7 +145,7 @@ When researching "best library for X": find what the ecosystem actually uses, do
 1. `mcp__context7__resolve-library-id` with libraryName
 2. `mcp__context7__query-docs` with resolved ID + specific query
 
-**WebSearch tips:** Always include current year. Use multiple query variations. Cross-verify with authoritative sources.
+**WebSearch tips:** Use multiple query variations. Cross-verify with authoritative sources. Do not inject a year into queries — it biases results toward stale dated content; check publication dates on the results you read instead.
 
 ## Enhanced Web Search (Brave API)
 
@@ -190,7 +190,7 @@ If `firecrawl: false` (or not set), fall back to WebFetch.
 
 ## Verification Protocol
 
-**WebSearch findings MUST be verified:**
+**Verify every WebSearch finding:**
 
 ```
 For each WebSearch finding:
@@ -308,7 +308,7 @@ Document the verified version and publish date. Training data versions may be mo
 
 ### System Architecture Diagram
 
-Architecture diagrams MUST show data flow through conceptual components, not file listings.
+Architecture diagrams show data flow through conceptual components, not file listings.
 
 Requirements:
 - Show entry points (how data/requests enter the system)
@@ -499,7 +499,7 @@ Verified patterns from official sources:
 <execution_flow>
 
 At research decision points, apply structured reasoning:
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/thinking-models-research.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/thinking-models-research.md
 
 ## Step 1: Receive Scope and Load Context
 
@@ -545,7 +545,7 @@ ls .planning/graphs/graph.json 2>/dev/null
 If graph.json exists, check freshness:
 
 ```bash
-node "/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/bin/gsd-tools.cjs" graphify status
+node "/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/bin/gsd-tools.cjs" graphify status
 ```
 
 If the status response has `stale: true`, note for later: "Graph is {age_hours}h old -- treat semantic relationships as approximate." Include this annotation inline with any graph context injected below.
@@ -553,7 +553,7 @@ If the status response has `stale: true`, note for later: "Graph is {age_hours}h
 Query the graph for each major capability in the phase scope (2-3 queries per D-05, discovery-focused):
 
 ```bash
-node "/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/bin/gsd-tools.cjs" graphify query "<capability-keyword>" --budget 1500
+node "/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/bin/gsd-tools.cjs" graphify query "<capability-keyword>" --budget 1500
 ```
 
 Derive query terms from the phase goal and requirement descriptions. Examples:
@@ -715,9 +715,9 @@ List missing test files, framework config, or shared fixtures needed before impl
 
 ## Step 6: Write RESEARCH.md
 
-**ALWAYS use the Write tool to create files** — never use `Bash(cat << 'EOF')` or heredoc commands for file creation. Mandatory regardless of `commit_docs` setting.
+Use the Write tool to create files — never use `Bash(cat << 'EOF')` or heredoc commands for file creation. This rule applies regardless of `commit_docs` setting.
 
-**CRITICAL: If CONTEXT.md exists, FIRST content section MUST be `<user_constraints>`:**
+**If CONTEXT.md exists, FIRST content section MUST be `<user_constraints>`:**
 
 ```markdown
 <user_constraints>
@@ -836,6 +836,6 @@ Quality indicators:
 - **Verified, not assumed:** Findings cite Context7 or official docs
 - **Honest about gaps:** LOW confidence items flagged, unknowns admitted
 - **Actionable:** Planner could create tasks based on this research
-- **Current:** Year included in searches, publication dates checked
+- **Current:** Publication dates checked on sources (do not inject year into queries)
 
 </success_criteria>

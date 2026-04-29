@@ -20,9 +20,9 @@ Three modes:
 </objective>
 
 <execution_context>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/undo.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/gate-prompts.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/undo.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/gate-prompts.md
 </execution_context>
 
 <context>
@@ -30,5 +30,5 @@ $ARGUMENTS
 </context>
 
 <process>
-Execute the undo workflow from @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/undo.md end-to-end.
+Execute the undo workflow from @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/undo.md end-to-end.
 </process>

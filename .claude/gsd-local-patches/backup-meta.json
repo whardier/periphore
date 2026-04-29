@@ -1,0 +1,23 @@
+{
+  "backed_up_at": "2026-04-27T19:43:30.791Z",
+  "from_version": "1.38.3",
+  "from_manifest_timestamp": "2026-04-22T16:28:00.936Z",
+  "files": [
+    "get-shit-done/VERSION",
+    "get-shit-done/references/tdd.md",
+    "get-shit-done/workflows/code-review-fix.md",
+    "get-shit-done/workflows/code-review.md",
+    "get-shit-done/workflows/session-report.md",
+    "agents/gsd-code-fixer.md",
+    "agents/gsd-phase-researcher.md"
+  ],
+  "pristine_hashes": {
+    "get-shit-done/VERSION": "61fb7ea4cb25d82a3dae06a6be4a53b35e4d770eef0d5b31a05dda4088357021",
+    "get-shit-done/references/tdd.md": "e4708ede157478b6b5c011e4b1defafb4967a0b0d29b1cdf355edfaa843c6fde",
+    "get-shit-done/workflows/code-review-fix.md": "d92117a2e182971e2770259501c49307cecd54e5a92e98dda0328e16499b0dff",
+    "get-shit-done/workflows/code-review.md": "dddb71bce31b10643be6d2f1ae5c42239b4150ec08aaf31720e9fc066c57cf71",
+    "get-shit-done/workflows/session-report.md": "2e5b1205324ddefa5d6a580d6782436d21b6fb6589b695feae93970103b6df25",
+    "agents/gsd-code-fixer.md": "71456ace17292b4c0b3b14f08d473b4abda6c9a84ce4f10b54ea0bf376d342dd",
+    "agents/gsd-phase-researcher.md": "518d0ee4df7224e8917aa0214d58e7a0e4d6cc550282dc4fde6b88e4c79f9eab"
+  }
+}

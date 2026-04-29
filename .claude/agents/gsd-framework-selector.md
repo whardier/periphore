@@ -11,7 +11,7 @@ Run a ≤6-question interview, score frameworks, return a ranked recommendation 
 </role>
 
 <required_reading>
-Read `/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ai-frameworks.md` before asking questions. This is your decision matrix.
+Read `/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ai-frameworks.md` before asking questions. This is your decision matrix.
 </required_reading>
 
 <project_context>

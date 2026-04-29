@@ -3,7 +3,7 @@ Verify threat mitigations for a completed phase. Confirm PLAN.md threat register
 </purpose>
 
 <required_reading>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
 </required_reading>
 
 <available_agent_types>
@@ -18,7 +18,7 @@ Valid GSD subagent types (use exact names — do not fall back to 'general-purpo
 ```bash
 INIT=$(gsd-sdk query init.phase-op "${PHASE_ARG}")
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
-AGENT_SKILLS_AUDITOR=$(gsd-sdk query agent-skills gsd-security-auditor 2>/dev/null)
+AGENT_SKILLS_AUDITOR=$(gsd-sdk query agent-skills gsd-security-auditor)
 ```
 
 Parse: `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `padded_phase`.
@@ -84,7 +84,7 @@ Call AskUserQuestion with threat table and options:
 
 ```
 Task(
-  prompt="Read /Users/spencersr/src/whardier/periphore/.claude/agents/gsd-security-auditor.md for instructions.\n\n" +
+  prompt="Read /Users/spencersr/src/github/whardier/periphore/.claude/agents/gsd-security-auditor.md for instructions.\n\n" +
     "<files_to_read>{PLAN, SUMMARY, impl files, SECURITY.md}</files_to_read>" +
     "<threat_register>{threat register}</threat_register>" +
     "<config>asvs_level: {SECURITY_ASVS}, block_on: {SECURITY_BLOCK_ON}</config>" +
@@ -104,7 +104,7 @@ Handle return:
 ## 6. Write/Update SECURITY.md
 
 **State B (create):**
-1. Read template from `/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/templates/SECURITY.md`
+1. Read template from `/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/templates/SECURITY.md`
 2. Fill: frontmatter, threat register, accepted risks, audit trail
 3. Write to `${PHASE_DIR}/${PADDED_PHASE}-SECURITY.md`
 

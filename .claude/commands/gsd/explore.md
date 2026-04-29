@@ -19,9 +19,9 @@ Accepts an optional topic argument: `/gsd-explore authentication strategy`
 </objective>
 
 <execution_context>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/explore.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/explore.md
 </execution_context>
 
 <process>
-Execute the explore workflow from @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/explore.md end-to-end.
+Execute the explore workflow from @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/explore.md end-to-end.
 </process>

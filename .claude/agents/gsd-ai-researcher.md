@@ -40,7 +40,7 @@ works via Bash and produces equivalent output.
 </documentation_lookup>
 
 <required_reading>
-Read `/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ai-frameworks.md` for framework profiles and known pitfalls before fetching docs.
+Read `/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ai-frameworks.md` for framework profiles and known pitfalls before fetching docs.
 </required_reading>
 
 <input>

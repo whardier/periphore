@@ -25,9 +25,9 @@ Flags:
 </objective>
 
 <execution_context>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/audit-fix.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/audit-fix.md
 </execution_context>
 
 <process>
-Execute the audit-fix workflow from @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/audit-fix.md end-to-end.
+Execute the audit-fix workflow from @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/audit-fix.md end-to-end.
 </process>

@@ -17,7 +17,7 @@ Turn domain rubric ingredients into measurable, tooled evaluation criteria. Writ
 </role>
 
 <required_reading>
-Read `/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ai-evals.md` before planning. This is your evaluation framework.
+Read `/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ai-evals.md` before planning. This is your evaluation framework.
 </required_reading>
 
 <input>

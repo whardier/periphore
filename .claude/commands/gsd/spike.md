@@ -29,8 +29,8 @@ Does not require `/gsd-new-project` — auto-creates `.planning/spikes/` if need
 </objective>
 
 <execution_context>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/spike.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/spike.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
 </execution_context>
 
 <runtime_note>
@@ -46,6 +46,6 @@ Idea: $ARGUMENTS
 </context>
 
 <process>
-Execute the spike workflow from @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/spike.md end-to-end.
+Execute the spike workflow from @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/spike.md end-to-end.
 Preserve all workflow gates (prior spike check, decomposition, research, risk ordering, observability assessment, verification, MANIFEST updates, commit patterns).
 </process>

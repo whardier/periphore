@@ -58,7 +58,7 @@ pub(crate) async fn mdns_register_and_browse(
         Err(e) => {
             tracing::warn!(error = %e, "mDNS ServiceInfo creation failed — skipping registration");
             // Continue in browse-only mode
-            browse_loop(mdns, service_type, peers, event_tx, cancel).await;
+            browse_loop(mdns, service_type, instance_name, peers, event_tx, cancel).await;
             return Ok(());
         }
     };
@@ -79,7 +79,7 @@ pub(crate) async fn mdns_register_and_browse(
         );
     }
 
-    browse_loop(mdns, service_type, peers, event_tx, cancel).await;
+    browse_loop(mdns, service_type, instance_name, peers, event_tx, cancel).await;
     Ok(())
 }
 
@@ -87,9 +87,15 @@ pub(crate) async fn mdns_register_and_browse(
 ///
 /// Handles ServiceResolved (upsert into peer list, emit PeerDiscovered) and
 /// ServiceRemoved (remove from peer list by fullname, emit PeerRemoved).
+///
+/// `own_instance_name` is the local service's registered instance (e.g. "periphore-c124af1a").
+/// Any resolved peer whose hostname matches `{own_instance_name}.local` or starts with
+/// `{own_instance_name}-` (mdns-sd rename variants like `-2`, `-3`) is skipped — same
+/// self-detection pattern used in probe.rs (Pitfall 3 mitigation).
 async fn browse_loop(
     mdns: ServiceDaemon,
     service_type: String,
+    own_instance_name: String,
     peers: Arc<std::sync::Mutex<DiscoveredPeerList>>,
     event_tx: mpsc::Sender<DiscoveryEvent>,
     cancel: CancellationToken,
@@ -126,6 +132,17 @@ async fn browse_loop(
                             fullname = %fullname,
                             "mDNS peer resolved"
                         );
+
+                        // Skip self — mdns-sd may report our own registration (Pitfall 3).
+                        // Also skip conflict-renamed variants like "{own}-2", "{own}-3" which
+                        // appear per-interface when multiple interfaces share the same instance name.
+                        let self_hostname = format!("{own_instance_name}.local");
+                        if hostname == self_hostname
+                            || hostname.starts_with(&format!("{own_instance_name}-"))
+                        {
+                            tracing::debug!(hostname = %hostname, "mDNS: skipping self-discovered peer");
+                            continue;
+                        }
 
                         peers
                             .lock()

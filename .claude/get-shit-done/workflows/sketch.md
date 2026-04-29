@@ -11,10 +11,10 @@ Supports two modes:
 <required_reading>
 Read all files referenced by the invoking prompt's execution_context before starting.
 
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/sketch-theme-system.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/sketch-variant-patterns.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/sketch-interactivity.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/sketch-tooling.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/sketch-theme-system.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/sketch-variant-patterns.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/sketch-interactivity.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/sketch-tooling.md
 </required_reading>
 
 <process>

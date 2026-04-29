@@ -21,9 +21,19 @@ pub(crate) async fn run(socket_path: &Path) -> anyhow::Result<()> {
     match response {
         IpcResponse::Status { running, fingerprint } => {
             println!("Daemon:      {}", if running { "running" } else { "not running" });
-            match fingerprint {
+            match &fingerprint {
                 Some(fp) => println!("Fingerprint: {fp}"),
                 None     => println!("Fingerprint: (not available)"),
+            }
+            // Fetch and display identicon if the daemon is running.
+            if running {
+                let fp = fingerprint.as_deref().unwrap_or("").to_owned();
+                match ipc_request(socket_path, IpcRequest::GetIdenticon { fingerprint: fp }).await {
+                    Ok(IpcResponse::Identicon { identicon, .. }) if !identicon.is_empty() => {
+                        print!("{identicon}");
+                    }
+                    _ => {}
+                }
             }
         }
         IpcResponse::Error { message } => {

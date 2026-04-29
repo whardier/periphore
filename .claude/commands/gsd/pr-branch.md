@@ -17,9 +17,9 @@ changes that are irrelevant to code review.
 </objective>
 
 <execution_context>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/pr-branch.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/pr-branch.md
 </execution_context>
 
 <process>
-Execute the pr-branch workflow from @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/pr-branch.md end-to-end.
+Execute the pr-branch workflow from @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/pr-branch.md end-to-end.
 </process>

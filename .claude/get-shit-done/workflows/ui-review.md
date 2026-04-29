@@ -3,7 +3,7 @@ Retroactive 6-pillar visual audit of implemented frontend code. Standalone comma
 </purpose>
 
 <required_reading>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
 </required_reading>
 
 <available_agent_types>
@@ -18,7 +18,7 @@ Valid GSD subagent types (use exact names — do not fall back to 'general-purpo
 ```bash
 INIT=$(gsd-sdk query init.phase-op "${PHASE_ARG}")
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
-AGENT_SKILLS_UI_REVIEWER=$(gsd-sdk query agent-skills gsd-ui-reviewer 2>/dev/null)
+AGENT_SKILLS_UI_REVIEWER=$(gsd-sdk query agent-skills gsd-ui-auditor)
 ```
 
 Parse: `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `padded_phase`, `commit_docs`.
@@ -73,7 +73,7 @@ Build file list for auditor:
 Build prompt:
 
 ```markdown
-Read /Users/spencersr/src/whardier/periphore/.claude/agents/gsd-ui-auditor.md for instructions.
+Read /Users/spencersr/src/github/whardier/periphore/.claude/agents/gsd-ui-auditor.md for instructions.
 
 <objective>
 Conduct 6-pillar visual audit of Phase {phase_number}: {phase_name}

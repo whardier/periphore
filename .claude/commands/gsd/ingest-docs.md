@@ -27,10 +27,10 @@ Auto-synthesizes most conflicts using the precedence rule `ADR > SPEC > PRD > DO
 </objective>
 
 <execution_context>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/ingest-docs.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/gate-prompts.md
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/doc-conflict-engine.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/ingest-docs.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ui-brand.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/gate-prompts.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/doc-conflict-engine.md
 </execution_context>
 
 <context>

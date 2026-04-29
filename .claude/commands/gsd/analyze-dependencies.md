@@ -19,7 +19,7 @@ Then suggest `Depends on` updates to ROADMAP.md.
 </objective>
 
 <execution_context>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/analyze-dependencies.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/analyze-dependencies.md
 </execution_context>
 
 <context>
@@ -29,6 +29,6 @@ Run this command BEFORE `/gsd-manager` to fill in missing `Depends on` fields an
 </context>
 
 <process>
-Execute the analyze-dependencies workflow from @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/analyze-dependencies.md end-to-end.
+Execute the analyze-dependencies workflow from @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/analyze-dependencies.md end-to-end.
 Present dependency suggestions clearly and apply confirmed updates to ROADMAP.md.
 </process>

@@ -137,15 +137,8 @@ impl ConnectionManager {
                                         .ok();
                                     // Phase 6: hold connection open until EOF/error
                                     loop {
-                                        match tokio::time::timeout(
-                                            Duration::from_secs(30),
-                                            framed_read.next(),
-                                        )
-                                        .await
-                                        {
-                                            Ok(Some(Ok(_frame))) => {
-                                                // Ignore non-handshake frames in Phase 6
-                                            }
+                                        match framed_read.next().await {
+                                            Some(Ok(_frame)) => {}
                                             _ => break,
                                         }
                                     }
@@ -197,13 +190,8 @@ impl ConnectionManager {
                                                 .ok();
                                             // Hold connection open until EOF/error (same as Trusted path)
                                             loop {
-                                                match tokio::time::timeout(
-                                                    Duration::from_secs(30),
-                                                    framed_read.next(),
-                                                )
-                                                .await
-                                                {
-                                                    Ok(Some(Ok(_frame))) => {}
+                                                match framed_read.next().await {
+                                                    Some(Ok(_frame)) => {}
                                                     _ => break,
                                                 }
                                             }
@@ -323,15 +311,8 @@ impl ConnectionManager {
                                         .ok();
                                     // Phase 6: hold connection open until EOF/error
                                     loop {
-                                        match tokio::time::timeout(
-                                            Duration::from_secs(30),
-                                            framed_read.next(),
-                                        )
-                                        .await
-                                        {
-                                            Ok(Some(Ok(_frame))) => {
-                                                // Ignore non-handshake frames in Phase 6
-                                            }
+                                        match framed_read.next().await {
+                                            Some(Ok(_frame)) => {}
                                             _ => break,
                                         }
                                     }
@@ -384,13 +365,8 @@ impl ConnectionManager {
                                                 .ok();
                                             // Hold connection open until EOF/error (same as Trusted path)
                                             loop {
-                                                match tokio::time::timeout(
-                                                    Duration::from_secs(30),
-                                                    framed_read.next(),
-                                                )
-                                                .await
-                                                {
-                                                    Ok(Some(Ok(_frame))) => {}
+                                                match framed_read.next().await {
+                                                    Some(Ok(_frame)) => {}
                                                     _ => break,
                                                 }
                                             }

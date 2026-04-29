@@ -21,7 +21,7 @@ No Pass/Fail buttons. No severity questions. Just: "Here's what should happen. D
 </philosophy>
 
 <template>
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/templates/UAT.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/templates/UAT.md
 </template>
 
 <process>
@@ -32,8 +32,8 @@ If $ARGUMENTS contains a phase number, load context:
 ```bash
 INIT=$(gsd-sdk query init.verify-work "${PHASE_ARG}")
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
-AGENT_SKILLS_PLANNER=$(gsd-sdk query agent-skills gsd-planner 2>/dev/null)
-AGENT_SKILLS_CHECKER=$(gsd-sdk query agent-skills gsd-checker 2>/dev/null)
+AGENT_SKILLS_PLANNER=$(gsd-sdk query agent-skills gsd-planner)
+AGENT_SKILLS_CHECKER=$(gsd-sdk query agent-skills gsd-plan-checker)
 ```
 
 Parse JSON for: `planner_model`, `checker_model`, `commit_docs`, `phase_found`, `phase_dir`, `phase_number`, `phase_name`, `has_verification`, `uat_path`.
@@ -444,7 +444,7 @@ If `SECURITY_CFG` is `false` OR (`SECURITY_FILE` exists AND `threats_open` is `0
 
 Execute the transition workflow inline (do NOT use Task — the orchestrator context already holds the UAT results and phase data needed for accurate transition):
 
-Read and follow `/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/transition.md`.
+Read and follow `/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/transition.md`.
 
 After transition completes, present next-step options to the user:
 
@@ -464,7 +464,7 @@ Run phase artifact scan to surface any open items before marking phase verified:
 `audit-open` is CJS-only until registered on `gsd-sdk query`:
 
 ```bash
-node "/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/bin/gsd-tools.cjs" audit-open --json 2>/dev/null
+gsd-sdk query audit-open --json
 ```
 
 Parse the JSON output. For the CURRENT PHASE ONLY, surface:
@@ -499,7 +499,7 @@ Spawning parallel debug agents to investigate each issue.
 ```
 
 - Load diagnose-issues workflow
-- Follow @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/workflows/diagnose-issues.md
+- Follow @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/workflows/diagnose-issues.md
 - Spawn parallel debug agents for each issue
 - Collect root causes
 - Update UAT.md with root causes

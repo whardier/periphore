@@ -59,12 +59,26 @@ The document should describe what you want to build.
 ```bash
 INIT=$(gsd-sdk query init.new-project)
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
-AGENT_SKILLS_RESEARCHER=$(gsd-sdk query agent-skills gsd-project-researcher 2>/dev/null)
-AGENT_SKILLS_SYNTHESIZER=$(gsd-sdk query agent-skills gsd-synthesizer 2>/dev/null)
-AGENT_SKILLS_ROADMAPPER=$(gsd-sdk query agent-skills gsd-roadmapper 2>/dev/null)
+AGENT_SKILLS_RESEARCHER=$(gsd-sdk query agent-skills gsd-project-researcher)
+AGENT_SKILLS_SYNTHESIZER=$(gsd-sdk query agent-skills gsd-research-synthesizer)
+AGENT_SKILLS_ROADMAPPER=$(gsd-sdk query agent-skills gsd-roadmapper)
 ```
 
-Parse JSON for: `researcher_model`, `synthesizer_model`, `roadmapper_model`, `commit_docs`, `project_exists`, `has_codebase_map`, `planning_exists`, `has_existing_code`, `has_package_file`, `is_brownfield`, `needs_codebase_map`, `has_git`, `project_path`.
+Parse JSON for: `researcher_model`, `synthesizer_model`, `roadmapper_model`, `commit_docs`, `project_exists`, `has_codebase_map`, `planning_exists`, `has_existing_code`, `has_package_file`, `is_brownfield`, `needs_codebase_map`, `has_git`, `project_path`, `agents_installed`, `missing_agents`.
+
+**If `agents_installed` is false:** Display a warning before proceeding:
+```
+⚠ GSD agents not installed. The following agents are missing from your agents directory:
+  {missing_agents joined with newline}
+
+Subagent spawns (gsd-project-researcher, gsd-research-synthesizer, gsd-roadmapper) will fail
+with "agent type not found". Run the installer with --global to make agents available:
+
+  npx get-shit-done-cc@latest --global
+
+Proceeding without research subagents — roadmap will be generated inline.
+```
+Skip Steps 6–7 (parallel research and synthesis) and proceed directly to roadmap creation in Step 8.
 
 **Detect runtime and set instruction file name:**
 
@@ -777,7 +791,7 @@ Your STACK.md feeds into roadmap creation. Be prescriptive:
 
 <output>
 Write to: .planning/research/STACK.md
-Use template: /Users/spencersr/src/whardier/periphore/.claude/get-shit-done/templates/research-project/STACK.md
+Use template: /Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/templates/research-project/STACK.md
 </output>
 ", subagent_type="gsd-project-researcher", model="{researcher_model}", description="Stack research")
 
@@ -817,7 +831,7 @@ Your FEATURES.md feeds into requirements definition. Categorize clearly:
 
 <output>
 Write to: .planning/research/FEATURES.md
-Use template: /Users/spencersr/src/whardier/periphore/.claude/get-shit-done/templates/research-project/FEATURES.md
+Use template: /Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/templates/research-project/FEATURES.md
 </output>
 ", subagent_type="gsd-project-researcher", model="{researcher_model}", description="Features research")
 
@@ -857,7 +871,7 @@ Your ARCHITECTURE.md informs phase structure in roadmap. Include:
 
 <output>
 Write to: .planning/research/ARCHITECTURE.md
-Use template: /Users/spencersr/src/whardier/periphore/.claude/get-shit-done/templates/research-project/ARCHITECTURE.md
+Use template: /Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/templates/research-project/ARCHITECTURE.md
 </output>
 ", subagent_type="gsd-project-researcher", model="{researcher_model}", description="Architecture research")
 
@@ -897,7 +911,7 @@ Your PITFALLS.md prevents mistakes in roadmap/planning. For each pitfall:
 
 <output>
 Write to: .planning/research/PITFALLS.md
-Use template: /Users/spencersr/src/whardier/periphore/.claude/get-shit-done/templates/research-project/PITFALLS.md
+Use template: /Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/templates/research-project/PITFALLS.md
 </output>
 ", subagent_type="gsd-project-researcher", model="{researcher_model}", description="Pitfalls research")
 ```
@@ -921,7 +935,7 @@ ${AGENT_SKILLS_SYNTHESIZER}
 
 <output>
 Write to: .planning/research/SUMMARY.md
-Use template: /Users/spencersr/src/whardier/periphore/.claude/get-shit-done/templates/research-project/SUMMARY.md
+Use template: /Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/templates/research-project/SUMMARY.md
 Commit after writing.
 </output>
 ", subagent_type="gsd-research-synthesizer", model="{synthesizer_model}", description="Synthesize research")

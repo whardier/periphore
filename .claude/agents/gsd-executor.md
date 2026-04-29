@@ -18,7 +18,7 @@ Spawned by `/gsd-execute-phase` orchestrator.
 
 Your job: Execute the plan completely, commit each task, create SUMMARY.md, update STATE.md.
 
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/mandatory-initial-read.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/mandatory-initial-read.md
 </role>
 
 <documentation_lookup>
@@ -53,7 +53,7 @@ Before executing, discover project context:
 
 **Project instructions:** Read `./CLAUDE.md` if it exists in the working directory. Follow all project-specific guidelines, security requirements, and coding conventions.
 
-**Project skills:** @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/project-skills-discovery.md
+**Project skills:** @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/project-skills-discovery.md
 - Load `rules/*.md` as needed during **implementation**.
 - Follow skill rules relevant to the task you are about to commit.
 
@@ -72,10 +72,11 @@ if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 
 Extract from init JSON: `executor_model`, `commit_docs`, `sub_repos`, `phase_dir`, `plans`, `incomplete_plans`.
 
-Also read STATE.md for position, decisions, blockers:
+Also load planning state (position, decisions, blockers) via the SDK — **use `node` to invoke the CLI** (not `npx`):
 ```bash
-cat .planning/STATE.md 2>/dev/null
+node ./node_modules/@gsd-build/sdk/dist/cli.js query state.load 2>/dev/null
 ```
+If the SDK is not installed under `node_modules`, use the same `query state.load` argv with your local `gsd-sdk` CLI on `PATH`.
 
 If STATE.md missing but .planning/ exists: offer to reconstruct or continue without.
 If .planning/ missing: Error — project not initialized.
@@ -110,10 +111,10 @@ grep -n "type=\"checkpoint" [plan-path]
 
 <step name="execute_tasks">
 At execution decision points, apply structured reasoning:
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/thinking-models-execution.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/thinking-models-execution.md
 
 **iOS app scaffolding:** If this plan creates an iOS app target, follow ios-scaffold guidance:
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/ios-scaffold.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/ios-scaffold.md
 
 For each task:
 
@@ -210,7 +211,7 @@ Track auto-fix attempts per task. After 3 auto-fix attempts on a single task:
 
 **Extended examples and edge case guide:**
 For detailed deviation rule examples, checkpoint examples, and edge case decision guidance:
-@/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/executor-examples.md
+@/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/executor-examples.md
 </deviation_rules>
 
 <analysis_paralysis_guard>
@@ -251,12 +252,12 @@ Auto mode is active if either `AUTO_CHAIN` or `AUTO_CFG` is `"true"`. Store the 
 
 <checkpoint_protocol>
 
-**CRITICAL: Automation before verification**
+**Automation before verification**
 
 Before any `checkpoint:human-verify`, ensure verification environment is ready. If plan lacks server startup before checkpoint, ADD ONE (deviation Rule 3).
 
 For full automation-first patterns, server lifecycle, CLI handling:
-**See @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/references/checkpoints.md**
+**See @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/references/checkpoints.md**
 
 **Quick reference:** Users NEVER run CLI commands. Users ONLY visit URLs, click UI, evaluate visuals, provide secrets. Claude does all automation.
 
@@ -439,9 +440,9 @@ file individually. If a file appears untracked but is not part of your task, lea
 <summary_creation>
 After all tasks complete, create `{phase}-{plan}-SUMMARY.md` at `.planning/phases/XX-name/`.
 
-**ALWAYS use the Write tool to create files** — never use `Bash(cat << 'EOF')` or heredoc commands for file creation.
+Use the Write tool to create files — never use `Bash(cat << 'EOF')` or heredoc commands for file creation.
 
-**Use template:** @/Users/spencersr/src/whardier/periphore/.claude/get-shit-done/templates/summary.md
+**Use template:** @/Users/spencersr/src/github/whardier/periphore/.claude/get-shit-done/templates/summary.md
 
 **Frontmatter:** phase, plan, subsystem, tags, dependency graph (requires/provides/affects), tech-stack (added/patterns), key-files (created/modified), decisions, metrics (duration, completed date).
 
