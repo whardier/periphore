@@ -15,7 +15,7 @@
 - [x] **Phase 3: Configuration & Trust Persistence** - Layered config loading, fingerprint caching, hard config conflict enforcement
 - [x] **Phase 4: IPC Layer** - Unix domain socket service boundary, modular transport/capture decoupling
 - [x] **Phase 5: CLI Tool (periphore-cli)** - CLI binary for daemon interaction, debug topology output
-- [ ] **Phase 6: TCP Peering** - TCP peer connections, SSH tunnelability, manual host definition, daemon lifecycle
+- [x] **Phase 6: TCP Peering** - TCP peer connections, SSH tunnelability, manual host definition, daemon lifecycle
 - [x] **Phase 7: Peer Discovery** - mDNS auto-discovery of peers on the local network (completed 2026-04-28)
 - [ ] **Phase 8: Monitor Topology** - Monitor enumeration, topology config/negotiation, multi-monitor edge resolution
 - [ ] **Phase 9: Input Capture & Injection** - Source/sink input flow, relative coordinates, bidirectional control
@@ -133,9 +133,9 @@ Plans:
 Plans:
 - [x] 06-01-PLAN.md -- Protocol/config/net-crate foundations: PendingPeerInfo, IpcResponse::PendingPeers, daemon.listen, periphore-net Cargo.toml deps
 - [x] 06-02-PLAN.md -- periphore-net types: error.rs, codec.rs (LengthDelimitedCodec+postcard+max_frame_length), event.rs, connection.rs
-- [ ] 06-03-PLAN.md -- periphore-net runtime: handshake.rs (Hello/HelloAck protocol), manager.rs (ConnectionManager, backoff, CancellationToken), lib.rs
-- [ ] 06-04-PLAN.md -- periphored wiring: Cargo.toml deps, main.rs (macOS SSH check, ConnectionManager init, select! integration, AcceptFingerprint promotion, GetPendingVerifications, FocusStateMachine), contrib/periphored.service
-- [ ] 06-05-PLAN.md -- Integration tests: periphore-net handshake tests (trusted/pending/version mismatch), periphored net_wiring tests (NET-03, GetPendingVerifications IPC)
+- [x] 06-03-PLAN.md -- periphore-net runtime: handshake.rs (Hello/HelloAck protocol), manager.rs (ConnectionManager, backoff, CancellationToken), lib.rs
+- [x] 06-04-PLAN.md -- periphored wiring: Cargo.toml deps, main.rs (macOS SSH check, ConnectionManager init, select! integration, AcceptFingerprint promotion, GetPendingVerifications, FocusStateMachine), contrib/periphored.service
+- [x] 06-05-PLAN.md -- Integration tests: periphore-net handshake tests (trusted/pending/version mismatch), periphored net_wiring tests (NET-03, GetPendingVerifications IPC)
 
 ### Phase 7: Peer Discovery
 
@@ -222,7 +222,7 @@ Plans:
 | 3. Configuration & Trust Persistence | 4/4 | Complete | 2026-04-24 |
 | 4. IPC Layer | 3/3 | Complete | 2026-04-25 |
 | 5. CLI Tool (periphore-cli) | 3/3 | Complete | 2026-04-25 |
-| 6. TCP Peering | 1/5 | In progress | - |
+| 6. TCP Peering | 5/5 | Complete | 2026-04-28 |
 | 7. Peer Discovery | 4/4 | Complete   | 2026-04-28 |
 | 8. Monitor Topology | 0/? | Not started | - |
 | 9. Input Capture & Injection | 0/? | Not started | - |
